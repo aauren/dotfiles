@@ -1,5 +1,5 @@
 # Command to start up ssh-agent if there is an SSH key in your profile
-if [[ -e ${HOME}/.ssh/id_rsa ]]; then
+if [ -z ${SSH_AUTH_SOCK} && -z $(pgrep ssh-agent) && -e ${HOME}/.ssh/id_rsa ]]; then
   eval $(ssh-agent)
   ssh-add ${HOME}/.ssh/id_rsa
 fi
