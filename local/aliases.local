@@ -3,6 +3,8 @@ if [[ $(uname -a) == *"Darwin"* ]]; then
 else
   alias ls='ls --color'
 fi
+# Add agent forwarding by default to SSH
+alias ssh='ssh -A'
 alias ll='ls -lrt --color'
 alias vi='vim'
 alias bzip='bzip2'
