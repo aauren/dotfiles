@@ -1,4 +1,8 @@
+# Command to start up ssh-agent if there is an SSH key in your profile
 if [[ -e ${HOME}/.ssh/id_rsa ]]; then
   eval $(ssh-agent)
   ssh-add ${HOME}/.ssh/id_rsa
 fi
+
+# A command which helps ZSH recognize OSX FN+Delete
+bindkey "^[[3~" delete-char
