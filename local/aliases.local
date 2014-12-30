@@ -1,4 +1,8 @@
-alias ls='ls --color'
+if [[ $(uname -a) == *"Darwin"* ]]; then
+  alias ls='ls -G'
+else
+  alias ls='ls --color'
+fi
 alias ll='ls -lrt --color'
 alias vi='vim'
 alias bzip='bzip2'
