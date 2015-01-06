@@ -2,7 +2,7 @@
   l = log --pretty=colored
   unstg = reset HEAD
 [user]
-  name = aauren
-  email = aauren@gmail.com
+  name = Aaron U'Ren
+  email = aauren@users.noreply.github.com
 [core]
   editor = vim
