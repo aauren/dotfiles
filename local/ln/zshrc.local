@@ -4,6 +4,8 @@ if [[ -z ${SSH_AUTH_SOCK} && -z $(pgrep ssh-agent) && -e ${HOME}/.ssh/id_rsa ]];
   ssh-add ${HOME}/.ssh/id_rsa
 fi
 
+export PS1=${SSH_CONNECTION+"%{$fg_bold[green]%}%n@%m:"}%{$fg_bold[blue]%}%~%{$reset_color%}$(git_prompt_info)
+
 # Binds keys appropriately so that special keys like Home, End, and Delete work
 source ~/.zkbd/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE}
 [[ -n ${key[Backspace]} ]] && bindkey "${key[Backspace]}" backward-delete-char
@@ -21,5 +23,5 @@ source ~/.zkbd/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE}
 source "${HOME}"/dotfiles/local/lib/zsh_vi_status_prompt.sh
 
 if [[ -e ${HOME}/bin ]]; then
-  export PATH=${PATH:${HOME}/bin}
+  export PATH=${HOME}/bin:${PATH}
 fi
