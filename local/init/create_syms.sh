@@ -8,4 +8,6 @@ if [[ -d ${HOME}/dotfiles ]]; then
   done
 fi
 
-ln -sf "${HOME}"/dotfiles/local/ssh_config "${HOME}"/.ssh/config
+[[ -d ${HOME}/.ssh/config.d ]] || mkdir ${HOME}/.ssh/config.d
+
+ln -sf "${HOME}"/dotfiles/local/ssh_config "${HOME}"/.ssh/config.d/config.general
