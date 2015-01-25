@@ -1,1 +1,83 @@
+# Reduce default Tmux delay (by default there is a small delay when sending
+# commands)
+set -s escape-time 1
+
+# Prefix+a causes us to return to previous window
 bind-key C-a last-window
+
+# Prefix+r causes reload of Tmux settings
+bind r source-file ~/.tmux.conf \; display "Reloaded!"
+
+# Double pressing Prefix+a will send CTRL+a to application below Tmux
+#bind -r C-a send-prefix
+
+# Change split panes to - and | for a horizontal or veritcal split
+bind | split-window -h
+bind - split-window -v
+
+# Remap pane navigation to vim movement keys
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# Remap window navigation to CTRL + vim left/right movement keys
+bind -r C-h select-window -t :-
+bind -r C-l select-window -t :+
+
+# Remap pane resizing to SHIFT + vim movement keys
+bind -r H resize-pane -L 5
+bind -r J resize-pane -D 5
+bind -r K resize-pane -U 5
+bind -r L resize-pane -R 5
+
+
+##### Setup Mouse Commands ####
+setw -g mode-mouse on
+# Allows to select pane by clicking into it
+set -g mouse-select-pane on
+# Allows to resize pane by dragging pane border
+set -g mouse-resize-pane on
+# Allows to select window by clicking on it
+set -g mouse-select-window on
+
+#### Change Colors of Status Bars ####
+# Set status bar to white text on black background
+set -g status-fg white
+set -g status-bg black
+# Set active window to red while inactive become cyan
+setw -g window-status-fg cyan
+setw -g window-status-bg default
+setw -g window-status-attr dim
+setw -g window-status-current-fg red
+setw -g window-status-current-bg default
+setw -g window-status-current-attr bright
+# Customize the command line for Tmux
+set -g message-fg white
+set -g message-bg black
+set -g message-attr bright
+# Set status bar across the bottom
+set -g status-utf8 on
+set -g status-interval 5
+# Center align window list
+set -g status-justify centre
+# Add visual notifications when something happens in a window
+setw -g monitor-activity on
+set -g visual-activity on
+# Now on to the actual content of the status bar
+#set -g status-left-length 40
+set -g status-left "#[fg=cyan]#(uname -n): #(cut -d' ' -f1,2,3 /proc/loadavg)"
+
+set -g status-right "#[fg=cyan]%d %b %R"
+
+# Make the pane divider of the current pane really noticable
+#  In my opinion this makes the pane TOO noticible, so I'm disabling this for
+#  no
+#set -g pane-border-fg color
+#set -g pane-border-bg color
+#set -g pane-active-border-fg color
+#set -g pane-active-border-bg color
+#set -g pane-border-fg green
+#set -g pane-border-bg black
+#set -g pane-active-border-fg white
+#set -g pane-active-border-bg yellow
