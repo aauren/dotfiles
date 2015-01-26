@@ -31,6 +31,15 @@ bind -r J resize-pane -D 5
 bind -r K resize-pane -U 5
 bind -r L resize-pane -R 5
 
+#### Copy and paste buffer settings ####
+# Set buffer navigation to use vim style motion keys
+setw -g mode-keys v
+# Add key mapping for showing the copy paste buffer
+bind P choose-buffer
+unbind p
+bind p paste-buffer
+bind -t vi-copy 'v' begin-selection
+bind -t vi-copy 'y' copy-selection
 
 ##### Setup Mouse Commands ####
 setw -g mode-mouse on
@@ -67,8 +76,8 @@ set -g visual-activity on
 # Now on to the actual content of the status bar
 #set -g status-left-length 40
 set -g status-left "#[fg=cyan]#(uname -n): #(cut -d' ' -f1,2,3 /proc/loadavg)"
-
 set -g status-right "#[fg=cyan]%d %b %R"
+
 
 # Make the pane divider of the current pane really noticable
 #  In my opinion this makes the pane TOO noticible, so I'm disabling this for
