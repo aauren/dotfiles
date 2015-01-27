@@ -42,13 +42,13 @@ bind -t vi-copy 'v' begin-selection
 bind -t vi-copy 'y' copy-selection
 
 ##### Setup Mouse Commands ####
-setw -g mode-mouse on
-# Allows to select pane by clicking into it
-set -g mouse-select-pane on
-# Allows to resize pane by dragging pane border
-set -g mouse-resize-pane on
-# Allows to select window by clicking on it
-set -g mouse-select-window on
+#setw -g mode-mouse on
+## Allows to select pane by clicking into it
+#set -g mouse-select-pane on
+## Allows to resize pane by dragging pane border
+#set -g mouse-resize-pane on
+## Allows to select window by clicking on it
+#set -g mouse-select-window on
 
 #### Change Colors of Status Bars ####
 # Set status bar to white text on black background
@@ -74,7 +74,7 @@ set -g status-justify centre
 setw -g monitor-activity on
 set -g visual-activity on
 # Now on to the actual content of the status bar
-#set -g status-left-length 40
+set -g status-left-length 40
 set -g status-left "#[fg=cyan]#(uname -n): #(cut -d' ' -f1,2,3 /proc/loadavg)"
 set -g status-right "#[fg=cyan]%d %b %R"
 
