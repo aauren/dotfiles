@@ -1,8 +1,17 @@
 # Command to start up ssh-agent if there is an SSH key in your profile
-if [[ -z ${SSH_AUTH_SOCK} && -z $(pgrep ssh-agent) && -e ${HOME}/.ssh/id_rsa ]]; then
+if [[ -z ${SSH_AUTH_SOCK} && -z $(pgrep ssh-agent) ]]; then
   eval $(ssh-agent)
-  ssh-add ${HOME}/.ssh/id_rsa
 fi
+
+# Add any missing SSH identities
+SSH_ADD=$(ssh-add -l)
+for file in $(ls ${HOME}/.ssh/id*.pub); do
+  identity=$(echo ${file} | sed -r 's/.*(\.ssh.*).pub/\1/g')
+  if [[ $SSH_ADD != *${identity}* ]]; then
+    echo "Identity didn't exist, adding: ${identity}"
+    ssh-add ${identity}
+  fi
+done
 
 export PS1=${SSH_CONNECTION+"%{$fg_bold[green]%}%n@%m:"}%{$fg_bold[blue]%}%~%{$reset_color%}$(git_prompt_info)
 
@@ -22,6 +31,7 @@ source ~/.zkbd/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE}
 
 source "${HOME}"/dotfiles/local/lib/zsh_vi_status_prompt.sh
 
+# Add local bin file
 if [[ -e ${HOME}/bin ]]; then
   export PATH=${HOME}/bin:${PATH}
 fi
