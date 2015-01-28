@@ -34,7 +34,7 @@ zle -N zle-keymap-select
 #
 # Colorize freely
 if [[ -z ${ORIG_PS1} ]]; then
-  export ORIG_PS1=${PS1:0: -4}
+  export ORIG_PS1=${PS1:0: -3}
 fi
 #local user_host='%B%n%b@%m'
 #local current_dir='%~'

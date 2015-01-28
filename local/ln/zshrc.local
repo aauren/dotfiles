@@ -13,7 +13,7 @@ for file in $(ls ${HOME}/.ssh/id*.pub); do
   fi
 done
 
-export PS1=${SSH_CONNECTION+"%{$fg_bold[green]%}%n@%m:"}%{$fg_bold[blue]%}%~%{$reset_color%}$(git_prompt_info)
+export PS1='${SSH_CONNECTION+"%{$fg_bold[green]%}%n@%m:"}%{$fg_bold[blue]%}%~%{$reset_color%}$(git_prompt_info) %#'
 
 # Binds keys appropriately so that special keys like Home, End, and Delete work
 source ~/.zkbd/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE}
