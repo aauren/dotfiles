@@ -2,8 +2,14 @@
 # commands)
 set -s escape-time 1
 
+# Change repeat timeout to something more than the default 500ms
+set repeat-time 1000
+
 # Prefix+a causes us to return to previous window
-bind-key C-a last-window
+bind C-a last-window
+
+# Choose session
+bind s choose-session
 
 # Prefix+r causes reload of Tmux settings
 bind r source-file ~/.tmux.conf \; display "Reloaded!"
@@ -16,10 +22,10 @@ bind | split-window -h
 bind - split-window -v
 
 # Remap pane navigation to vim movement keys
-bind h select-pane -L
-bind j select-pane -D
-bind k select-pane -U
-bind l select-pane -R
+bind -r h select-pane -L
+bind -r j select-pane -D
+bind -r k select-pane -U
+bind -r l select-pane -R
 
 # Remap window navigation to CTRL + vim left/right movement keys
 bind -r C-h select-window -t :-
@@ -30,6 +36,18 @@ bind -r H resize-pane -L 5
 bind -r J resize-pane -D 5
 bind -r K resize-pane -U 5
 bind -r L resize-pane -R 5
+
+# Pane movement commands
+bind @ command-prompt -p "create pane from:"  "join-pane -hs ':%%'"
+bind -n F1 break-pane
+bind -n F2 command-prompt -p "create pane from:"  "join-pane -hs ':%%'"
+bind -n F3 select-layout tiled
+
+# Swap window numbers
+bind C-s command-prompt -p "first window to swap:","second window to swap" "swap-window -s %% -t %%"
+
+# Bind key for synchronizing panes
+bind C-y set-window-option synchronize-panes
 
 #### Copy and paste buffer settings ####
 # Set buffer navigation to use vim style motion keys
