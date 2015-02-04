@@ -1,0 +1,30 @@
+## Generic CLI Tools
+# Lists file path information
+tree
+# Manages dotfile configuration (to add overlay: layman -f --overlays https://github.com/bronislav/overlays/raw/master/layman.xml --add bronislav)
+layman
+rcm
+# Allows indexing and searching for file from CLI
+mlocate
+
+## VM Management Tools
+# libvirt and virt-manager allows for easy configuration of kvm
+libvirt
+
+## GUI Tools
+# To help enable moving windows from one monitor to the next via: http://makandracards.com/makandra/12447-how-to-move-a-window-to-the-next-monitor-on-xfce-xubuntu
+wmctrl
+xdotool
+xpdyinfo
+# Generic editor for scratch space
+gedit
+# Launcher for Gnome (and also XFCE for that matter)
+synapse
+# Music player
+spotify
+# IM client
+pidgin
+
+## Gentoo Specific
+# To find which package a file belongs to that is not installed
+pfl
