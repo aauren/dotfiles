@@ -24,6 +24,8 @@ synapse
 spotify
 # IM client
 pidgin
+# Allows presenting a GUI dialog from CLI
+zenity
 
 ## Gentoo Specific
 # To find which package a file belongs to that is not installed
