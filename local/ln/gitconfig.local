@@ -1,5 +1,7 @@
 [alias]
   l = log --pretty=colored
+  cm = commit -m
+  diffc = diff --cached
   unstg = reset HEAD
 [user]
   name = Aaron U'Ren
