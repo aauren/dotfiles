@@ -8,6 +8,11 @@ if [[ -d ${HOME}/dotfiles ]]; then
   done
 fi
 
+echo "linking ssh configurations"
 [[ -d ${HOME}/.ssh/config.d ]] || mkdir ${HOME}/.ssh/config.d
-
 ln -sf "${HOME}"/dotfiles/local/ssh_config "${HOME}"/.ssh/config.d/config.general
+
+echo "linking bin files"
+if [[ -d ${HOME}/bin ]]; then
+  ln -sf "${HOME}"/dotfiles/local/bin/* ${HOME}/bin
+fi
