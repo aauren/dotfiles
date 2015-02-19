@@ -282,6 +282,9 @@ handle_command_line "$@"
 
 run_hooks pre up
 
+wget -q --tries=1 --timeout=5 --spider http://github.com
+has_internet_access=$?
+
 dests_and_srcs="$(lsrc $LS_ARGS)"
 
 saved_ifs="$IFS"
@@ -294,6 +297,10 @@ for dest_and_src in $dests_and_srcs; do
   dest="$1"
   src="$2"
   sigil="$3"
+
+  if [[ $dest == *"vimrc.bundles"* && $has_internet_access -gt 0 ]]; then
+    continue
+  fi
 
   if is_nested "$dest"; then
     handle_dir "$dest"
