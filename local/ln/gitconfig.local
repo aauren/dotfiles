@@ -5,6 +5,7 @@
   unstg = reset HEAD
 [user]
   name = Aaron U'Ren
-  email = aauren@users.noreply.github.com
 [core]
   editor = vim
+[include]
+  path = ~/.gitconfig.user.local
