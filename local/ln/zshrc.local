@@ -5,7 +5,7 @@ fi
 
 # Add any missing SSH identities
 SSH_ADD=$(ssh-add -l)
-for file in $(ls ${HOME}/.ssh/id*.pub); do
+for file in $(ls ${HOME}/.ssh/id*.pub 2> /dev/null); do
   identity=$(echo ${file} | sed -r 's/.*(\.ssh.*).pub/\1/g')
   if [[ $SSH_ADD != *${identity}* ]]; then
     echo "Identity didn't exist, adding: ${identity}"
@@ -16,18 +16,22 @@ done
 export PS1='${SSH_CONNECTION+"%{$fg_bold[green]%}%n@%m:"}%{$fg_bold[blue]%}%~%{$reset_color%}$(git_prompt_info) %#'
 
 # Binds keys appropriately so that special keys like Home, End, and Delete work
-source ~/.zkbd/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE}
-[[ -n ${key[Backspace]} ]] && bindkey "${key[Backspace]}" backward-delete-char
-[[ -n ${key[Insert]} ]] && bindkey "${key[Insert]}" overwrite-mode
-[[ -n ${key[Home]} ]] && bindkey "${key[Home]}" beginning-of-line
-[[ -n ${key[PageUp]} ]] && bindkey "${key[PageUp]}" up-line-or-history
-[[ -n ${key[Delete]} ]] && bindkey "${key[Delete]}" delete-char
-[[ -n ${key[End]} ]] && bindkey "${key[End]}" end-of-line
-[[ -n ${key[PageDown]} ]] && bindkey "${key[PageDown]}" down-line-or-history
-[[ -n ${key[Up]} ]] && bindkey "${key[Up]}" up-line-or-search
-[[ -n ${key[Left]} ]] && bindkey "${key[Left]}" backward-char
-[[ -n ${key[Down]} ]] && bindkey "${key[Down]}" down-line-or-search
-[[ -n ${key[Right]} ]] && bindkey "${key[Right]}" forward-char
+if [[ -a ~/.zkbd/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE} ]]; then
+  source ~/.zkbd/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE}
+  [[ -n ${key[Backspace]} ]] && bindkey "${key[Backspace]}" backward-delete-char
+  [[ -n ${key[Insert]} ]] && bindkey "${key[Insert]}" overwrite-mode
+  [[ -n ${key[Home]} ]] && bindkey "${key[Home]}" beginning-of-line
+  [[ -n ${key[PageUp]} ]] && bindkey "${key[PageUp]}" up-line-or-history
+  [[ -n ${key[Delete]} ]] && bindkey "${key[Delete]}" delete-char
+  [[ -n ${key[End]} ]] && bindkey "${key[End]}" end-of-line
+  [[ -n ${key[PageDown]} ]] && bindkey "${key[PageDown]}" down-line-or-history
+  [[ -n ${key[Up]} ]] && bindkey "${key[Up]}" up-line-or-search
+  [[ -n ${key[Left]} ]] && bindkey "${key[Left]}" backward-char
+  [[ -n ${key[Down]} ]] && bindkey "${key[Down]}" down-line-or-search
+  [[ -n ${key[Right]} ]] && bindkey "${key[Right]}" forward-char
+else
+  echo "Could not load keyboard binding for: " ~/.zkbd/$TERM-${${DISPLAY:t}:-$VENDOR-$OSTYPE}
+fi
 
 source "${HOME}"/dotfiles/local/lib/zsh_vi_status_prompt.sh
 
