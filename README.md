@@ -18,10 +18,20 @@ Clone onto your laptop:
 (Or, [fork and keep your fork
 updated](http://robots.thoughtbot.com/keeping-a-github-fork-updated)).
 
-Install [rcm](https://github.com/thoughtbot/rcm):
+Install [rcm](https://github.com/thoughtbot/rcm) on Mac:
 
     brew tap thoughtbot/formulae
     brew install rcm
+
+Install rcm on Gentoo:
+
+    sudo emerge layman
+    sudo layman -f --overlays https://github.com/bronislav/overlays/raw/master/layman.xml --add bronislav
+    sudo emerge rcm
+
+Install rcm on Arch (Through AUR + [yaourt](https://wiki.archlinux.org/index.php/yaourt)):
+
+    yaourt -S rcm
 
 Install the dotfiles:
 
@@ -39,6 +49,14 @@ configuration options:
 You can safely run `rcup` multiple times to update:
 
     rcup
+
+Full steps:
+
+    git clone git@github.com:aauren/dotfiles.git
+    env RCRC=$HOME/dotfiles/rcrc PATH=$PATH:$HOME/dotfiles/local/init/linker/bin $HOME/dotfiles/local/init/linker/bin/rcup
+    $HOME/dotfiles/local/init/create_syms.sh
+    exec /bin/zsh
+    source .zshrc
 
 Make your own customizations
 ----------------------------
