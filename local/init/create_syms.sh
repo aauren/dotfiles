@@ -3,8 +3,10 @@
 
 if [[ -d ${HOME}/dotfiles ]]; then
   for DOT_FILE in $(ls -A "${HOME}"/dotfiles/local/ln); do
-    echo "linking ${DOT_FILE}"
-    ln -sf "${HOME}"/dotfiles/local/ln/"${DOT_FILE}" "${HOME}"/."${DOT_FILE}"
+    if [[ ! -d "${HOME}/.${DOT_FILE}" ]]; then
+      echo "linking ${DOT_FILE}"
+      ln -sf "${HOME}"/dotfiles/local/ln/"${DOT_FILE}" "${HOME}"/."${DOT_FILE}"
+    fi
   done
 fi
 
