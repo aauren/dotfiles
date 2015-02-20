@@ -1,0 +1,17 @@
+" Change text width to 120 which is a more sensible default
+set textwidth=120
+
+" Remap jj in quick succession to escape
+:imap jj <Esc>
+
+" Remap next and previous tab to Ctrl-PgDn and Ctrl-PgUp
+:map <Esc>h :tabp<CR>
+:map <Esc>l :tabn<CR>
+
+" Change the default action of enter to within CTRL-p to open in a tab instead of switching the buffer
+let g:ctrlp_prompt_mappings = {
+    \ 'AcceptSelection("e")': ['<c-t>'],
+    \ 'AcceptSelection("h")': ['<c-x>', '<c-cr>', '<c-s>'],
+    \ 'AcceptSelection("t")': ['<cr>', '<2-LeftMouse>'],
+    \ 'AcceptSelection("v")': ['<c-v>', '<RightMouse>'],
+    \ }
