@@ -1,11 +1,17 @@
 [alias]
   l = log --pretty=colored
   cm = commit -m
-  diffc = diff --cached
+  dc = diff --cached
   unstg = reset HEAD
+	dt = difftool
+  dtc = difftool --cached
 [user]
   name = Aaron U'Ren
 [core]
   editor = vim
+[diff]
+	tool = vimdiff
+[difftool]
+	prompt = false
 [include]
   path = ~/.gitconfig.user.local
