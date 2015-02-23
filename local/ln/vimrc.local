@@ -15,3 +15,12 @@ let g:ctrlp_prompt_mappings = {
     \ 'AcceptSelection("t")': ['<cr>', '<2-LeftMouse>'],
     \ 'AcceptSelection("v")': ['<c-v>', '<RightMouse>'],
     \ }
+
+" Color scheme
+if filereadable(expand("~/.vimrc.bundles"))
+  set background=dark
+  colorscheme solarized
+  "highlight NonText guibg=#060606
+  "highlight Folded  guibg=#0A0A0A guifg=#9090D0
+endif
+
