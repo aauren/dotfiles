@@ -13,7 +13,9 @@ for file in $(ls ${HOME}/.ssh/id*.pub 2> /dev/null); do
   fi
 done
 
+# Changes prompt to include information about Git repos and what zvim mode we're in
 export PS1='${SSH_CONNECTION+"%{$fg_bold[green]%}%n@%m:"}%{$fg_bold[blue]%}%~%{$reset_color%}$(git_prompt_info) %#'
+source "${HOME}"/dotfiles/local/lib/zsh_vi_status_prompt.sh
 
 # Binds keys appropriately so that special keys like Home, End, and Delete work
 # create a zkbd compatible hash;
@@ -52,7 +54,6 @@ function zle-line-finish () {
 zle -N zle-line-init
 zle -N zle-line-finish  
 
-source "${HOME}"/dotfiles/local/lib/zsh_vi_status_prompt.sh
 
 # Add local bin file
 if [[ -e ${HOME}/bin ]]; then
@@ -60,4 +61,4 @@ if [[ -e ${HOME}/bin ]]; then
 fi
 
 # Every terminal we run supports color, so let's just set this officially
-#export TERM=xterm-256color
+export TERM=xterm-256color
