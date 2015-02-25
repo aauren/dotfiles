@@ -1,0 +1,4 @@
+bindkey  "^[OH"    beginning-of-line
+bindkey  "^[OF"     end-of-line
+bindkey  "^[[2~"  overwrite-mode
+bindkey  "^[[3~"  delete-char

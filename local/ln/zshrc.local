@@ -18,6 +18,10 @@ export PS1='${SSH_CONNECTION+"%{$fg_bold[green]%}%n@%m:"}%{$fg_bold[blue]%}%~%{$
 source "${HOME}"/dotfiles/local/lib/zsh_vi_status_prompt.sh
 
 # Binds keys appropriately so that special keys like Home, End, and Delete work
+# These maps can be created by running "sed -n l" and then typing the HOME, END, INSERT, and DELETE keys
+# once you get the output, add it to a new map, then you can either manually or automatically source it.
+#source "${HOME}/.keys/00-map"
+
 # create a zkbd compatible hash;
 # to add other keys to this hash, see: man 5 terminfo
 typeset -A key
@@ -53,7 +57,6 @@ function zle-line-finish () {
 }
 zle -N zle-line-init
 zle -N zle-line-finish  
-
 
 # Add local bin file
 if [[ -e ${HOME}/bin ]]; then
