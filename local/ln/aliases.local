@@ -29,4 +29,4 @@ if ($1>=x) { printf ("%-6.2f %s ", $1/x, hr[x]); break }
 { for ( x=4 ; x<=NF ; x++ ) { printf ("%s ",$x) } print ("\n") }
 '"'"
 alias lessg='less +G'
-
+alias copy-tbuff='tmux save-buffer - | xsel -ib'
