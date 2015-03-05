@@ -3,7 +3,7 @@
 set -s escape-time 1
 
 # Change repeat timeout to something more than the default 500ms
-set -g repeat-time 700
+set -g repeat-time 500
 
 # Prefix+a causes us to return to previous window
 bind C-a last-window
