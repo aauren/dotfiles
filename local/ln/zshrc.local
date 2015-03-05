@@ -65,3 +65,9 @@ fi
 
 # Every terminal we run supports color, so let's just set this officially
 export TERM=xterm-256color
+
+# Switch to incremental pattern search, plus ability to go forward and backward
+bindkey -M viins '^R' history-incremental-pattern-search-backward
+bindkey -M vicmd '/' history-incremental-pattern-search-backward
+bindkey -M isearch '^R' history-incremental-search-backward
+bindkey -M isearch '^F' history-incremental-search-forward
