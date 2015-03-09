@@ -5,6 +5,7 @@
   unstg = reset HEAD
 	dt = difftool
   dtc = difftool --cached
+  lg = log --color --graph --pretty=format:'%Cred%<(8)%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --decorate
 [user]
   name = Aaron U'Ren
 [core]
