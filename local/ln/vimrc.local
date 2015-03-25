@@ -31,3 +31,7 @@ cmap w!! w !sudo tee > /dev/null %
 au Filetype python setlocal et ts=4 sw=4 sts=4 nowrap
 au Filetype sh setlocal ts=4 sw=4 sts=4 noexpandtab nowrap
 au Filetype ebuild setlocal ts=4 sw=4 sts=4 noexpandtab nowrap
+
+" Set tab merge alias to vertically split current tab and the tab to the right (or barring that, to the left)
+" To put them back to tabs afterward, type CTRL+w, SHIFT+t
+:map <C-m> <esc>:Tabmerge right<CR>
