@@ -9,7 +9,7 @@ fi
 alias ssh='cat ~/.ssh/config.d/* >~/.ssh/config; ssh -A'
 
 alias ll='ls -lrt --color'
-alias vi='vim'
+alias vi='vim -p'
 alias bzip='bzip2'
 alias bunzip='bunzip2'
 alias umerge='emerge --unmerge'
