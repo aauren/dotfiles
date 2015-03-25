@@ -1,27 +1,32 @@
 #!/bin/bash
 
+#### Define Constants ####
 GIT_REPO_LOCATION="/home/auren/git-repos"
-SSHFS_MOUNT_DIR="/mnt"
-LIB_DIRS=("usr/lib32" "usr/lib64")
+LIB_DIRS=("/usr/lib32" "/usr/lib64")
 RSYNC_OPTS="-rpt --size-only --ignore-times --exclude=__pycache__"
+# Some explanation of the following options:
+## LogLevel=Error: needed to supress any SSH banners that have been configured which screw up non-interactive sessions
+## BatchMode=yes: needed to disable passphrase/password querying which would make this script need to be interactive
+SSH_OPTS="-o LogLevel=Error -o BatchMode=yes -o ConnectTimeout=5 -l root"
 
 #### Input Validation ####
 if [[ $# -ne 2 ]]; then
-	echo "Arguments: sync_program_files.sh git_project_name mounted_vm_name"
+	echo "Arguments: sync_program_files.sh git_project_name remote_server"
 	exit 1
 fi
 
 project_name="$1"
 project_directory="${project_name//-/_}"
 project_path="${GIT_REPO_LOCATION}/${project_name}"
-vm_path="${SSHFS_MOUNT_DIR}/$2"
+remote_server="$2"
 
 if [[ ! -d ${project_path} ]]; then
 	echo "Git project directory ${project_path} does not exist, cannot continue"
 	exit 1
 fi
-if [[ ! -d ${vm_path} ]] || [[ ! -d ${vm_path}/usr ]]; then
-	echo "Mounted vm root file system directory either does not exist or is not mounted at ${vm_path}"
+ssh_status=$(ssh ${SSH_OPTS} ${remote_server} echo ok 2>&1)
+if [[ $ssh_status != ok ]]; then
+	echo "It doesn't look like you have SSH access to: '${remote_server}'"
 	exit 1
 fi
 
@@ -40,9 +45,9 @@ find_remote_paths ()
 	local python_ver=$1
 	#echo "Checking version: ${python_ver}"
 	for lib_dir in "${LIB_DIRS[@]}"; do
-		local full_path="${vm_path}/${lib_dir}/${python_ver}/site-packages/${project_directory}"
+		local full_path="${lib_dir}/${python_ver}/site-packages/${project_directory}"
 		#echo "Checking Path: ${full_path}"
-		if [[ -d ${full_path} ]]; then
+		if ssh ${SSH_OPTS} ${remote_server} "[[ -d ${full_path} ]]"; then
 			paths+=(${full_path})
 		fi
 	done
@@ -53,7 +58,7 @@ sync_files ()
 	local src_path=$1
 	local dst_path=$2
 	local extra_opts=$3
-	rsync_changes=$(rsync ${RSYNC_OPTS} ${extra_opts} "${src_path}" "${dst_path}")
+	rsync_changes=$(rsync ${RSYNC_OPTS} ${extra_opts} "${src_path}" "root@${remote_server}:${dst_path}" 2>/dev/null)
 }
 
 #### Main Execution Thread ####
@@ -74,13 +79,14 @@ echo "Remote Paths: ${paths[@]}"
 src_sync_path="${project_path}/src/${project_directory}/"
 for my_path in ${paths[@]}; do
 	sync_files "${src_sync_path}" "${my_path}" "-ni"
+	
 	if [[ ! -n ${rsync_changes} ]]; then
 		echo -e "\tEverything is up to date! There are no changes to be made to this directory"
 		continue
 	fi
 
 	echo -e "\nChanges that would be made to ${my_path}:"
-	echo ${rsync_changes}
+	echo "${rsync_changes}"
 	resp=""
 	while [[ ! $resp =~ ^(y|n)+$ ]]; do
 		echo -e '\nAccept above changes? (y/n)'
