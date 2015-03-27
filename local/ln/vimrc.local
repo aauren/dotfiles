@@ -46,3 +46,6 @@ au Filetype ebuild setlocal ts=4 sw=4 sts=4 noexpandtab nowrap
 ":autocmd InsertLeave * redraw!
 :au InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 :au InsertLeave * match ExtraWhitespace /\s\+$/
+
+" Set file type to upconf template when it has deploy/config in the path
+autocmd BufRead,BufNewFile */deploy/config/* set filetype=upconf-template
