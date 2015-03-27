@@ -35,3 +35,14 @@ au Filetype ebuild setlocal ts=4 sw=4 sts=4 noexpandtab nowrap
 " Set tab merge alias to vertically split current tab and the tab to the right (or barring that, to the left)
 " To put them back to tabs afterward, type CTRL+w, SHIFT+t
 :map <C-m> <esc>:Tabmerge right<CR>
+
+" The following pattern will match trailing whitespace, except when typing at the end of a line.
+:highlight ExtraWhitespace ctermbg=red guibg=red
+:autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
+:match ExtraWhitespace /\s\+\%#\@<!$/
+
+" If you use this alternate pattern, you may want to consider using the following autocmd to let the highlighting show
+" up as soon as you leave insert mode after entering trailing whitespace:
+":autocmd InsertLeave * redraw!
+:au InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+:au InsertLeave * match ExtraWhitespace /\s\+$/
