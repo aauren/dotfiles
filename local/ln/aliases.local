@@ -30,3 +30,4 @@ if ($1>=x) { printf ("%-6.2f %s ", $1/x, hr[x]); break }
 '"'"
 alias lessg='less +G'
 alias copy-tbuff='tmux save-buffer - | xsel -ib'
+alias lsof-bypid='(for PID in $(ps axo pid); do echo "${PID} - $(lsof -p ${PID} 2>/dev/null | wc -l)"; done) | sort -nk 3'
