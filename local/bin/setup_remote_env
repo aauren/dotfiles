@@ -39,6 +39,7 @@ update_git ()
 			\ssh ${SSH_OPTS} ${remote_server} "PATH=${PATH}:${DOTFILE_LOCATION}/local/bin ssh_key_del ${url} &>/dev/null"
 			git_update_cmd=${GIT_REMOTE_UPDATE_COMMANDS//replaceme/${gremote}}
 			if [[ $(\ssh ${SSH_OPTS} ${remote_server} ${git_update_cmd}) == "ok" ]]; then
+				echo "Sync successful"
 				break
 			fi
 		fi
