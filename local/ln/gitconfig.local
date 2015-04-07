@@ -3,9 +3,11 @@
   cm = commit -m
   dc = diff --cached
   unstg = reset HEAD
-	dt = difftool
+  dt = difftool
   dtc = difftool --cached
   lg = log --color --graph --pretty=format:'%Cred%<(8)%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --decorate
+  rc = rebase --continue
+  can = commit --amend --no-edit
 [user]
   name = Aaron U'Ren
 [core]
