@@ -12,7 +12,7 @@ GIT_REMOTE_UPDATE_COMMANDS="cd ${DOTFILE_LOCATION} && \
 	echo ok"
 UPDATE_HOME_COMMANDS="RCRC=${DOTFILE_LOCATION}/rcrc PATH=${PATH}:${DOTFILE_LOCATION}/local/init/linker/bin ${DOTFILE_LOCATION}/local/init/linker/bin/rcup && \
 	mkdir -p ~/bin && \
-	${DOTFILE_LOCATION}/local/init/create_syms.sh &> /dev/null"
+	${DOTFILE_LOCATION}/local/bin/create_syms.sh &> /dev/null"
 GIT_URL_EXTRACT='s/.*git@([^:]+).*/\1/g'
 if [[ $(uname -a) == *"Darwin"* ]]; then
 	SED_OPTS="-E"
@@ -46,16 +46,22 @@ update_git ()
 	done
 }
 
+update_home ()
+{
+	echo "Updating home env..."
+	\ssh ${SSH_OPTS} ${remote_server} ${UPDATE_HOME_COMMANDS}
+}
+
 #### Main Program Flow ####
 if \ssh ${SSH_OPTS} ${remote_server} "[[ -d ${DOTFILE_LOCATION} ]]"; then
 	echo "Dotfiles exist, updating git..."
+	update_home
 	update_git
 else
 	echo "Dotfiles missing, syncing..."
 	rsync ${RSYNC_OPTS} "${LITERAL_DOT_LOC}" "${remote_server}:${DOTFILE_LOCATION}" &>/dev/null
 	\ssh ${SSH_OPTS} ${remote_server} "mkdir -p ${VUNDLE_LOC}" 2>/dev/null
 	rsync ${RSYNC_OPTS} "${LIT_VUNDLE_LOC}" "${remote_server}:${VUNDLE_LOC}" &>/dev/null
-	echo "Updating home env..."
-	\ssh ${SSH_OPTS} ${remote_server} ${UPDATE_HOME_COMMANDS}
+	update_home
 	update_git
 fi
