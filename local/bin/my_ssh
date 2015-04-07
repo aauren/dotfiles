@@ -8,7 +8,7 @@ main ()
 	[[ "${HOST}" == "not_set" ]] && exit 1
 
 	setup_remote_env ${HOST}
-	\ssh -qt ${HOST} "exec /bin/zsh" || RETVAL=${?}
+	\ssh -Aqt ${HOST} "exec /bin/zsh" || RETVAL=${?}
 
 	printf "\nSSH Exit Code: %d\n\n" ${RETVAL}
 	printf "\n%s\n\n" "$(date)"

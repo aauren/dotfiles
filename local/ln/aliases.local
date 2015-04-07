@@ -6,7 +6,7 @@ else
 fi
 
 # Add agent forwarding by default to SSH
-alias ssh='cat ~/.ssh/config.d/* >~/.ssh/config; ssh -A'
+alias ssh='cat ~/.ssh/config.d/* >~/.ssh/config; my_ssh'
 
 alias ll='ls -lrt --color'
 alias vi='vim -p'

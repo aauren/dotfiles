@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #### Constants ####
-SSH_OPTS="-o LogLevel=Error -o BatchMode=yes -o ConnectTimeout=5"
+SSH_OPTS="-A -o LogLevel=Error -o BatchMode=yes -o ConnectTimeout=5"
 RSYNC_OPTS="-rpt --size-only --ignore-times"
 DOTFILE_LOCATION='${HOME}/dotfiles/'
 LITERAL_DOT_LOC="${HOME}/dotfiles/"
