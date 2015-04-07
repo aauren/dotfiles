@@ -7,6 +7,9 @@ rcm
 # Allows indexing and searching for file from CLI
 mlocate
 
+## Libs to enable dotfiles
+dev-libs/libmix
+
 ## VM Management Tools
 # libvirt and virt-manager allows for easy configuration of kvm
 libvirt
