@@ -55,13 +55,13 @@ update_home ()
 #### Main Program Flow ####
 if \ssh ${SSH_OPTS} ${remote_server} "[[ -d ${DOTFILE_LOCATION} ]]"; then
 	echo "Dotfiles exist, updating git..."
-	update_home
 	update_git
+	update_home
 else
 	echo "Dotfiles missing, syncing..."
 	rsync ${RSYNC_OPTS} "${LITERAL_DOT_LOC}" "${remote_server}:${DOTFILE_LOCATION}" &>/dev/null
 	\ssh ${SSH_OPTS} ${remote_server} "mkdir -p ${VUNDLE_LOC}" 2>/dev/null
 	rsync ${RSYNC_OPTS} "${LIT_VUNDLE_LOC}" "${remote_server}:${VUNDLE_LOC}" &>/dev/null
-	update_home
 	update_git
+	update_home
 fi
