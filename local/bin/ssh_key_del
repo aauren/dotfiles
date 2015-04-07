@@ -1,0 +1,23 @@
+#!/bin/bash
+
+wait_for_dns ${1}
+
+flock --exclusive ~/.ssh/known_hosts.lock --command " ssh-keygen -R ${1} "
+
+IP="$(host ${1} 2>/dev/null | grep has\ address | cut -f4 -d' ')"
+
+if [ "${IP:-not_set}" == "not_set" ]; then
+    printf "\nError: Host name, %s, not found.\n\n" "${1}"
+    exit 1
+fi
+
+# If we get a result for the reverse lookup remove it from the known hosts file too.
+if [ "${IP}" != 'found:' ]; then
+    flock --exclusive ~/.ssh/known_hosts.lock --command " ssh-keygen -R ${IP} "
+fi # If hosts returns an IP address...
+
+is_node_up ${1}
+
+[ "R{IP}" != 'found:' ] && HOST="${1},${IP}" || HOST="${1}"
+
+flock --exclusive ~/.ssh/known_hosts.lock --command " while sleep 1 ; do ssh-keyscan ${HOST} >> ~/.ssh/known_hosts && break ; done "

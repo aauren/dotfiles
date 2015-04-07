@@ -1,0 +1,22 @@
+#!/bin/bash
+
+main ()
+{
+	local -i RETVAL=0
+	local HOST=${1:-not_set}
+
+	[[ "${HOST}" == "not_set" ]] && exit 1
+
+	setup_remote_env ${HOST}
+	\ssh -qt ${HOST} "exec /bin/zsh" || RETVAL=${?}
+
+	printf "\nSSH Exit Code: %d\n\n" ${RETVAL}
+	printf "\n%s\n\n" "$(date)"
+
+	return ${RETVAL}
+}
+
+time while : ; do
+	main ${1} && break
+	sleep 15
+done

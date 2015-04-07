@@ -1,0 +1,19 @@
+#!/bin/bash
+
+declare -i i=0
+declare output
+
+time while sleep 1; do
+    if output=$(host ${1}); then
+        [ ${i} -gt 0 ] && printf "done.\n"
+        printf "%s\n" "${output}"
+        break
+    else
+        if [ ${i} -eq 0 ]; then
+            printf "Waiting on DNS..."
+            let i++
+        else
+            printf "."
+        fi
+    fi
+done
