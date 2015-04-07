@@ -1,5 +1,6 @@
 " Change text width to 120 which is a more sensible default
 set textwidth=120
+autocmd Filetype python set textwidth=120
 
 " Remap jj in quick succession to escape
 :imap jj <Esc>
