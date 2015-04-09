@@ -50,3 +50,7 @@ au Filetype ebuild setlocal ts=4 sw=4 sts=4 noexpandtab nowrap
 
 " Set file type to upconf template when it has deploy/config in the path
 autocmd BufRead,BufNewFile */deploy/config/* set filetype=upconf-template
+
+" Various leader mappings for setting things like paste-mode and list mode
+map <Leader>p :set paste!<CR>
+map <Leader>l :set list!<CR>
