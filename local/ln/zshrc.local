@@ -1,4 +1,10 @@
-# Command to start up ssh-agent if there is an SSH key in your profile
+if [[ $(uname -a) == *"Darwin"* ]]; then
+  SED_OPTS='-E'
+else
+  SED_OPTS='-r'
+fi
+
+# Command to start up ssh-agen if there is an SSH key in your profile
 if [[ -z ${SSH_AUTH_SOCK} && -z $(pgrep ssh-agent) ]]; then
   eval $(ssh-agent)
 fi
@@ -6,7 +12,7 @@ fi
 # Add any missing SSH identities
 SSH_ADD=$(ssh-add -l)
 for file in $(ls ${HOME}/.ssh/id*.pub 2> /dev/null); do
-  identity=$(echo ${file} | sed -r 's/.*(\.ssh.*).pub/\1/g')
+  identity=$(echo ${file} | sed ${SED_OPTS} 's/.*(\.ssh.*).pub/\1/g')
   if [[ $SSH_ADD != *${identity}* ]]; then
     echo "Identity didn't exist, adding: ${identity}"
     ssh-add ${identity}
