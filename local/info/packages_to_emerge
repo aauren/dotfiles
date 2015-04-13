@@ -6,6 +6,9 @@ layman
 rcm
 # Allows indexing and searching for file from CLI
 mlocate
+# Quick code searching:
+ack
+the_silver_searcher #(ag command)
 
 ## Libs to enable dotfiles
 dev-libs/libmix
@@ -29,6 +32,8 @@ spotify
 pidgin
 # Allows presenting a GUI dialog from CLI
 zenity
+# Gives system stats via GUI
+conky
 
 ## Gentoo Specific
 # To find which package a file belongs to that is not installed
