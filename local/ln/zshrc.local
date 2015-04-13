@@ -74,3 +74,7 @@ bindkey -M viins '^R' history-incremental-pattern-search-backward
 bindkey -M vicmd '/' history-incremental-pattern-search-backward
 bindkey -M isearch '^R' history-incremental-search-backward
 bindkey -M isearch '^F' history-incremental-search-forward
+
+# Shared command history
+#setopt inc_append_history # Not needed because it's already in the parent zshrc, but leaving here for completeness
+setopt share_history
