@@ -54,3 +54,4 @@ autocmd BufRead,BufNewFile */deploy/config/* set filetype=upconf-template
 " Various leader mappings for setting things like paste-mode and list mode
 map <Leader>p :set paste!<CR>
 map <Leader>l :set list!<CR>
+map <Leader>n :set number!<CR>
