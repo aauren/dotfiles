@@ -7,6 +7,7 @@
   dtc = difftool --cached
   lg = log --color --graph --pretty=format:'%Cred%<(8)%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --decorate
   rc = rebase --continue
+  r9 = rebase -i HEAD~5
   can = commit --amend --no-edit
   # An alternative to git pull: git upfrom <remote> <branch-name>
   upfrom = "!f() { git fetch $1 --prune; git merge --ff-only $1/$2 || git rebase --preserve-merges $1/$2; }; f"
