@@ -78,3 +78,7 @@ bindkey -M isearch '^F' history-incremental-search-forward
 # Shared command history
 #setopt inc_append_history # Not needed because it's already in the parent zshrc, but leaving here for completeness
 setopt share_history
+
+# re-sets yank and kill shortcuts to bash/emacs mode
+bindkey -M viins '^Y' yank
+bindkey -M viins '^U' backward-kill-line
