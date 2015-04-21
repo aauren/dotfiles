@@ -55,3 +55,7 @@ autocmd BufRead,BufNewFile */deploy/config/* set filetype=upconf-template
 map <Leader>p :set paste!<CR>
 map <Leader>l :set list!<CR>
 map <Leader>n :set number!<CR>
+
+" Shows leading space using the indentLine plugin from Yggdroot
+let g:indentLine_leadingSpaceEnabled = 1
+let g:indentLine_enabled = 0
