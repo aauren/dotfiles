@@ -39,6 +39,7 @@ augroup filetypes
 
   " Set file type to upconf template when it has deploy/config in the path
   autocmd BufRead,BufNewFile */deploy/config/* set filetype=upconf-template
+  autocmd Filetype json let b:indentLine_ConcealOptionSet = 1
 augroup END
 
 " Set tab merge alias to vertically split current tab and the tab to the right (or barring that, to the left)
