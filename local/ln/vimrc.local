@@ -43,7 +43,7 @@ augroup END
 
 " Set tab merge alias to vertically split current tab and the tab to the right (or barring that, to the left)
 " To put them back to tabs afterward, type CTRL+w, SHIFT+t
-:map <C-m> <esc>:Tabmerge right<CR>
+:map <C-t> <esc>:Tabmerge right<CR>
 
 " The following pattern will match trailing whitespace, except when typing at the end of a line.
 :highlight ExtraWhitespace ctermbg=red guibg=red
