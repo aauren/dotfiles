@@ -1,6 +1,5 @@
 " Change text width to 120 which is a more sensible default
 set textwidth=120
-autocmd Filetype python set textwidth=120
 
 " Remap jj in quick succession to escape
 :imap jj <Esc>
@@ -28,10 +27,19 @@ endif
 " Allow saving of files as sudo when I forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
 
-" Set different indent styles for different file types
-au Filetype python setlocal et ts=4 sw=4 sts=4 nowrap
-au Filetype sh setlocal ts=4 sw=4 sts=4 noexpandtab nowrap
-au Filetype ebuild setlocal ts=4 sw=4 sts=4 noexpandtab nowrap
+" --- Grouping autocmd's here so that we don't accidently dup them later on ---
+augroup filetypes
+  " Setting a different indentation for Python so that we get more than 80 characters in a column
+  autocmd Filetype python set textwidth=120
+
+  " Set different indent styles for different file types
+  au Filetype python setlocal et ts=4 sw=4 sts=4 nowrap
+  au Filetype sh setlocal ts=4 sw=4 sts=4 noexpandtab nowrap
+  au Filetype ebuild setlocal ts=4 sw=4 sts=4 noexpandtab nowrap
+
+  " Set file type to upconf template when it has deploy/config in the path
+  autocmd BufRead,BufNewFile */deploy/config/* set filetype=upconf-template
+augroup END
 
 " Set tab merge alias to vertically split current tab and the tab to the right (or barring that, to the left)
 " To put them back to tabs afterward, type CTRL+w, SHIFT+t
@@ -39,17 +47,18 @@ au Filetype ebuild setlocal ts=4 sw=4 sts=4 noexpandtab nowrap
 
 " The following pattern will match trailing whitespace, except when typing at the end of a line.
 :highlight ExtraWhitespace ctermbg=red guibg=red
-:autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
+
+augroup whitespace
+  :autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
+
+  " If you use this alternate pattern, you may want to consider using the following autocmd to let the highlighting show
+  " up as soon as you leave insert mode after entering trailing whitespace:
+  " :autocmd InsertLeave * redraw!
+  :au InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+  :au InsertLeave * match ExtraWhitespace /\s\+$/
+augroup END
+
 :match ExtraWhitespace /\s\+\%#\@<!$/
-
-" If you use this alternate pattern, you may want to consider using the following autocmd to let the highlighting show
-" up as soon as you leave insert mode after entering trailing whitespace:
-":autocmd InsertLeave * redraw!
-:au InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-:au InsertLeave * match ExtraWhitespace /\s\+$/
-
-" Set file type to upconf template when it has deploy/config in the path
-autocmd BufRead,BufNewFile */deploy/config/* set filetype=upconf-template
 
 " Various leader mappings for setting things like paste-mode and list mode
 map <Leader>p :set paste!<CR>
