@@ -11,6 +11,7 @@
   can = commit --amend --no-edit
   # An alternative to git pull: git upfrom <remote> <branch-name>
   upfrom = "!f() { git fetch $1 --prune; git merge --ff-only $1/$2 || git rebase --preserve-merges $1/$2; }; f"
+  sh = show HEAD
 [user]
   name = Aaron U'Ren
 [core]
