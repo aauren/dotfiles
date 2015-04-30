@@ -65,7 +65,13 @@ augroup END
 map <Leader>p :set paste!<CR>
 map <Leader>l :set list!<CR>
 map <Leader>n :set number!<CR>
+" Close the quickfix window (for things like pylint)
+map <Leader>c :lclose<CR>
 
 " Shows leading space using the indentLine plugin from Yggdroot
 let g:indentLine_leadingSpaceEnabled = 1
 let g:indentLine_enabled = 0
+
+" Add ignores for annoying pep8 guidelines
+let g:pep8_ignore="E501"
+let g:pymode_lint_ignore="E501"
