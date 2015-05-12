@@ -7,7 +7,17 @@ main ()
 
 	[[ "${HOST}" == "not_set" ]] && exit 1
 
-	setup_remote_env ${HOST}
+	echo "Checking Host Status..."
+	if [[ "${HOST}" == *@* ]]; then
+		is_node_up "${HOST##*@}"
+	else
+		is_node_up "${HOST}"
+	fi
+
+	if [[ ("${HOST}" != *@* || ${HOST%@*} == $(whoami)) && "root" != $(whoami) ]]; then
+		echo "Setting Up Remove Env..."
+		setup_remote_env ${HOST}
+	fi
 	\ssh -Aq ${HOST} || RETVAL=${?}
 
 	printf "\nSSH Exit Code: %d\n\n" ${RETVAL}

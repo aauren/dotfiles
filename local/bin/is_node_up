@@ -3,19 +3,20 @@
 declare N=${1}
 
 while : ; do
-	ping_results=$(ping -c 3 ${N})
-    if [[ ${?} ]]; then
+	ping_results=$(ping -c 2 ${N})
+	if [[ ${?} == 0 ]]; then
 		break
 	else
 		if [[ ${ping_results} == *"Operation not permitted"* ]]; then
 			break
 		fi
 	fi
-    sleep 5
+	echo "${N} does not appear to be up"
+	sleep 15
 done
 
-while sleep 1 ; do
-    ~/bin/nc -vz ${N} 22 && break
+while : ; do
+	~/bin/nc -vz ${N} 22 && break
+	echo "${N} does not appear to be listening to port 22"
+	sleep 15
 done
-
-sleep 1
