@@ -75,3 +75,13 @@ let g:indentLine_enabled = 0
 " Add ignores for annoying pep8 guidelines
 let g:pep8_ignore="E501"
 let g:pymode_lint_ignore="E501"
+
+" Add control based navigation to insert mode
+:map <C-G> <C-Right>
+:map! <C-G> <C-Right>
+:map <C-F> <C-Left>
+:map! <C-F> <C-Left>
+:map <C-J> ^
+:inoremap <C-J> <C-o>^
+:map <C-K> $
+:inoremap <C-K> <C-o>$

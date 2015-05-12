@@ -59,6 +59,10 @@ bind p paste-buffer
 bind -t vi-copy 'v' begin-selection
 bind -t vi-copy 'y' copy-selection
 bind -t vi-copy 'C-v' rectangle-toggle
+bind -t vi-copy 'C-f' previous-word
+bind -t vi-copy 'C-g' next-word
+bind -t vi-copy 'C-j' start-of-line
+bind -t vi-copy 'C-k' end-of-line
 
 ##### Setup Mouse Commands ####
 #setw -g mode-mouse on
