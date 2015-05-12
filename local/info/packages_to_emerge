@@ -9,6 +9,8 @@ mlocate
 # Quick code searching:
 ack
 the_silver_searcher #(ag command)
+inotify-tools # provides inotifywait command
+incron # provides cron like functionality but based on inotify
 
 ## Libs to enable dotfiles
 dev-libs/libmix
@@ -36,5 +38,8 @@ zenity
 conky
 
 ## Gentoo Specific
-# To find which package a file belongs to that is not installed
+# To find which package a file belongs to that is not installed (e-file command)
 pfl
+
+## Files not in Package Management
+http://entrproject.org/ # Gives an easy way to execute a command when a file changes
