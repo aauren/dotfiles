@@ -88,3 +88,6 @@ bindkey -M viins '^G' forward-word
 bindkey -M viins '^F' backward-word
 bindkey -M viins '^J' vi-beginning-of-line
 bindkey -M viins '^K' vi-end-of-line
+
+# Adds z (directory hopper) to the command line
+. "${HOME}/dotfiles/local/lib/rupa-z/z.sh"
