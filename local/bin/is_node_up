@@ -50,7 +50,7 @@ while : ; do
 done
 
 while : ; do
-	~/bin/nc -vz ${host} 22 && status=0 && break
+	~/bin/nc -vzw 5 ${host} 22 && status=0 && break
 	echo "${host} does not appear to be listening to port 22"
 	[[ ${nonblocking} ]] && status=1 && break
 	sleep 15
