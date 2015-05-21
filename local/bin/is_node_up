@@ -1,22 +1,59 @@
 #!/bin/bash
 
-declare N=${1}
+OPTIND=1
+app_name="$(basename $0)"
+app_signature="${app_name} [OPTION] IP_ADDRESS|DNS_NAME"
+usage="usage: ${app_signature}
+Checks to see if a host is up. This script can either
+block if it can't find the host right away, or it can act
+in a non-blocking way and return a non-zero exit code
+if it can't find the host
 
+Options:
+  -h,-?\t\tdisplay this help text and exit
+  -n\t\tperform operation as non-blocking"
+
+parse_args ()
+{
+	while getopts "h?n" opt; do
+		case "${opt}" in
+			h|\?) echo -e "${usage}"; exit 0;;
+			n) nonblocking=true;;
+		esac
+	done
+
+	shift $((OPTIND-1))
+	if [[ -z ${1} ]]; then
+		echo "You must specify an IP address or host to check: ${app_signature}" >> /dev/stderr
+		echo "HINT: use -h for more usage information" >> /dev/stderr
+		exit 1
+	fi
+	host="${1}"
+}
+
+parse_args "$@"
+status=1
 while : ; do
-	ping_results=$(ping -c 2 ${N} 2>&1)
+	ping_results=$(ping -c 2 ${host} 2>&1)
 	if [[ ${?} == 0 ]]; then
+		echo "${host} is pingable"
+		status=0
 		break
 	else
 		if [[ ${ping_results} == *"Operation not permitted"* ]]; then
 			break
 		fi
 	fi
-	echo "${N} does not appear to be up"
+	echo "${host} does not appear to be up"
+	[[ ${nonblocking} ]] && break
 	sleep 15
 done
 
 while : ; do
-	~/bin/nc -vz ${N} 22 && break
-	echo "${N} does not appear to be listening to port 22"
+	~/bin/nc -vz ${host} 22 && status=0 && break
+	echo "${host} does not appear to be listening to port 22"
+	[[ ${nonblocking} ]] && status=1 && break
 	sleep 15
 done
+
+exit ${status}

@@ -1,5 +1,4 @@
 #!/bin/bash
-# TODO: create a flag for non-blocking in is_node_up so that it won't block if it can't get to the first remote
 
 wait_for_dns ${1}
 
@@ -17,7 +16,7 @@ if [ "${IP}" != 'found:' ]; then
     flock --exclusive ~/.ssh/known_hosts.lock --command " ssh-keygen -R ${IP} "
 fi # If hosts returns an IP address...
 
-is_node_up ${1}
+is_node_up -n ${1}
 
 [ "R{IP}" != 'found:' ] && HOST="${1},${IP}" || HOST="${1}"
 
