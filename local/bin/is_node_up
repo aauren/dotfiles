@@ -3,7 +3,7 @@
 declare N=${1}
 
 while : ; do
-	ping_results=$(ping -c 2 ${N})
+	ping_results=$(ping -c 2 ${N} 2>&1)
 	if [[ ${?} == 0 ]]; then
 		break
 	else

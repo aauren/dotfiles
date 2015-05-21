@@ -1,4 +1,5 @@
 #!/bin/bash
+# TODO: create a flag for non-blocking in is_node_up so that it won't block if it can't get to the first remote
 
 wait_for_dns ${1}
 
