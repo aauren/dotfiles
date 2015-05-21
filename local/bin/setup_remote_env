@@ -8,7 +8,7 @@ LITERAL_DOT_LOC="${HOME}/dotfiles/"
 VUNDLE_LOC='${HOME}/.vim/bundle/'
 LIT_VUNDLE_LOC="${HOME}/.vim/bundle/"
 GIT_REMOTE_UPDATE_COMMANDS="cd ${DOTFILE_LOCATION} && \
-	git pull replaceme &>/dev/null && \
+	git pull replaceme master &>/dev/null && \
 	echo ok"
 UPDATE_HOME_COMMANDS="RCRC=${DOTFILE_LOCATION}/rcrc PATH=${PATH}:${DOTFILE_LOCATION}/local/init/linker/bin ${DOTFILE_LOCATION}/local/init/linker/bin/rcup && \
 	mkdir -p ~/bin && \
@@ -33,7 +33,7 @@ update_git ()
 	IFS=${IFS_BAK}
 	for gremote in "${git_remotes[@]}"; do
 		url=$(grep -A2 "${gremote}" "${LITERAL_DOT_LOC}.git/config" | grep url | sed ${SED_OPTS} ${GIT_URL_EXTRACT})
-		if [[ $(\ssh ${SSH_OPTS} ${remote_server} "PATH=${PATH}:${DOTFILE_LOCATION}/local/bin nc -vzw 5 ${url} 22 &>/dev/null && \
+		if [[ $(\ssh ${SSH_OPTS} ${remote_server} "PATH=${PATH}:${DOTFILE_LOCATION}/local/bin is_node_up -n ${url} 22 &>/dev/null && \
 			echo ok") == "ok" ]]; then
 			echo "Syncing with ${url}"
 			\ssh ${SSH_OPTS} ${remote_server} "PATH=${PATH}:${DOTFILE_LOCATION}/local/bin ssh_key_del ${url} &>/dev/null"
