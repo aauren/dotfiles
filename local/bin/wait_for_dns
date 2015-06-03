@@ -1,10 +1,12 @@
 #!/bin/bash
 
+. helpers.sh
+
 declare -i i=0
 declare output
 
 time while sleep 1; do
-    if output=$(host ${1}); then
+    if output=$(get_ip_for_host ${1}); then
         [ ${i} -gt 0 ] && printf "done.\n"
         printf "%s\n" "${output}"
         break
