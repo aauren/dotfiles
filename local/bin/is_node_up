@@ -28,32 +28,32 @@ parse_args ()
 		echo "HINT: use -h for more usage information" >> /dev/stderr
 		exit 1
 	fi
-	host="${1}"
+	is_node_up_host="${1}"
 }
 
 parse_args "$@"
-status=1
+is_node_up_status=1
 while : ; do
-	ping_results=$(ping -c 2 ${host} 2>&1)
+	is_node_up_ping_results=$(ping -c 2 ${is_node_up_host} 2>&1)
 	if [[ ${?} == 0 ]]; then
-		echo "${host} is pingable"
-		status=0
+		echo "${is_node_up_host} is pingable"
+		is_node_up_status=0
 		break
 	else
-		if [[ ${ping_results} == *"Operation not permitted"* ]]; then
+		if [[ ${is_node_up_ping_results} == *"Operation not permitted"* ]]; then
 			break
 		fi
 	fi
-	echo "${host} does not appear to be up"
+	echo "${is_node_up_host} does not appear to be up"
 	[[ ${nonblocking} ]] && break
 	sleep 15
 done
 
 while : ; do
-	~/bin/nc -vzw 5 ${host} 22 && status=0 && break
-	echo "${host} does not appear to be listening to port 22"
-	[[ ${nonblocking} ]] && status=1 && break
+	~/bin/nc -vzw 5 ${is_node_up_host} 22 && is_node_up_status=0 && break
+	echo "${is_node_up_host} does not appear to be listening to port 22"
+	[[ ${nonblocking} ]] && is_node_up_status=1 && break
 	sleep 15
 done
 
-exit ${status}
+exit ${is_node_up_status}
