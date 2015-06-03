@@ -14,6 +14,7 @@ UPDATE_HOME_COMMANDS="RCRC=${DOTFILE_LOCATION}/rcrc PATH=${PATH}:${DOTFILE_LOCAT
 	mkdir -p ~/bin && \
 	${DOTFILE_LOCATION}/local/bin/create_syms.sh &> /dev/null"
 GIT_URL_EXTRACT='s/.*git@([^:]+).*/\1/g'
+# Set correct sed options based on kernel versions
 if [[ $(uname -a) == *"Darwin"* ]]; then
 	SED_OPTS="-E"
 else
@@ -22,6 +23,13 @@ fi
 
 #### Initialize Input ####
 remote_server="${1}"
+
+# Set host based on whether remote_server contains @ or not
+if [[ "${remote_server}" == *@* ]]; then
+	HOST="${remote_server##*@}"
+else
+	HOST="${remote_server}"
+fi
 
 #### Function Declarations ####
 update_git ()
