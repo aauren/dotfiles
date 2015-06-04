@@ -8,6 +8,7 @@ LITERAL_DOT_LOC="${HOME}/dotfiles/"
 VUNDLE_LOC='${HOME}/.vim/bundle/'
 LIT_VUNDLE_LOC="${HOME}/.vim/bundle/"
 GIT_REMOTE_UPDATE_COMMANDS="cd ${DOTFILE_LOCATION} && \
+	git stash &>/dev/null && \
 	git pull replaceme master &>/dev/null && \
 	echo ok"
 UPDATE_HOME_COMMANDS="RCRC=${DOTFILE_LOCATION}/rcrc PATH=${PATH}:${DOTFILE_LOCATION}/local/init/linker/bin ${DOTFILE_LOCATION}/local/init/linker/bin/rcup && \
