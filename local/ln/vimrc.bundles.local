@@ -10,3 +10,5 @@ Plugin 'ciaranm/detectindent'
 Plugin 'vim-scripts/Tabmerge'
 " Allows you to see leading spaces
 Plugin 'Yggdroot/indentLine'
+" Allows you to expand and shrink regions during select
+Plugin 'terryma/vim-expand-region'

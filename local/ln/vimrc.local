@@ -1,14 +1,22 @@
+" Tips and Tricks
+"
+" Search and Replace:
+"   1. Change the currently searched for item by typing cgnReplacement<Esc>, repeat with .
+
 " Change text width to 120 which is a more sensible default
 set textwidth=120
 
-" Remap jj in quick succession to escape
-:imap jj <Esc>
+" Change color scheme to dark solarized if bundles is available {{{
+if filereadable(expand("~/.vimrc.bundles"))
+  set background=dark
+  colorscheme solarized
+  "highlight NonText guibg=#060606
+  "highlight Folded  guibg=#0A0A0A guifg=#9090D0
+endif
+" }}}
 
-" Remap next and previous tab to Ctrl-PgDn and Ctrl-PgUp
-:map <Esc>h :tabp<CR>
-:map <Esc>l :tabn<CR>
-
-" Change the default action of enter to within CTRL-p to open in a tab instead of switching the buffer
+" Change CTRL-p actions (e.g. open files in tab instead of switching the buffer, use ag for autocompletion) {{{
+" Open files in tab instead of a new vim buffer
 let g:ctrlp_prompt_mappings = {
     \ 'AcceptSelection("e")': ['<c-t>'],
     \ 'AcceptSelection("h")': ['<c-x>', '<c-cr>', '<c-s>'],
@@ -16,18 +24,22 @@ let g:ctrlp_prompt_mappings = {
     \ 'AcceptSelection("v")': ['<c-v>', '<RightMouse>'],
     \ }
 
-" Color scheme
-if filereadable(expand("~/.vimrc.bundles"))
-  set background=dark
-  colorscheme solarized
-  "highlight NonText guibg=#060606
-  "highlight Folded  guibg=#0A0A0A guifg=#9090D0
+" Search git directories faster by using silver searcher or ignoring git directories
+let g:ctrlp_use_caching = 0
+if executable('ag')
+    set grepprg=ag\ --nogroup\ --nocolor
+
+    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+else
+  let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . -co --exclude-standard', 'find %s -type f']
+  " Commenting this out for now because it will conflict with my other set of prompt matchings above
+  "let g:ctrlp_prompt_mappings = {
+  "  \ 'AcceptSelection("e")': ['<space>', '<cr>', '<2-LeftMouse>'],
+  "  \ }
 endif
+" }}}
 
-" Allow saving of files as sudo when I forgot to start vim using sudo
-cmap w!! w !sudo tee > /dev/null %
-
-" --- Grouping autocmd's here so that we don't accidently dup them later on ---
+" File type based autocmd's (e.g. python width 120, tab expansion for python, sh, etc, upconf and json settings {{{
 augroup filetypes
   " Setting a different indentation for Python so that we get more than 80 characters in a column
   autocmd Filetype python set textwidth=120
@@ -41,11 +53,9 @@ augroup filetypes
   autocmd BufRead,BufNewFile */deploy/config/* set filetype=upconf-template
   autocmd Filetype json let b:indentLine_ConcealOptionSet = 1
 augroup END
+" }}}
 
-" Set tab merge alias to vertically split current tab and the tab to the right (or barring that, to the left)
-" To put them back to tabs afterward, type CTRL+w, SHIFT+t
-:map <C-t> <esc>:Tabmerge right<CR>
-
+" Various whitespace highlighting, autocmds for EOL highlights and Yggdroot plugin configs for BOL highlights {{{
 " The following pattern will match trailing whitespace, except when typing at the end of a line.
 :highlight ExtraWhitespace ctermbg=red guibg=red
 
@@ -61,20 +71,76 @@ augroup END
 
 :match ExtraWhitespace /\s\+\%#\@<!$/
 
+" Shows leading space using the indentLine plugin from Yggdroot
+let g:indentLine_leadingSpaceEnabled = 1
+let g:indentLine_enabled = 0
+" }}}
+
+" Python pep8 configurations {{{
+" Add ignores for annoying pep8 guidelines
+let g:pep8_ignore="E501"
+let g:pymode_lint_ignore="E501"
+" }}}
+
+" Use multiple presses of v to expand and ctrl-v to shrink regions {{{
+vmap v <Plug>(expand_region_expand)
+vmap <C-v> <Plug>(expand_region_shrink)
+" Default settings. (NOTE: Remove comments in dictionary before sourcing)
+let g:expand_region_text_objects = {
+    \ 'iw'  :0,
+    \ 'iW'  :0,
+    \ 'i"'  :0,
+    \ '^o$' :0,
+    \ '0o$' :0,
+    \ 'i''' :0,
+    \ 'i]'  :1,
+    \ 'ib'  :1,
+    \ 'iB'  :1,
+    \ 'il'  :0,
+    \ 'ip'  :0,
+    \ 'ie'  :0,
+    \ }
+" }}}
+
+" Prevent replacing copy buffer on visual paste (preserve previous copy item on visual paste) {{{
+" vp doesn't replace paste buffer
+function! RestoreRegister()
+  let @" = s:restore_reg
+  return ''
+endfunction
+function! s:Repl()
+  let s:restore_reg = @"
+  return "p@=RestoreRegister()\<cr>"
+endfunction
+" }}}
+
+" Remapping keys using combos and leaders {{{
+
 " Various leader mappings for setting things like paste-mode and list mode
 map <Leader>p :set paste!<CR>
+" Toggle showing certain whitespace characters
 map <Leader>l :set list!<CR>
 map <Leader>n :set number!<CR>
 " Close the quickfix window (for things like pylint)
 map <Leader>c :lclose<CR>
+"
 
-" Shows leading space using the indentLine plugin from Yggdroot
-let g:indentLine_leadingSpaceEnabled = 1
-let g:indentLine_enabled = 0
+" Allow saving of files as sudo when I forgot to start vim using sudo
+cmap w!! w !sudo tee > /dev/null %
 
-" Add ignores for annoying pep8 guidelines
-let g:pep8_ignore="E501"
-let g:pymode_lint_ignore="E501"
+" Remap jj in quick succession to escape
+:imap jj <Esc>
+
+" Change visual paste to use the Repl() function described in "Prevent replacing copy buffer..." section
+vmap <silent> <expr> p <sid>Repl()
+
+" Set tab merge alias to vertically split current tab and the tab to the right (or barring that, to the left)
+" To put them back to tabs afterward, type CTRL+w, SHIFT+t
+:map <C-t> <esc>:Tabmerge right<CR>
+
+" Remap next and previous tab to Ctrl-PgDn and Ctrl-PgUp
+:map <Esc>h :tabp<CR>
+:map <Esc>l :tabn<CR>
 
 " Add control based navigation to insert mode
 :map <C-G> <C-Right>
@@ -85,3 +151,14 @@ let g:pymode_lint_ignore="E501"
 :inoremap <C-J> <C-o>^
 :map <C-K> $
 :inoremap <C-K> <C-o>$
+
+" Jump to the end of the text you just pasted
+vnoremap <silent> y y`]
+vnoremap <silent> p p`]
+nnoremap <silent> p p`]
+
+" Quickly select the text you just pasted
+noremap gV `[v`]
+" }}}
+
+" vim: fdm=marker ts=2 et
