@@ -31,3 +31,5 @@
 	prompt = false
 [include]
   path = ~/.gitconfig.user.local
+[rerere]
+  enabled = true
