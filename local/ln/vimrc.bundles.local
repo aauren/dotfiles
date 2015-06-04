@@ -1,14 +1,14 @@
 " Vim solarized color scheme
-Plugin 'altercation/vim-colors-solarized'
+Plug 'altercation/vim-colors-solarized'
 " Allows you to use ack from within vim (:Ack)
-Plugin 'mileszs/ack.vim'
+Plug 'mileszs/ack.vim'
 " Refuses to execute malicious code that may be included in mondelines
-Plugin 'ciaranm/securemodelines'
+Plug 'ciaranm/securemodelines'
 " Tries to automatically detect indent settings
-Plugin 'ciaranm/detectindent'
+Plug 'ciaranm/detectindent'
 " Allows you to move from tabs to vsplits and back (ctrl-m to bring them back: ctrl-w, T)
-Plugin 'vim-scripts/Tabmerge'
+Plug 'vim-scripts/Tabmerge'
 " Allows you to see leading spaces
-Plugin 'Yggdroot/indentLine'
+Plug 'Yggdroot/indentLine'
 " Allows you to expand and shrink regions during select
-Plugin 'terryma/vim-expand-region'
+Plug 'terryma/vim-expand-region'
