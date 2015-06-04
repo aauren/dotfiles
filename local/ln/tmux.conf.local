@@ -52,6 +52,10 @@ bind C-s command-prompt -p "first window to swap:","second window to swap" "swap
 # Bind key for synchronizing panes
 bind C-y set-window-option synchronize-panes
 
+# Change copy/paste with layout mappings
+bind Tab next-layout
+bind Space copy-mode
+
 #### Copy and paste buffer settings ####
 # Set buffer navigation to use vim style motion keys
 setw -g mode-keys v
