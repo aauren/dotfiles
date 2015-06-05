@@ -20,8 +20,29 @@ for file in $(ls ${HOME}/.ssh/id*.pub 2> /dev/null); do
 done
 
 # Changes prompt to include information about Git repos and what zvim mode we're in
-export PS1='${SSH_CONNECTION+"%{$fg_bold[green]%}%n@%m:"}%{$fg_bold[blue]%}%~%{$reset_color%}$(git_prompt_info) %#'
-source "${HOME}"/dotfiles/local/lib/zsh_vi_status_prompt.sh
+source "${HOME}/dotfiles/local/lib/git_prompt/git_prompt.sh"
+local vi_normal_marker="[%{$fg[magenta]%}N%{$reset_color%}]"
+local vi_insert_marker="[%{$fg[cyan]%}I%{$reset_color%}]"
+local vi_unknown_marker="[%{$fg[red]%}U%{$reset_color%}]"
+local vi_mode="$vi_insert_marker"
+vi_mode_indicator () {
+case ${KEYMAP} in
+  (vicmd)      echo $vi_normal_marker ;;
+  (main|viins) echo $vi_insert_marker ;;
+  (*)          echo $vi_unknown_marker ;;
+esac
+}
+
+# Reset mode-marker and prompt whenever the keymap changes
+function zle-line-init zle-keymap-select {
+  vi_mode="$(vi_mode_indicator)"
+  zle reset-prompt
+}
+zle -N zle-line-init
+zle -N zle-keymap-select
+
+export PROMPT='${SSH_CONNECTION+"%{$fg_bold[green]%}%n@%m:"}%{$fg_bold[blue]%}%~%{$reset_color%} $(git_super_status)
+%(?.%{$fg[green]%}[0].%{$fg[red]%}[%?])%{$reset_color%}${vi_mode}%# '
 
 # Binds keys appropriately so that special keys like Home, End, and Delete work
 # These maps can be created by running "sed -n l" and then typing the HOME, END, INSERT, and DELETE keys
@@ -62,7 +83,7 @@ function zle-line-finish () {
     echoti rmkx
 }
 zle -N zle-line-init
-zle -N zle-line-finish  
+zle -N zle-line-finish
 
 # Add local bin file
 if [[ -e ${HOME}/bin ]]; then
@@ -90,4 +111,4 @@ bindkey -M viins '^J' vi-beginning-of-line
 bindkey -M viins '^K' vi-end-of-line
 
 # Adds z (directory hopper) to the command line
-. "${HOME}/dotfiles/local/lib/rupa-z/z.sh"
+source "${HOME}/dotfiles/local/lib/rupa-z/z.sh"
