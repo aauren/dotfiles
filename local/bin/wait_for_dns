@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. helpers.sh
+source helpers.sh
 
 declare -i i=0
 declare output

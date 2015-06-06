@@ -2,7 +2,7 @@
 
 OPTIND=1
 app_name="$(basename $0)"
-app_signature="${app_name} [OPTION] IP_ADDRESS|DNS_NAME"
+app_signature="${app_name} [OPTION] IP_ADDRESS|DNS_NAME [PORT]"
 usage="usage: ${app_signature}
 Checks to see if a host is up. This script can either
 block if it can't find the host right away, or it can act
@@ -29,9 +29,12 @@ parse_args ()
 		exit 1
 	fi
 	is_node_up_host="${1}"
+	is_node_up_port="${2}"
 }
 
 parse_args "$@"
+
+# Attempt to resolve the IP address of the host and use that instead of a hostname
 is_node_up_status=1
 while : ; do
 	is_node_up_ping_results=$(ping -c 2 ${is_node_up_host} 2>&1)
@@ -40,7 +43,7 @@ while : ; do
 		is_node_up_status=0
 		break
 	else
-		if [[ ${is_node_up_ping_results} == *"Operation not permitted"* ]]; then
+		if [[ ${is_node_up_host} == *"Operation not permitted"* ]]; then
 			break
 		fi
 	fi
@@ -49,11 +52,14 @@ while : ; do
 	sleep 15
 done
 
-while : ; do
-	~/bin/nc -vzw 5 ${is_node_up_host} 22 && is_node_up_status=0 && break
-	echo "${is_node_up_host} does not appear to be listening to port 22"
-	[[ ${nonblocking} ]] && is_node_up_status=1 && break
-	sleep 15
-done
+# Since we can really only do this check if there is a port available
+if [[ ! -z ${is_node_up_port} ]]; then
+	while : ; do
+		~/bin/nc -vzw 5 ${is_node_up_host} ${is_node_up_port} && is_node_up_status=0 && break
+		echo "${is_node_up_host} does not appear to be listening to port ${is_node_up_port}"
+		[[ ${nonblocking} ]] && is_node_up_status=1 && break
+		sleep 15
+	done
+fi
 
 exit ${is_node_up_status}

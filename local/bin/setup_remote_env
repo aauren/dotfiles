@@ -23,14 +23,7 @@ else
 fi
 
 #### Initialize Input ####
-remote_server="${1}"
-
-# Set host based on whether remote_server contains @ or not
-if [[ "${remote_server}" == *@* ]]; then
-	HOST="${remote_server##*@}"
-else
-	HOST="${remote_server}"
-fi
+ssh_conn_str="${1}"
 
 #### Function Declarations ####
 update_git ()
@@ -42,12 +35,12 @@ update_git ()
 	IFS=${IFS_BAK}
 	for gremote in "${git_remotes[@]}"; do
 		url=$(grep -A2 "${gremote}" "${LITERAL_DOT_LOC}.git/config" | grep url | sed ${SED_OPTS} ${GIT_URL_EXTRACT})
-		if [[ $(\ssh ${SSH_OPTS} ${remote_server} "PATH=${PATH}:${DOTFILE_LOCATION}/local/bin is_node_up -n ${url} 22 &>/dev/null && \
+		if [[ $(\ssh ${SSH_OPTS} ${ssh_conn_str} "PATH=${PATH}:${DOTFILE_LOCATION}/local/bin is_node_up -n ${url} 22 &>/dev/null && \
 			echo ok") == "ok" ]]; then
 			echo "Syncing with ${url}"
-			\ssh ${SSH_OPTS} ${remote_server} "PATH=${PATH}:${DOTFILE_LOCATION}/local/bin ssh_key_del ${url} &>/dev/null"
+			\ssh ${SSH_OPTS} ${ssh_conn_str} "PATH=${PATH}:${DOTFILE_LOCATION}/local/bin ssh_key_del ${url} &>/dev/null"
 			git_update_cmd=${GIT_REMOTE_UPDATE_COMMANDS//replaceme/${gremote}}
-			if [[ $(\ssh ${SSH_OPTS} ${remote_server} ${git_update_cmd}) == "ok" ]]; then
+			if [[ $(\ssh ${SSH_OPTS} ${ssh_conn_str} ${git_update_cmd}) == "ok" ]]; then
 				echo "Sync successful"
 				break
 			fi
@@ -58,22 +51,19 @@ update_git ()
 update_home ()
 {
 	echo "Updating home env..."
-	\ssh ${SSH_OPTS} ${remote_server} ${UPDATE_HOME_COMMANDS}
+	\ssh ${SSH_OPTS} ${ssh_conn_str} ${UPDATE_HOME_COMMANDS}
 }
 
 #### Main Program Flow ####
-# Start by deleting the old SSH key in case the system has been rebooted since then
-ssh_key_del "${HOST}"
-
-if \ssh ${SSH_OPTS} ${remote_server} "[[ -d ${DOTFILE_LOCATION} ]]"; then
+if \ssh ${SSH_OPTS} ${ssh_conn_str} "[[ -d ${DOTFILE_LOCATION} ]]"; then
 	echo "Dotfiles exist, updating git..."
 	update_git
 	update_home
 else
 	echo "Dotfiles missing, syncing..."
-	rsync ${RSYNC_OPTS} "${LITERAL_DOT_LOC}" "${remote_server}:${DOTFILE_LOCATION}" &>/dev/null
-	\ssh ${SSH_OPTS} ${remote_server} "mkdir -p ${VUNDLE_LOC}" 2>/dev/null
-	rsync ${RSYNC_OPTS} "${LIT_VUNDLE_LOC}" "${remote_server}:${VUNDLE_LOC}" &>/dev/null
+	rsync ${RSYNC_OPTS} "${LITERAL_DOT_LOC}" "${ssh_conn_str}:${DOTFILE_LOCATION}" &>/dev/null
+	\ssh ${SSH_OPTS} ${ssh_conn_str} "mkdir -p ${VUNDLE_LOC}" 2>/dev/null
+	rsync ${RSYNC_OPTS} "${LIT_VUNDLE_LOC}" "${ssh_conn_str}:${VUNDLE_LOC}" &>/dev/null
 	update_home
 	update_git
 	update_home

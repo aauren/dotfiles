@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "${HOME}/bin/helpers.sh"
+
 main ()
 {
 	local -i RETVAL=0
@@ -7,16 +9,29 @@ main ()
 
 	[[ "${HOST}" == "not_set" ]] && exit 1
 
-	echo "Checking Host Status..."
+	# Separate host string into parts
 	if [[ "${HOST}" == *@* ]]; then
-		is_node_up "${HOST##*@}"
+		hostname="${HOST##*@}"
+		username="${HOST%@*}"
 	else
-		is_node_up "${HOST}"
+		hostname="${HOST}"
 	fi
+
+
+	# Check to see if an SSH port is explicitely defined in ssh config files
+	export my_ssh_port="$(parse_ssh_config | grep "${hostname}" |cut -d',' -f 3)"
+	export unaliased_ssh_host="$(resolve_host_from_ssh_config ${hostname})"
+
+	echo "Checking Host Status..."
+	is_node_up "${unaliased_ssh_host}" "${my_ssh_port:-22}"
+
+	# Start by deleting the old SSH key in case the system has been rebooted since then
+	echo "Removing previous known hosts that might exist..."
+	ssh_key_del "${unaliased_ssh_host}" "${my_ssh_port:-22}"
 
 	if [[ ("${HOST}" != *@* || ${HOST%@*} == $(whoami)) && "root" != $(whoami) ]]; then
 		echo "Setting Up Remove Env..."
-		setup_remote_env ${HOST}
+		setup_remote_env "${HOST}" "${unaliased_ssh_host}" "${my_ssh_port}"
 	fi
 	\ssh -Aq ${HOST} || RETVAL=${?}
 
