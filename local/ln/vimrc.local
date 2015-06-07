@@ -132,9 +132,6 @@ cmap w!! w !sudo tee > /dev/null %
 " Remap jj in quick succession to escape
 :imap jj <Esc>
 
-" Change visual paste to use the Repl() function described in "Prevent replacing copy buffer..." section
-vmap <silent> <expr> p <sid>Repl()
-
 " Set tab merge alias to vertically split current tab and the tab to the right (or barring that, to the left)
 " To put them back to tabs afterward, type CTRL+w, SHIFT+t
 :map <C-t> <esc>:Tabmerge right<CR>
@@ -160,6 +157,9 @@ nnoremap <silent> p p`]
 
 " Quickly select the text you just pasted
 noremap gV `[v`]
+
+" Change visual paste to use the Repl() function described in "Prevent replacing copy buffer..." section
+vmap <silent> <expr> p <sid>Repl()
 " }}}
 
 " vim: fdm=marker ts=2 et
