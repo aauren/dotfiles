@@ -3,7 +3,7 @@
 #### Define Constants ####
 GIT_REPO_LOCATION="/home/auren/git-repos"
 LIB_DIRS=("/usr/lib32" "/usr/lib64")
-RSYNC_OPTS="-rpt --size-only --ignore-times --exclude=__pycache__"
+RSYNC_OPTS="-rpt --checksum --ignore-times --exclude=__pycache__"
 # Some explanation of the following options:
 ## LogLevel=Error: needed to supress any SSH banners that have been configured which screw up non-interactive sessions
 ## BatchMode=yes: needed to disable passphrase/password querying which would make this script need to be interactive
@@ -24,7 +24,7 @@ if [[ ! -d ${project_path} ]]; then
 	echo "Git project directory ${project_path} does not exist, cannot continue"
 	exit 1
 fi
-ssh_status=$(ssh ${SSH_OPTS} ${remote_server} echo ok 2>&1)
+ssh_status=$(\ssh ${SSH_OPTS} ${remote_server} echo ok 2>&1)
 if [[ $ssh_status != ok ]]; then
 	echo "It doesn't look like you have SSH access to: '${remote_server}'"
 	exit 1
@@ -38,6 +38,17 @@ get_project_python_versions ()
 	python_vers=$(grep "PYTHON_COMPAT" $1 | cut -d"(" -f2)
 	python_vers=${python_vers::-1}
 	IFS=' ' read -a python_ver_array <<< "${python_vers}"
+	python_ver_array2=()
+	for item in "${python_ver_array[@]}"; do
+		if [[ "${item}" == *\{*,*\}* ]]; then
+			python_ver_array2+=($(eval echo ${item}))
+		else
+			python_ver_array2+=("${item}")
+		fi
+	done
+	if [[ ! -z ${python_ver_array2} ]]; then
+		python_ver_array="${python_ver_array2[@]}"
+	fi
 }
 
 find_remote_paths ()
@@ -47,7 +58,7 @@ find_remote_paths ()
 	for lib_dir in "${LIB_DIRS[@]}"; do
 		local full_path="${lib_dir}/${python_ver}/site-packages/${project_directory}"
 		#echo "Checking Path: ${full_path}"
-		if ssh ${SSH_OPTS} ${remote_server} "[[ -d ${full_path} ]]"; then
+		if \ssh ${SSH_OPTS} ${remote_server} "[[ -d ${full_path} ]]"; then
 			paths+=(${full_path})
 		fi
 	done
@@ -79,7 +90,7 @@ echo "Remote Paths: ${paths[@]}"
 src_sync_path="${project_path}/src/${project_directory}/"
 for my_path in ${paths[@]}; do
 	sync_files "${src_sync_path}" "${my_path}" "-ni"
-	
+
 	if [[ ! -n ${rsync_changes} ]]; then
 		echo -e "\tEverything is up to date! There are no changes to be made to this directory"
 		continue
