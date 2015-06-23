@@ -3,7 +3,7 @@
 touch $HOME/.psqlrc.local
 
 if [ ! -e $HOME/.vim/autoload/plug.vim ]; then
-  curl -fLo $HOME/.vim/autoload/plug.vim --retry 1 --max-time 10 --create-dirs \
+  curl -fLo $HOME/.vim/autoload/plug.vim --connect-timeout 2 --max-time 10 --create-dirs \
       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 fi
 if [[ $- == *i* ]]; then
