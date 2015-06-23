@@ -37,7 +37,7 @@ parse_args "$@"
 # Attempt to resolve the IP address of the host and use that instead of a hostname
 is_node_up_status=1
 while : ; do
-	is_node_up_ping_results=$(ping -c 2 ${is_node_up_host} 2>&1)
+	is_node_up_ping_results=$(ping -w 5 -c 2 ${is_node_up_host} 2>&1)
 	if [[ ${?} == 0 ]]; then
 		echo "${is_node_up_host} is pingable"
 		is_node_up_status=0
