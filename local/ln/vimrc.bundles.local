@@ -12,3 +12,5 @@ Plug 'vim-scripts/Tabmerge'
 Plug 'Yggdroot/indentLine'
 " Allows you to expand and shrink regions during select
 Plug 'terryma/vim-expand-region'
+" Gives the ability to expand complex xml tags (hint: ctrl-y+,)
+Plug 'mattn/emmet-vim'
