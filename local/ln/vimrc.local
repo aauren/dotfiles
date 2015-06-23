@@ -121,6 +121,8 @@ map <Leader>p :set paste!<CR>
 " Toggle showing certain whitespace characters
 map <Leader>l :set list!<CR>
 map <Leader>n :set number!<CR>
+map <Leader>r :set relativenumber!<CR>
+map <Leader>e :RunInInteractiveShell 
 " Close the quickfix window (for things like pylint)
 map <Leader>c :lclose<CR>
 " Reset the color scheme to the default (in cases with unconfigured terminals)
