@@ -14,3 +14,5 @@ Plug 'Yggdroot/indentLine'
 Plug 'terryma/vim-expand-region'
 " Gives the ability to expand complex xml tags (hint: ctrl-y+,)
 Plug 'mattn/emmet-vim'
+" Useful for tracking down plugins that are messing with you
+"Plug 'dahu/bisectly'
