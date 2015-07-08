@@ -56,7 +56,7 @@ parse_ssh_config() {
 		output = output","$2
 	}
 	END { print output }
-	' .ssh/config
+	' ~/.ssh/config
 }
 
 # Check to see if the host is an alias in SSH config, even if it isn't, return the user's original input
