@@ -45,7 +45,7 @@ augroup filetypes
   autocmd Filetype python set textwidth=120
 
   " Set different indent styles for different file types
-  au Filetype python setlocal et ts=4 sw=4 sts=4 nowrap
+  au Filetype python setlocal et ts=4 sw=4 sts=4 nowrap nofoldenable
   au Filetype sh setlocal ts=4 sw=4 sts=4 noexpandtab nowrap
   au Filetype ebuild setlocal ts=4 sw=4 sts=4 noexpandtab nowrap
 
