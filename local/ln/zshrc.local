@@ -102,6 +102,7 @@ setopt share_history
 
 # re-sets yank and kill shortcuts to bash/emacs mode
 bindkey -M viins '^Y' yank
+bindkey -M viins '\ey' yank-pop
 bindkey -M viins '^U' backward-kill-line
 
 # sets ctrl+b and ctrl+f to forward and backword by word
