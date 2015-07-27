@@ -15,14 +15,7 @@ if filereadable(expand("~/.vimrc.bundles"))
 endif
 " }}}
 
-" Change CTRL-p actions (e.g. open files in tab instead of switching the buffer, use ag for autocompletion) {{{
-" Open files in tab instead of a new vim buffer
-let g:ctrlp_prompt_mappings = {
-    \ 'AcceptSelection("e")': ['<c-t>'],
-    \ 'AcceptSelection("h")': ['<c-x>', '<c-cr>', '<c-s>'],
-    \ 'AcceptSelection("t")': ['<cr>', '<2-LeftMouse>'],
-    \ 'AcceptSelection("v")': ['<c-v>', '<RightMouse>'],
-    \ }
+" Various mappings for CTRL+P {{{
 
 " Search git directories faster by using silver searcher or ignoring git directories
 let g:ctrlp_use_caching = 0
@@ -145,6 +138,8 @@ cmap w!! w !sudo tee > /dev/null %
 " Remap next and previous tab to Ctrl-PgDn and Ctrl-PgUp
 :map <Esc>h :tabp<CR>
 :map <Esc>l :tabn<CR>
+:map <Esc>j :bn<CR>
+:map <Esc>k :bp<CR>
 
 " Add control based navigation to insert mode
 :map <C-G> <C-Right>

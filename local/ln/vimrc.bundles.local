@@ -16,3 +16,5 @@ Plug 'terryma/vim-expand-region'
 Plug 'mattn/emmet-vim'
 " Useful for tracking down plugins that are messing with you
 "Plug 'dahu/bisectly'
+" Buffer exploration utility (puts buffer names at the top)
+Plug 'fholgado/minibufexpl.vim'
