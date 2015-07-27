@@ -32,6 +32,14 @@ else
 endif
 " }}}
 
+" Various items for NerdTree (Like close NerdTree when all other buffers are closed) {{{
+
+augroup nerdtree
+  autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+augroup END
+
+" }}}
+
 " File type based autocmd's (e.g. python width 120, tab expansion for python, sh, etc, upconf and json settings {{{
 augroup filetypes
   " Setting a different indentation for Python so that we get more than 80 characters in a column
@@ -140,6 +148,9 @@ cmap w!! w !sudo tee > /dev/null %
 :map <Esc>l :tabn<CR>
 :map <Esc>j :bn<CR>
 :map <Esc>k :bp<CR>
+
+" Map nerdtree to Ctrl+t
+:map <Leader>t :NERDTreeToggle<CR>
 
 " Add control based navigation to insert mode
 :map <C-G> <C-Right>
