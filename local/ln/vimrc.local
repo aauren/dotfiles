@@ -136,8 +136,9 @@ vnoremap <Leader>d "_d
 " Allow saving of files as sudo when I forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
 
-" Remap jj in quick succession to escape
+" Remap jj and JJ in quick succession to escape
 :imap jj <Esc>
+:imap JJ <Esc>
 
 " Set tab merge alias to vertically split current tab and the tab to the right (or barring that, to the left)
 " To put them back to tabs afterward, type CTRL+w, SHIFT+t
