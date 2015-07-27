@@ -126,7 +126,11 @@ map <Leader>e :RunInInteractiveShell
 " Close the quickfix window (for things like pylint)
 map <Leader>c :lclose<CR>
 " Reset the color scheme to the default (in cases with unconfigured terminals)
-map <Leader>d :colorscheme default<CR>
+map <Leader>csd :colorscheme default<CR>
+" Delete item to the blackhole register (meaning it won't write over the buffer you already have going
+nnoremap <Leader>dd "_dd
+nnoremap <Leader>d "_d
+vnoremap <Leader>d "_d
 
 " Allow saving of files as sudo when I forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
