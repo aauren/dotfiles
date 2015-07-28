@@ -114,4 +114,9 @@ bindkey -M viins '^K' vi-end-of-line
 # Adds z (directory hopper) to the command line
 source "${HOME}/dotfiles/local/lib/rupa-z/z.sh"
 
+# Add additional zsh functions
+if [[ -e "${HOME}/.zshrc.user.local" ]]; then
+	source "${HOME}/.zshrc.user.local"
+fi
+
 # vim: set noet ts=4 sw=4
