@@ -35,5 +35,8 @@ alias sudo='sudo -E '
 alias s='export SHELL=/bin/zsh && sudo -sE'
 alias glgh='git lg | head'
 alias hg='history | grep -i'
+if [[ ! -z ${TMUX_PANE} ]]; then
+	alias pno="tmux display -pt \"${TMUX_PANE:?}\" '#{pane_index}'"
+fi
 
 # vim: set noet ts=4 sw=4
