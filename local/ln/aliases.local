@@ -1,8 +1,8 @@
 # Turn on coloring for both Mac and others in a way they understand
 if [[ $(uname -a) == *"Darwin"* ]]; then
-  alias ls='ls -G'
+	alias ls='ls -G'
 else
-  alias ls='ls --color'
+	alias ls='ls --color'
 fi
 
 # Add agent forwarding by default to SSH
@@ -35,4 +35,5 @@ alias sudo='sudo -E '
 alias s='export SHELL=/bin/zsh && sudo -sE'
 alias glgh='git lg | head'
 alias hg='history | grep -i'
-alias pno="tmux display -pt \"${TMUX_PANE:?}\" '#{pane_index}'"
+
+# vim: set noet ts=4 sw=4

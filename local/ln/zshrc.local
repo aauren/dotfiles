@@ -1,23 +1,23 @@
 if [[ $(uname -a) == *"Darwin"* ]]; then
-  SED_OPTS='-E'
+	SED_OPTS='-E'
 else
-  SED_OPTS='-r'
+	SED_OPTS='-r'
 fi
 
 # Command to start up ssh-agen if there is an SSH key in your profile
 if [[ -z ${SSH_AUTH_SOCK} && -z $(pgrep ssh-agent) ]]; then
-  eval $(ssh-agent)
+	eval $(ssh-agent)
 fi
 
 # Add any missing SSH identities
 SSH_ADD=$(ssh-add -l)
 for file in $(ls ${HOME}/.ssh/id*.pub 2> /dev/null); do
-  identity=$(echo ${file} | sed ${SED_OPTS} 's/.*(\.ssh.*).pub/\1/g')
-  if [[ $SSH_ADD != *${identity}* ]]; then
-    echo "Identity didn't exist, adding: ${identity}"
-    ssh-add ${identity}
-  fi
-done
+	identity=$(echo ${file} | sed ${SED_OPTS} 's/.*(\.ssh.*).pub/\1/g')
+	if [[ $SSH_ADD != *${identity}* ]]; then
+		echo "Identity didn't exist, adding: ${identity}"
+		ssh-add ${identity}
+	fi
+	done
 
 # Changes prompt to include information about Git repos and what zvim mode we're in
 source "${HOME}/dotfiles/local/lib/git_prompt/git_prompt.sh"
@@ -27,16 +27,16 @@ local vi_unknown_marker="[%{$fg[red]%}U%{$reset_color%}]"
 local vi_mode="$vi_insert_marker"
 vi_mode_indicator () {
 case ${KEYMAP} in
-  (vicmd)      echo $vi_normal_marker ;;
-  (main|viins) echo $vi_insert_marker ;;
-  (*)          echo $vi_unknown_marker ;;
+	(vicmd)      echo $vi_normal_marker ;;
+	(main|viins) echo $vi_insert_marker ;;
+	(*)          echo $vi_unknown_marker ;;
 esac
 }
 
 # Reset mode-marker and prompt whenever the keymap changes
 function zle-line-init zle-keymap-select {
-  vi_mode="$(vi_mode_indicator)"
-  zle reset-prompt
+	vi_mode="$(vi_mode_indicator)"
+	zle reset-prompt
 }
 zle -N zle-line-init
 zle -N zle-keymap-select
@@ -77,17 +77,17 @@ key[PageDown]=${terminfo[knp]}
 # Finally, make sure the terminal is in application mode, when zle is
 # active. Only then are the values from $terminfo valid.
 function zle-line-init () {
-    echoti smkx
+	echoti smkx
 }
 function zle-line-finish () {
-    echoti rmkx
+	echoti rmkx
 }
 zle -N zle-line-init
 zle -N zle-line-finish
 
 # Add local bin file
 if [[ -e ${HOME}/bin ]]; then
-  export PATH=${HOME}/bin:${PATH}
+	export PATH=${HOME}/bin:${PATH}
 fi
 
 # Switch to incremental pattern search, plus ability to go forward and backward
@@ -113,3 +113,5 @@ bindkey -M viins '^K' vi-end-of-line
 
 # Adds z (directory hopper) to the command line
 source "${HOME}/dotfiles/local/lib/rupa-z/z.sh"
+
+# vim: set noet ts=4 sw=4
