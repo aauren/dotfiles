@@ -17,7 +17,7 @@ for file in $(ls ${HOME}/.ssh/id*.pub 2> /dev/null); do
 		echo "Identity didn't exist, adding: ${identity}"
 		ssh-add ${identity}
 	fi
-	done
+done
 
 # Changes prompt to include information about Git repos and what zvim mode we're in
 source "${HOME}/dotfiles/local/lib/git_prompt/git_prompt.sh"
@@ -110,6 +110,11 @@ bindkey -M viins '^G' forward-word
 bindkey -M viins '^F' backward-word
 bindkey -M viins '^J' vi-beginning-of-line
 bindkey -M viins '^K' vi-end-of-line
+
+tmux_info() {
+	local tmux_var="${1}"
+	tmux display -pt "${TMUX_PANE:?}" "#{${tmux_var}}"
+}
 
 # Adds z (directory hopper) to the command line
 source "${HOME}/dotfiles/local/lib/rupa-z/z.sh"
