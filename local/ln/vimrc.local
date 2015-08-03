@@ -120,7 +120,7 @@ endfunction
 " Various leader mappings for setting things like paste-mode and list mode
 map <Leader>p :set paste!<CR>
 " Toggle showing certain whitespace characters
-map <Leader>l :set list!<CR>
+map <Leader>l :set list!<CR>:LeadingSpaceToggle<CR>
 map <Leader>n :set number!<CR>
 map <Leader>r :set relativenumber!<CR>
 map <Leader>e :RunInInteractiveShell 
