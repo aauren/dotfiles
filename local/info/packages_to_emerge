@@ -15,6 +15,12 @@ incron # provides cron like functionality but based on inotify
 ## Libs to enable dotfiles
 dev-libs/libmix
 
+## Programing Libs
+# Python lib for connecting to LDAP
+ldap3
+# Python lib for using AMQP
+pika
+
 ## VM Management Tools
 # libvirt and virt-manager allows for easy configuration of kvm
 libvirt
@@ -40,6 +46,14 @@ conky
 ## Gentoo Specific
 # To find which package a file belongs to that is not installed (e-file command)
 pfl
+# libreoffice-bin better than libreoffice because you don't have to compile
+libreoffice-bin
+
+## Gaikai Specific
+# Package to test emerges
+gk-checks
+# Package to setup python environment
+py-standards
 
 ## Files not in Package Management
 http://entrproject.org/ # Gives an easy way to execute a command when a file changes
