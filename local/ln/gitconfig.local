@@ -1,36 +1,38 @@
 [alias]
-  l = log --pretty=colored
-  cm = commit -m
-  dc = diff --cached
-  unstg = reset HEAD
-  dt = difftool
-  dtc = difftool --cached
-  lg = log --color --graph --pretty=format:'%Cred%<(8)%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --decorate
-  rc = rebase --continue
-  can = commit --amend --no-edit
-  ca = commit --amend -v
-  # An alternative to git pull: git upfrom <remote> <branch-name>
-  upfrom = "!f() { git fetch $1 --prune; git merge --ff-only $1/$2 || git rebase --preserve-merges $1/$2; }; f"
-  sh = show HEAD
-  cp = cherry-pick
-  r9 = rebase -i HEAD~9
-  r8 = rebase -i HEAD~8
-  r7 = rebase -i HEAD~7
-  r6 = rebase -i HEAD~6
-  r5 = rebase -i HEAD~5
-  r4 = rebase -i HEAD~4
-  r3 = rebase -i HEAD~3
-  r2 = rebase -i HEAD~2
-  r1 = rebase -i HEAD~1
+	l = log --pretty=colored
+	cm = commit -m
+	dc = diff --cached
+	unstg = reset HEAD
+	dt = difftool
+	dtc = difftool --cached
+	lg = log --color --graph --pretty=format:'%Cred%<(8)%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --decorate
+	rc = rebase --continue
+	can = commit --amend --no-edit
+	ca = commit --amend -v
+	# An alternative to git pull: git upfrom <remote> <branch-name>
+	upfrom = "!f() { git fetch $1 --prune; git merge --ff-only $1/$2 || git rebase --preserve-merges $1/$2; }; f"
+	sh = show HEAD
+	cp = cherry-pick
+	r9 = rebase -i HEAD~9
+	r8 = rebase -i HEAD~8
+	r7 = rebase -i HEAD~7
+	r6 = rebase -i HEAD~6
+	r5 = rebase -i HEAD~5
+	r4 = rebase -i HEAD~4
+	r3 = rebase -i HEAD~3
+	r2 = rebase -i HEAD~2
+	r1 = rebase -i HEAD~1
 [user]
-  name = Aaron U'Ren
+	name = Aaron U'Ren
 [core]
-  editor = vim
+	editor = vim
 [diff]
 	tool = vimdiff
 [difftool]
 	prompt = false
 [include]
-  path = ~/.gitconfig.user.local
+	path = ~/.gitconfig.user.local
 [rerere]
-  enabled = true
+	enabled = true
+
+# vim: set noet ts=2 sw=2
