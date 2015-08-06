@@ -18,3 +18,5 @@ Plug 'mattn/emmet-vim'
 "Plug 'dahu/bisectly'
 " Buffer exploration utility (puts buffer names at the top)
 Plug 'fholgado/minibufexpl.vim'
+" Shows +/- along the left side of VIM screen
+Plug 'airblade/vim-gitgutter'
