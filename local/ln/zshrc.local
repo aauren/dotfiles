@@ -41,7 +41,15 @@ function zle-line-init zle-keymap-select {
 zle -N zle-line-init
 zle -N zle-keymap-select
 
-export PROMPT='${SSH_CONNECTION+"%{$fg_bold[green]%}%n@%m:"}%{$fg_bold[blue]%}%~%{$reset_color%} $(git_super_status)
+dir_info_prompt () {
+	print -P '${SSH_CONNECTION+"%{$fg_bold[green]%}%n@%m:"}%{$fg_bold[blue]%}%~%{$reset_color%}'
+}
+rel_info_prompt () {
+	if [[ -e /etc/gaikai-release ]]; then
+		print -P '(%{$fg_bold[magenta]%}$(cat /etc/gaikai-release)%{$reset_color%})'
+	fi
+}
+export PROMPT='$(dir_info_prompt) $(rel_info_prompt) $(git_super_status)
 %(?.%{$fg[green]%}[0].%{$fg[red]%}[%?])%{$reset_color%}${vi_mode}%# '
 
 # Binds keys appropriately so that special keys like Home, End, and Delete work
