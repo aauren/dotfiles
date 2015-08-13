@@ -129,6 +129,15 @@ gitcm () {
 	((sleep 0.1 && tmux send-keys -t "$(tmux_info session_name):$(tmux_info window_name).$(tmux_info pane_index)" "$(echo "git cm \"$(git diff --name-only --cached | grep -o '[^/]*$' | sed ':a;N;$!ba;s/\n/ \& /g'): ")") &)
 }
 
+load_colors () {
+	autoload colors
+	for COLOR in RED GREEN YELLOW BLUE MAGENTA CYAN BLACK WHITE; do
+		eval $COLOR='$fg_no_bold[${(L)COLOR}]'
+		eval BOLD_$COLOR='$fg_bold[${(L)COLOR}]'
+	done
+	eval RESET='$reset_color'
+}
+
 # Adds z (directory hopper) to the command line
 source "${HOME}/dotfiles/local/lib/rupa-z/z.sh"
 
