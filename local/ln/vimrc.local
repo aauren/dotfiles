@@ -125,17 +125,25 @@ function! MyTogBG()
 endfunction
 command ToggleBG :call MyTogBG()
 
+function! MyTogTW()
+  if &tw
+    let s:txtwid = &textwidth
+    let s:wrapmarg  = &wrapmargin
+    let &textwidth  = 0
+    let &wrapmargin = 0
+  else
+    let &textwidth = s:txtwid
+    let &wrapmargin = s:wrapmarg
+  endif
+endfunction
+command ToggleTextWidth :call MyTogTW()
+
 function! ToggleCopyable()
   call MyTogBG()
   set list!
   set number!
   exe "LeadingSpaceToggle"
-  if &tw
-    let s:txtwid = &tw
-    let &textwidth=0
-  else
-    let &textwidth = s:txtwid
-  endif
+  call MyTogTW()
 endfunction
 command ToggleCopyable :call ToggleCopyable()
 
@@ -147,6 +155,8 @@ command ToggleCopyable :call ToggleCopyable()
 map <Leader>p :set paste!<CR>
 " Leader mapping to allow for copying from vim
 map <Leader>y :ToggleCopyable<CR>
+" Toggle text width on and off
+map <Leader>w :ToggleTextWidth<CR>
 " Toggle showing certain whitespace characters
 map <Leader>l :set list!<CR>:LeadingSpaceToggle<CR>
 map <Leader>n :set number!<CR>
