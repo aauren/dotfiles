@@ -115,6 +115,18 @@ function! s:Repl()
 endfunction
 " }}}
 
+" My functions (toggle solarized background, etc) {{{
+
+function! MyTogBG()
+  let &background = ( &background == "dark"? "light" : "dark" )
+  if exists("g:colors_name")
+    exe "colorscheme " . g:colors_name
+  endif
+endfunction
+command ToggleBG :call MyTogBG()
+
+" }}}
+
 " Remapping keys using combos and leaders {{{
 
 " Various leader mappings for setting things like paste-mode and list mode
