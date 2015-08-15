@@ -1,0 +1,45 @@
+#!/bin/bash
+
+format_git_branches () {
+	RED=$(tput setaf 1)
+	BLUE=$(tput setaf 4)
+	BOLD_WHITE=$(tput bold; tput setaf 7)
+	RESET=$(tput sgr0)
+	BOLD_RED=$(tput bold; tput setaf 1)
+	GREEN=$(tput setaf 2)
+	local mystr=""
+	local fmt="ref=%(refname:short); authordate=%(authordate:relative); commiterdate=%(committerdate); authorname=%(authorname); sha1=%(objectname);"
+	local not_merged="$(git branch --no-merge)"
+	echo -e "==========================================Branches================================================"
+	while read entry; do
+		eval "${entry}"
+		local nomerge=""
+		local files_changed="$(git log "${ref}" --not --remotes=*/master --stat --pretty="format:" | grep '|')"
+		# We'll use a hybrid of the above command and the output of git branch --no-merge to check for changes
+		if [[ ! -z "${files_changed}" ]] || echo "${not_merged}" | grep -q -e "^[ ]*${ref}[ ]*$"; then
+			nomerge="(*)"
+		fi
+		printf "${BLUE}%-30s${RESET}" "${authordate}"
+		printf "${RED}%-25s${RESET}" "${authorname}"
+		printf "${BOLD_WHITE}%s${RESET}${BOLD_RED}%s${RESET}\n" "${ref}" "${nomerge}"
+		if [[ ! -z "${2}" && ! -z "${files_changed}" ]]; then
+			mystr="${mystr}$(printf "%s%s%s:\n " "${RED}" "${ref}" "${RESET}")"
+			while read file_lines; do
+				file_part1="${file_lines%|*}"
+				file_part2="${file_lines##*|}"
+				file_part1="$(sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' <<< "${file_part1}")"
+				file_part2="$(sed -r "s/(\+*)(-*)/${GREEN}\1${RESET}${RED}\2${RESET}/g" <<< "${file_part2}")"
+				mystr="${mystr}$(printf "	%s%-60s%s -%s\n " "${BOLD_WHITE}" "${file_part1}" "${RESET}" "${file_part2}")"
+			done <<< "${files_changed}"
+		fi
+	done <<<"$(git for-each-ref --tcl --sort=-committerdate --format="${fmt}" "${1}")"
+
+	if [[ ! -z "${2}" ]]; then
+		echo -e "\n========================================File Changes=============================================="
+		echo -e "${mystr}"
+	fi
+}
+
+format_git_branches "$@"
+
+# vim: set noet sw=4 ts=4

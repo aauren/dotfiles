@@ -39,4 +39,8 @@ if [[ ! -z ${TMUX_PANE} ]]; then
 	alias pno="tmux display -pt \"${TMUX_PANE:?}\" '#{pane_index}'"
 fi
 
+# Aliases for showing more info about git commands
+alias glbrs='git_branch_info "refs/heads"'
+alias gabrs='git_branch_info "refs"'
+
 # vim: set noet ts=4 sw=4

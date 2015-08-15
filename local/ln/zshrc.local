@@ -138,32 +138,6 @@ load_colors () {
 	eval RESET='$reset_color'
 }
 
-glbrs () {
-	format_git_branches "refs/heads"
-}
-
-gabrs () {
-	format_git_branches "refs"
-}
-
-format_git_branches () {
-	load_colors
-	local mystr=""
-	local fmt="ref=%(refname:short); authordate=%(authordate:relative); commiterdate=%(committerdate); authorname=%(authorname); sha1=%(objectname);"
-	local not_merged="$(git branch --no-merge)"
-	git for-each-ref --tcl --sort=-committerdate --format="${fmt}" "${1}" | \
-		while read entry; do
-			eval "${entry}"
-			local nomerge=""
-			if echo "${not_merged}" | grep -q -e "^[ ]*${ref}[ ]*$"; then
-				nomerge="${BOLD_RED} (*)${RESET}"
-			fi
-			printf "%s%25s%s		" "${BLUE}" "${authordate}" "${RESET}"
-			printf "%s%15s%s		" "${RED}" "${authorname}" "${RESET}"
-			printf "%s%s%s%s\n" "${BOLD_WHITE}" "${ref}" "${RESET}" "${nomerge}"
-		done
-}
-
 # Adds z (directory hopper) to the command line
 source "${HOME}/dotfiles/local/lib/rupa-z/z.sh"
 
