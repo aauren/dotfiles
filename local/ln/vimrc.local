@@ -185,8 +185,8 @@ cmap w!! w !sudo tee > /dev/null %
 " Remap next and previous tab to Ctrl-PgDn and Ctrl-PgUp
 :map <Esc>h :tabp<CR>
 :map <Esc>l :tabn<CR>
-:map <Esc>j :bp<CR>
-:map <Esc>k :bn<CR>
+:map <Esc>j :bn<CR>
+:map <Esc>k :bp<CR>
 
 " Map nerdtree to Ctrl+t
 :map <Leader>t :NERDTreeToggle<CR>
