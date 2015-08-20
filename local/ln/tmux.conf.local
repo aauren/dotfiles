@@ -64,6 +64,12 @@ bind C-y set-window-option synchronize-panes
 bind Tab next-layout
 bind Space copy-mode
 
+# Unbind arrow key movement in favor of VIM style movement
+unbind Left
+unbind Down
+unbind Up
+unbind Right
+
 #### Copy and paste buffer settings ####
 # Set buffer navigation to use vim style motion keys
 setw -g mode-keys v
