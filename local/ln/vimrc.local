@@ -75,6 +75,9 @@ augroup END
 " Shows leading space using the indentLine plugin from Yggdroot
 let g:indentLine_leadingSpaceEnabled = 1
 let g:indentLine_enabled = 0
+
+" Don't run syntastic check on open
+let g:syntastic_check_on_open = 0
 " }}}
 
 " Python pep8 configurations {{{
