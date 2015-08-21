@@ -118,10 +118,17 @@ endfunction
 " My functions (toggle solarized background, etc) {{{
 
 function! MyTogBG()
-  let &background = ( &background == "dark"? "light" : "dark" )
-  if exists("g:colors_name")
-    exe "colorscheme " . g:colors_name
+  redir => s:curr_background
+    silent execute "colorscheme"
+  redir END
+  let s:curr_background = substitute(s:curr_background, '\n', '', '')
+  let &background = ( &background == "dark"? "" : "dark" )
+  if s:curr_background =~? ".*default.*"
+    exe "colorscheme " . s:background
+  else
+    exe "colorscheme default"
   endif
+  let s:background = s:curr_background
 endfunction
 command ToggleBG :call MyTogBG()
 
@@ -165,7 +172,7 @@ map <Leader>e :RunInInteractiveShell
 " Close the quickfix window (for things like pylint)
 map <Leader>c :lclose<CR>
 " Reset the color scheme to the default (in cases with unconfigured terminals)
-map <Leader>csd :colorscheme default<CR>
+map <Leader>csd :ToggleBG<CR>
 " Delete item to the blackhole register (meaning it won't write over the buffer you already have going
 nnoremap <Leader>dd "_dd
 nnoremap <Leader>d "_d
