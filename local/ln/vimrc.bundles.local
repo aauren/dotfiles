@@ -20,3 +20,5 @@ Plug 'mattn/emmet-vim'
 Plug 'fholgado/minibufexpl.vim'
 " Shows +/- along the left side of VIM screen
 Plug 'airblade/vim-gitgutter'
+" Allows for syntax completion and debugging of VIM scripts
+"Plug 'c9s/vim-dev-plugin'
