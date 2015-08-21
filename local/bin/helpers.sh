@@ -41,19 +41,19 @@ is_ip_address() {
 # config format
 parse_ssh_config() {
 	awk '
-	BEGIN { IGNORECASE = 1; output = ""; run = 1 }
+	BEGIN { IGNORECASE = 1; output = "" }
 	$1 == "Host" {
-		if ( run > 1 ) output = output"\n"
-		run = run+1
-		output = output$2;
+		if ( alias != "" ) {
+			output = output alias hostname port "\n"
+		}
+		alias = $2
+		hostname = port = ""
 	}
-	$1 == "HostName" {
-		output = output","$2;
+	$1 == "HostName" { hostname = "," $2 }
+	$1 == "Port" { port = "," $2 }
+	END {
+		print output alias hostname port
 	}
-	$1 == "Port" {
-		output = output","$2
-	}
-	END { print output }
 	' ~/.ssh/config
 }
 
