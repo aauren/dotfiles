@@ -46,11 +46,9 @@ parse_ssh_config() {
 		if ( run > 1 ) output = output"\n"
 		run = run+1
 		output = output$2;
-		next;
 	}
 	$1 == "HostName" {
 		output = output","$2;
-		next;
 	}
 	$1 == "Port" {
 		output = output","$2
