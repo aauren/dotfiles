@@ -154,6 +154,7 @@ function! ToggleCopyable()
   set number!
   exe "LeadingSpaceToggle"
   call MyTogTW()
+  exe "SyntasticToggleMode"
 endfunction
 command ToggleCopyable :call ToggleCopyable()
 
