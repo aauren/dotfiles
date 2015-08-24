@@ -22,3 +22,5 @@ Plug 'fholgado/minibufexpl.vim'
 Plug 'airblade/vim-gitgutter'
 " Allows for syntax completion and debugging of VIM scripts
 "Plug 'c9s/vim-dev-plugin'
+" Awesome python autocompletion for VIM
+Plug 'davidhalter/jedi-vim'
