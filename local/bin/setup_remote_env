@@ -55,16 +55,23 @@ update_home ()
 }
 
 #### Main Program Flow ####
-if \ssh ${SSH_OPTS} ${ssh_conn_str} "[[ -d ${DOTFILE_LOCATION} ]]"; then
-	echo "Dotfiles exist, updating git..."
-	update_git
-	update_home
-else
-	echo "Dotfiles missing, syncing..."
-	rsync ${RSYNC_OPTS} "${LITERAL_DOT_LOC}" "${ssh_conn_str}:${DOTFILE_LOCATION}" &>/dev/null
-	\ssh ${SSH_OPTS} ${ssh_conn_str} "mkdir -p ${VUNDLE_LOC}" 2>/dev/null
-	rsync ${RSYNC_OPTS} "${LIT_VUNDLE_LOC}" "${ssh_conn_str}:${VUNDLE_LOC}" &>/dev/null
-	update_home
-	update_git
-	update_home
-fi
+echo "Syncing dotfiles..."
+rsync ${RSYNC_OPTS} "${LITERAL_DOT_LOC}" "${ssh_conn_str}:${DOTFILE_LOCATION}" &>/dev/null
+\ssh ${SSH_OPTS} ${ssh_conn_str} "mkdir -p ${VUNDLE_LOC}" 2>/dev/null
+rsync ${RSYNC_OPTS} "${LIT_VUNDLE_LOC}" "${ssh_conn_str}:${VUNDLE_LOC}" &>/dev/null
+update_home
+
+# This was the old flow. Keeping it for now in case I ever want to go back
+#if \ssh ${SSH_OPTS} ${ssh_conn_str} "[[ -d ${DOTFILE_LOCATION} ]]"; then
+#	echo "Dotfiles exist, updating git..."
+#	update_git
+#	update_home
+#else
+#	echo "Dotfiles missing, syncing..."
+#	rsync ${RSYNC_OPTS} "${LITERAL_DOT_LOC}" "${ssh_conn_str}:${DOTFILE_LOCATION}" &>/dev/null
+#	\ssh ${SSH_OPTS} ${ssh_conn_str} "mkdir -p ${VUNDLE_LOC}" 2>/dev/null
+#	rsync ${RSYNC_OPTS} "${LIT_VUNDLE_LOC}" "${ssh_conn_str}:${VUNDLE_LOC}" &>/dev/null
+#	update_home
+#	update_git
+#	update_home
+#fi
