@@ -17,7 +17,7 @@ Plug 'mattn/emmet-vim'
 " Useful for tracking down plugins that are messing with you
 "Plug 'dahu/bisectly'
 " Buffer exploration utility (puts buffer names at the top)
-Plug 'fholgado/minibufexpl.vim'
+Plug 'weynhamz/vim-plugin-minibufexpl'
 " Shows +/- along the left side of VIM screen
 Plug 'airblade/vim-gitgutter'
 " Allows for syntax completion and debugging of VIM scripts
