@@ -120,6 +120,8 @@ function! s:Repl()
   return "p@=RestoreRegister()\<cr>"
 endfunction
 
+" Toggles the background and colorscheme on and off (this helps with screens that don't support it or copy/paste
+" operations)
 function! MyTogBG()
   redir => s:curr_background
     silent execute "colorscheme"
@@ -135,6 +137,7 @@ function! MyTogBG()
 endfunction
 command ToggleBG :call MyTogBG()
 
+" Toggles the textwidth ruler on the right (useful for when you don't want autowrap or copy/paste operations)
 function! MyTogTW()
   if &tw
     let s:txtwid = &textwidth
@@ -148,6 +151,7 @@ function! MyTogTW()
 endfunction
 command ToggleTextWidth :call MyTogTW()
 
+" Toggles all of the above, plus some extra to allow for select based copy/paste operations)
 function! ToggleCopyable()
   call MyTogBG()
   set list!
