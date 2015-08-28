@@ -107,7 +107,9 @@ let g:expand_region_text_objects = {
     \ }
 " }}}
 
-" Prevent replacing copy buffer on visual paste (preserve previous copy item on visual paste) {{{
+" My functions (toggle solarized background, etc) {{{
+
+" Prevent replacing copy buffer on visual paste (preserve previous copy item on visual paste)
 " vp doesn't replace paste buffer
 function! RestoreRegister()
   let @" = s:restore_reg
@@ -117,9 +119,6 @@ function! s:Repl()
   let s:restore_reg = @"
   return "p@=RestoreRegister()\<cr>"
 endfunction
-" }}}
-
-" My functions (toggle solarized background, etc) {{{
 
 function! MyTogBG()
   redir => s:curr_background
