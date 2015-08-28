@@ -135,7 +135,7 @@ function! MyTogBG()
   endif
   let s:background = s:curr_background
 endfunction
-command ToggleBG :call MyTogBG()
+command! ToggleBG :call MyTogBG()
 
 " Toggles the textwidth ruler on the right (useful for when you don't want autowrap or copy/paste operations)
 function! MyTogTW()
@@ -149,18 +149,22 @@ function! MyTogTW()
     let &wrapmargin = s:wrapmarg
   endif
 endfunction
-command ToggleTextWidth :call MyTogTW()
+command! ToggleTextWidth :call MyTogTW()
 
 " Toggles all of the above, plus some extra to allow for select based copy/paste operations)
 function! ToggleCopyable()
   call MyTogBG()
   set list!
   set number!
-  exe "LeadingSpaceToggle"
+  if exists(":LeadingSpaceToggle")
+    exe "LeadingSpaceToggle"
+  endif
   call MyTogTW()
-  exe "SyntasticToggleMode"
+  if exists("SyntasticToggleMode")
+    exe "SyntasticToggleMode"
+  endif
 endfunction
-command ToggleCopyable :call ToggleCopyable()
+command! ToggleCopyable :call ToggleCopyable()
 
 " }}}
 
@@ -176,7 +180,7 @@ map <Leader>w :ToggleTextWidth<CR>
 map <Leader>l :set list!<CR>:LeadingSpaceToggle<CR>
 map <Leader>n :set number!<CR>
 map <Leader>r :set relativenumber!<CR>
-map <Leader>e :RunInInteractiveShell 
+map <Leader>e :RunInInteractiveShell<space>
 " Close the quickfix window (for things like pylint)
 map <Leader>c :lclose<CR>
 " Reset the color scheme to the default (in cases with unconfigured terminals)
@@ -186,7 +190,7 @@ nnoremap <Leader>dd "_dd
 nnoremap <Leader>d "_d
 vnoremap <Leader>d "_d
 " Map nerdtree to leader+t
-:map <Leader>t :NERDTreeToggle<CR>
+map <Leader>t :NERDTreeToggle<CR>
 
 " Allow saving of files as sudo when I forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
