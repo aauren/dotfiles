@@ -166,6 +166,21 @@ function! ToggleCopyable()
 endfunction
 command! ToggleCopyable :call ToggleCopyable()
 
+" Augments the existing grep command to remove the problems with the minibufexpl plugin, weird screen artifacts when you
+" us the silent operation with grep, and automatically opening the quickfix pane
+function! MyGrepCommand(...)
+  exe "silent grep " . join(a:000, " ")
+  if exists(":MBEClose")
+    exe "MBEClose"
+  endif
+  copen
+  exe "redraw!"
+  if exists(":MBEOpen")
+    exe "MBEOpen"
+  endif
+endfunction
+command! -nargs=* AG :call MyGrepCommand(<f-args>)
+
 " }}}
 
 " Remapping keys using combos and leaders {{{
@@ -191,6 +206,9 @@ nnoremap <Leader>d "_d
 vnoremap <Leader>d "_d
 " Map nerdtree to leader+t
 map <Leader>t :NERDTreeToggle<CR>
+" Search for item under the current cursor with "k" (search only this file) "K" (search entire working directory)
+map <leader>k :AG <cword> %<CR>
+map <leader>K :AG <cword><CR>
 
 " Allow saving of files as sudo when I forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
