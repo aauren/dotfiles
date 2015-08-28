@@ -16,6 +16,8 @@ set -g allow-rename off
 # Prefix+a causes us to return to previous window
 bind C-a last-window
 
+bind a switch-client -l
+
 # Choose session
 bind s choose-session
 
