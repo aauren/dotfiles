@@ -81,10 +81,24 @@ let g:indentLine_enabled = 0
 let g:syntastic_check_on_open = 0
 " }}}
 
-" Python pep8 configurations {{{
+" Python pep8 configurations and pymode and jedi-vim shortcut configurations {{{
 " Add ignores for annoying pep8 guidelines
 let g:pep8_ignore="E501"
 let g:pymode_lint_ignore="E501"
+
+" Overwrite pymode's run and doc key binding with my own for relative line numbers
+let g:pymode_run_bind = "<C-S-e>"
+let g:pymode_doc_bind = "<C-S-d>"
+
+" Overwrite jedi-vim shortcuts
+let g:jedi#goto_command = "<C-j>d"
+let g:jedi#goto_assignments_command = "<C-j>g"
+let g:jedi#goto_definitions_command = ""
+let g:jedi#documentation_command = "<C-j>k"
+let g:jedi#usages_command = "<C-j>n"
+let g:jedi#completions_command = "<C-Space>"
+let g:jedi#rename_command = "<C-j>r"
+
 " }}}
 
 " Use multiple presses of v to expand and ctrl-v to shrink regions {{{
