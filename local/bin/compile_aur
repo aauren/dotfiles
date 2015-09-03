@@ -1,0 +1,56 @@
+#!/bin/bash
+# This is meant to be run directly after the following:
+#    rm -rf ~/code/arch/*
+#    cd ~/code/arch
+#    cower -dd <package_name>
+#    # for any of the ones that it gives a warning use paci to install
+
+# Declarations
+chkout_dir="${1}"
+declare -A pkg_install_list
+
+# Functions
+install_dep() {
+	local dep="${1}"
+	echo -e "\t${dep}: installing..."
+	pushd "${chkout_dir}/${dep}" >/dev/null
+	exec 5>&1
+	pkg_output="$(makepkg -f 2>&1 | tee >(cat - >&5))"
+	if (($? > 0)); then
+		if grep -q "Missing dependencies" <<<"${pkg_output}"; then
+			sub_deps=$(grep '\->' <<<"${pkg_output}" | sed -r 's/^[^a-z]+([a-zA-Z1-9-]+).*$/\1/g')
+			for sub_dep in ${sub_deps}; do
+				install_dep "${sub_dep}"
+			done
+		else
+			echo "Package did not install, but it's not missing dependencies"
+			return 1
+		fi
+	else
+		pkg_install_list[${dep}]=true
+	fi
+	popd >/dev/null
+	return 0
+}
+
+# Main
+for pkg in "${1}"/*; do
+	pkg_install_list[$(basename "${pkg}")]=false
+done
+
+finished=false
+while [[ ${finished} = false ]]; do
+	finished=true
+	for pkg in "${!pkg_install_list[@]}"; do
+		echo "trying ${pkg}"
+		if [[ ${pkg_install_list[${pkg}]} = false ]]; then
+			if ! install_dep "${pkg}"; then
+				echo "Exiting now!"
+				exit 1
+			fi
+			finished=false
+		else
+			echo -e "\t${pkg}: Already installed!"
+		fi
+	done
+done
