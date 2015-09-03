@@ -15,7 +15,8 @@ install_dep() {
 	echo -e "\t${dep}: installing..."
 	pushd "${chkout_dir}/${dep}" >/dev/null
 	exec 5>&1
-	pkg_output="$(makepkg -f 2>&1 | tee >(cat - >&5))"
+	pkg_output="$(makepkg -fsi --noconfirm 2>&1 | tee >(cat - >&5))"
+	#pkg_output="$(makepkg -fsi --noconfirm 2>&1)"
 	if (($? > 0)); then
 		if grep -q "Missing dependencies" <<<"${pkg_output}"; then
 			sub_deps=$(grep '\->' <<<"${pkg_output}" | sed -r 's/^[^a-z]+([a-zA-Z1-9-]+).*$/\1/g')
