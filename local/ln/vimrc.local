@@ -121,6 +121,17 @@ let g:expand_region_text_objects = {
     \ }
 " }}}
 
+" Persistent undo settings (allows you to get undo back even after closing a file) {{{
+
+if has("persistent_undo")
+  let myUndoDir = expand('$HOME/.vim/undodir/')
+  call system('mkdir ' . myUndoDir)
+  let &undodir = myUndoDir
+  set undofile
+endif
+
+" }}}
+
 " My functions (toggle solarized background, etc) {{{
 
 " Prevent replacing copy buffer on visual paste (preserve previous copy item on visual paste)
