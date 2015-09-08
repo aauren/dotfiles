@@ -5,36 +5,48 @@ else
 	alias ls='ls --color'
 fi
 
-# Add agent forwarding by default to SSH
-alias ssh='cat ~/.ssh/config.d/* >~/.ssh/config; my_ssh'
-
+# Simple, self-explanatory aliases
 alias ll='ls -lrt --color'
 alias vi='vim'
 alias bzip='bzip2'
 alias bunzip='bunzip2'
 alias umerge='emerge --unmerge'
 alias ifconfig='/sbin/ifconfig'
-#alias findmod="find /lib/modules/2.6.27-gentoo-r8/ -type f -iname '*.o' -or -iname '*.ko'"
 alias cd..='cd ..'
 alias more='less'
 alias nano='nano -w'
-alias vim='vim -X'
-alias lsd='find . -maxdepth 1 -type d -exec ls -d {} \; | grep -v "^.$" | cut -c 3-'
 alias duu='ncdu'
-alias psm='ps -eo size,pid,user,command --sort -size | head -10 | awk '"'"'{
-hr[1024**2]="GB"; hr[1024]="MB";
-for (x=1024**3; x>=1024; x/=1024) {
-if ($1>=x) { printf ("%-6.2f %s ", $1/x, hr[x]); break }
-} } { printf ("%-6s %-10s ", $2, $3) }
-{ for ( x=4 ; x<=NF ; x++ ) { printf ("%s ",$x) } print ("\n") }
-'"'"
-alias lessg='less +G'
-alias copy-tbuff='tmux save-buffer - | xsel -ib'
-alias lsof-bypid='(for PID in $(ps axo pid); do echo "${PID} - $(lsof -p ${PID} 2>/dev/null | wc -l)"; done) | sort -nk 3'
-alias sudo='sudo -E '
-alias s='export SHELL=/bin/zsh && sudo -sE'
 alias glgh='git lg | head'
-alias hg='history | grep -i'
+alias hg='history 1 | grep -i'
+
+# Start less at the bottom of the file rather than the beginning
+alias lessg='less +G'
+
+# Copies the tmux buffer to the X clipboard
+alias copy-tbuff='tmux save-buffer - | xsel -ib'
+
+# Starts vim without it trying to connect to the X server (saves time on start when you're at a console)
+alias vim='vim -X'
+
+# Preserves the environment during a sudo operation
+alias sudo='sudo -E '
+
+
+# More complex aliases
+
+# Executes sudo in a way that preserves the current shell and environment
+alias s='export SHELL=/bin/zsh && sudo -sE'
+
+# Lists all of the directories within the current directory (excepting the . directory)
+alias lsd='find . -maxdepth 1 -type d -exec ls -d {} \; | grep -v "^.$" | cut -c 3-'
+
+# Consolidate ssh config from .ssh/config.d and then execute my SSH wrapper
+alias ssh='cat ~/.ssh/config.d/* >~/.ssh/config; my_ssh'
+
+# Find all of the modules that are built against the currently running kernel
+alias findmod="find /lib/modules/$(uname -r)/ -type f -iname '*.o' -or -iname '*.ko'"
+
+# Grabs the tmux pane index and makes it use-able on the CLI
 if [[ ! -z ${TMUX_PANE} ]]; then
 	alias pno="tmux display -pt \"${TMUX_PANE:?}\" '#{pane_index}'"
 fi
@@ -42,5 +54,17 @@ fi
 # Aliases for showing more info about git commands
 alias glbrs='git_branch_info "refs/heads"'
 alias gabrs='git_branch_info "refs"'
+
+# Lists processes sorted by number of open files
+alias lsof-bypid='(for PID in $(ps axo pid); do echo "${PID} - $(lsof -p ${PID} 2>/dev/null | wc -l)"; done) | sort -nk 3'
+
+# Execute ps sorting by memory size listed in a human read-able format
+alias psm='ps -eo size,pid,user,command --sort -size | head -10 | awk '"'"'{
+hr[1024**2]="GB"; hr[1024]="MB";
+for (x=1024**3; x>=1024; x/=1024) {
+if ($1>=x) { printf ("%-6.2f %s ", $1/x, hr[x]); break }
+} } { printf ("%-6s %-10s ", $2, $3) }
+{ for ( x=4 ; x<=NF ; x++ ) { printf ("%s ",$x) } print ("\n") }
+'"'"
 
 # vim: set noet ts=4 sw=4
