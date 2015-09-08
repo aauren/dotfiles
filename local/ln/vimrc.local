@@ -67,8 +67,20 @@ augroup whitespace
   " If you use this alternate pattern, you may want to consider using the following autocmd to let the highlighting show
   " up as soon as you leave insert mode after entering trailing whitespace:
   " :autocmd InsertLeave * redraw!
-  :au InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-  :au InsertLeave * match ExtraWhitespace /\s\+$/
+  :autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+  :autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+
+  " Uses the detectindent plugin to try to figure out what indent this file should use if a modeline is not available
+  if exists(":DetectIndent")
+    " When you can't detect how many spaces make up an indent, prefer 4
+    let g:detectindent_preferred_indent    = 4
+    " When you can't detect spaces vs. tabs, prefer tabs
+    let g:detectindent_preferred_expandtab = 0
+    :autocmd BufReadPost * :DetectIndent
+  endif
+augroup END
+
+augroup indentation
 augroup END
 
 :match ExtraWhitespace /\s\+\%#\@<!$/
