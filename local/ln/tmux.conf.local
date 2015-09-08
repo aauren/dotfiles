@@ -21,6 +21,9 @@ bind a switch-client -l
 # Choose session
 bind s choose-tree
 
+# Create a new window in insert mode
+bind C-c new-window -a
+
 # Prefix+r causes reload of Tmux settings
 bind r source-file ~/.tmux.conf \; display "Reloaded!"
 
