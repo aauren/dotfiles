@@ -19,7 +19,7 @@ bind C-a last-window
 bind a switch-client -l
 
 # Choose session
-bind s choose-session
+bind s choose-tree
 
 # Prefix+r causes reload of Tmux settings
 bind r source-file ~/.tmux.conf \; display "Reloaded!"
