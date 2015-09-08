@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [[ -e "${1}" && -e "${2}" ]]; then
+	sum1="$(md5sum "${1}" | cut -d' ' -f1)"
+	sum2="$(md5sum "${1}" | cut -d' ' -f1)"
+	if [[ "${sum1}" == "${sum2}" ]]; then
+		echo "++MATCH: \"${sum1}\" and \"${sum2}\""
+	else
+		echo "--DIFFER: \"${sum1}\" and \"${sum2}\""
+	fi
+else
+	echo "Can't compare, files don't exist!"
+fi
+
+# vim: set noet ts=4 sw=4 syntax=sh ft=sh
