@@ -1,0 +1,10 @@
+#!/bin/bash
+# Make sure that when you pass parameters to this script you pass them in quotes so that your shell doesn't expand
+# them before they get to the script
+
+for my_file in ${1}; do
+	echo -e "\n++++++++++++++++++++++++++++ File: ${my_file} ++++++++++++++++++++++++++++"
+	cat "${my_file}"
+done
+
+# vim: set noet ts=4 sw=4 syntax=sh ft=sh
