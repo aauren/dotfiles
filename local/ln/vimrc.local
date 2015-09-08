@@ -234,6 +234,8 @@ map <Leader>t :NERDTreeToggle<CR>
 " Search for item under the current cursor with "k" (search only this file) "K" (search entire working directory)
 map <leader>k :AG <cword> %<CR>
 map <leader>K :AG <cword><CR>
+" Toggle undo tree and then focus the original vim pane again with leader-u
+map <leader>u :UndotreeToggle<cr><C-w>l
 
 " Allow saving of files as sudo when I forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
