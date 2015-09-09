@@ -41,5 +41,7 @@
 	path = ~/.gitconfig.user.local
 [rerere]
 	enabled = true
+[branch]
+	autoSetupMerge = always
 
 # vim: set noet ts=2 sw=2
