@@ -31,6 +31,10 @@ alias vim='vim -X'
 # Preserves the environment during a sudo operation
 alias sudo='sudo -E '
 
+# Run emerge in a way that is as nice as possible to other processes
+# The following makes it run in a way that conserves IO and uses the SCHED_IDLE scheduler
+alias emerge='ionice -n3 chrt --idle 0 emerge'
+
 
 # More complex aliases
 
