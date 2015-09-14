@@ -95,8 +95,10 @@ let g:syntastic_check_on_open = 0
 
 " Python pep8 configurations and pymode and jedi-vim shortcut configurations {{{
 " Add ignores for annoying pep8 guidelines
-let g:pep8_ignore="E501"
-let g:pymode_lint_ignore="E501"
+" E501: Lines should be less than 80 characters
+" E265: There should be a space between # and comments
+let g:pep8_ignore="E501,E265"
+let g:pymode_lint_ignore="E501,E265"
 
 " Overwrite pymode's run and doc key binding with my own for relative line numbers
 let g:pymode_run_bind = "<C-S-e>"
