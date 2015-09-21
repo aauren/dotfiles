@@ -1,0 +1,87 @@
+#!/bin/bash
+
+BLUE=$(tput setaf 4)
+BOLD_WHITE=$(tput bold; tput setaf 7)
+BOLD_RED=$(tput bold; tput setaf 1)
+RESET=$(tput sgr0)
+PORTAGE_ROOTS=("${HOME}/git-repos/portage-private" "${HOME}/git-repos/portage-public" "/var/portage/repos/gentoo")
+
+debug() {
+	[[ ${debug} ]] && echo "${@}"
+}
+
+parse_args() {
+	local opt OPTIND OPTARG OPTERR
+
+	while getopts ":hud" opt; do
+		case ${opt} in
+			h|\?)
+				echo "usage: $(basename "${0}") [-u] [-h] [-d] <package>"
+				echo
+				echo "  $(basename "${0}")"
+				echo "  Look for a package with the specified name and give options"
+				echo
+				echo "optional arguments:"
+				echo "  -d          turn on debug output"
+				echo "  -h          show this help message and exit"
+				echo "  -u          update git repositories before querying"
+				exit 0
+			;;
+			d) debug=1;;
+			u) update=1;;
+			?) echo "ERROR: Invalid option: -${OPTARG}" >> /dev/stderr; exit 1;;
+		esac
+	done
+
+	parsed_opts=$((OPTIND-1))
+}
+
+update_repos() {
+	cd "${PORTAGE_ROOTS[0]}" &>/dev/null
+	git pull
+	cd - &>/dev/null
+	cd "${PORTAGE_ROOTS[1]}" &>/dev/null
+	git pull
+	cd - &>/dev/null
+}
+
+parse_args "${@}"
+shift ${parsed_opts}
+
+if [[ ${update} ]]; then
+	update_repos
+fi
+
+declare -i count=1
+declare -a pkgs
+while IFS= read -d $'\n' -r pkg; do
+	pkgs+=("${pkg}")
+	printf "[%s%3i%s] - %s%s%s\n" "${BOLD_RED}" "$((count++))" "${RESET}" "${BLUE}" "${pkg}" "${RESET}"
+done < <(find "${PORTAGE_ROOTS[@]}" -not -path '*profiles*' -iname "*${1}*" -type f | sort)
+
+debug "Array contains: ${pkgs[@]}"
+printf "\n%sType Command (q to quit, @ for all): %s" "${BOLD_WHITE}" "${RESET}"
+read -r uinput
+
+declare -a ucmd
+for param in ${uinput}; do
+	debug "processing: ${param}"
+	if [[ "${param}" == "q" ]]; then
+		exit 0
+	fi
+	if [[ "${param}" == "@" ]]; then
+		ucmd+=(${pkgs[@]})
+		continue
+	fi
+	if [[ "${param}" =~ ^[[:digit:]]+$ ]]; then
+		debug "Digit: ${param}"
+		ucmd+=("${pkgs[$((${param} - 1))]}")
+		debug "Adding '${pkgs[$((${param} - 1))]}' to command array"
+	else
+		debug "Other: ${param}"
+		ucmd+=("${param}")
+	fi
+done
+
+debug "Command: ${ucmd[@]}"
+eval "${ucmd[@]}"
