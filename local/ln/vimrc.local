@@ -60,7 +60,7 @@ augroup END
 
 " Various whitespace highlighting, autocmds for EOL highlights and Yggdroot plugin configs for BOL highlights {{{
 " The following pattern will match trailing whitespace, except when typing at the end of a line.
-:highlight ExtraWhitespace ctermbg=red guibg=red
+highlight ExtraWhitespace ctermbg=red guibg=red
 
 augroup whitespace
   :autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
@@ -81,7 +81,7 @@ augroup whitespace
   endif
 augroup END
 
-:match ExtraWhitespace /\s\+\%#\@<!$/
+match ExtraWhitespace /\s\+\%#\@<!$/
 
 " Shows leading space using the indentLine plugin from Yggdroot
 let g:indentLine_leadingSpaceEnabled = 1
@@ -288,32 +288,32 @@ map <leader>s :SyntasticCheck<CR>
 cmap w!! w !sudo tee > /dev/null %
 
 " Remap jj and JJ in quick succession to escape
-:imap jj <Esc>
-:imap JJ <Esc>
+imap jj <Esc>
+imap JJ <Esc>
 
 " Set tab merge alias to vertically split current tab and the tab to the right (or barring that, to the left)
 " To put them back to tabs afterward, type CTRL+w, SHIFT+t
-:map <C-t> <esc>:Tabmerge right<CR>
+map <C-t> <esc>:Tabmerge right<CR>
 
 " Remap next and previous tab to Ctrl-PgDn and Ctrl-PgUp
-:map <Esc>h :tabp<CR>
-:map <Esc>l :tabn<CR>
-:map <Esc>j :bn<CR>
-:map <Esc>k :bp<CR>
+map <Esc>h :tabp<CR>
+map <Esc>l :tabn<CR>
+map <Esc>j :bn<CR>
+map <Esc>k :bp<CR>
 
 " Add control based navigation to insert mode
-:map <C-G> <C-Right>
-:map! <C-G> <C-Right>
-:map <C-F> <C-Left>
-:map! <C-F> <C-Left>
-:map <C-J> ^
-:inoremap <C-J> <C-o>^
-:map <C-K> $
-:inoremap <C-K> <C-o>$
+map <C-G> <C-Right>
+map! <C-G> <C-Right>
+map <C-F> <C-Left>
+map! <C-F> <C-Left>
+map <C-J> ^
+inoremap <C-J> <C-o>^
+map <C-K> $
+inoremap <C-K> <C-o>$
 
 " Add shortcut for lnext and lprev with CTRL+n and CTRL+m
-:map <C-n> :lprev<CR>
-:map <C-m> :lnext<CR>
+map <C-n> :lprev<CR>
+map <C-m> :lnext<CR>
 
 " Jump to the end of the text you just pasted
 vnoremap <silent> y y`]
