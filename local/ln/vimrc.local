@@ -55,6 +55,7 @@ augroup filetypes
   autocmd BufRead,BufNewFile */deploy/config/* set filetype=upconf-template
   autocmd Filetype json let b:indentLine_ConcealOptionSet = 1
 augroup END
+
 " }}}
 
 " Various whitespace highlighting, autocmds for EOL highlights and Yggdroot plugin configs for BOL highlights {{{
@@ -78,9 +79,6 @@ augroup whitespace
     let g:detectindent_preferred_expandtab = 0
     :autocmd BufReadPost * :DetectIndent
   endif
-augroup END
-
-augroup indentation
 augroup END
 
 :match ExtraWhitespace /\s\+\%#\@<!$/
