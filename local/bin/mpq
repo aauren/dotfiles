@@ -37,12 +37,12 @@ parse_args() {
 }
 
 update_repos() {
-	cd "${PORTAGE_ROOTS[0]}" &>/dev/null
+	cd "${PORTAGE_ROOTS[0]}" &>/dev/null || exit
 	git pull
-	cd - &>/dev/null
-	cd "${PORTAGE_ROOTS[1]}" &>/dev/null
+	cd - &>/dev/null || exit
+	cd "${PORTAGE_ROOTS[1]}" &>/dev/null || exit
 	git pull
-	cd - &>/dev/null
+	cd - &>/dev/null || exit
 }
 
 parse_args "${@}"
@@ -59,7 +59,7 @@ while IFS= read -d $'\n' -r pkg; do
 	printf "[%s%3i%s] - %s%s%s\n" "${BOLD_RED}" "$((count++))" "${RESET}" "${BLUE}" "${pkg}" "${RESET}"
 done < <(find "${PORTAGE_ROOTS[@]}" -not -path '*profiles*' -iname "*${1}*" -type f | sort)
 
-debug "Array contains: ${pkgs[@]}"
+debug "Array contains: ${pkgs[*]}"
 printf "\n%sType Command (q to quit, @ for all): %s" "${BOLD_WHITE}" "${RESET}"
 read -r uinput
 
@@ -75,13 +75,13 @@ for param in ${uinput}; do
 	fi
 	if [[ "${param}" =~ ^[[:digit:]]+$ ]]; then
 		debug "Digit: ${param}"
-		ucmd+=("${pkgs[$((${param} - 1))]}")
-		debug "Adding '${pkgs[$((${param} - 1))]}' to command array"
+		ucmd+=("${pkgs[$(( param - 1 ))]}")
+		debug "Adding '${pkgs[$(( param - 1 ))]}' to command array"
 	else
 		debug "Other: ${param}"
 		ucmd+=("${param}")
 	fi
 done
 
-debug "Command: ${ucmd[@]}"
+debug "Command: ${ucmd[*]}"
 eval "${ucmd[@]}"
