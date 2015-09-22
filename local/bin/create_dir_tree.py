@@ -6,6 +6,7 @@ import subprocess
 import shutil
 import sys
 
+
 def setup_arg_parser():
     argp = argparse.ArgumentParser()
     argp.add_argument('-r', '--root', dest='root_dir', help='The root of the directory that you '
@@ -20,14 +21,17 @@ def setup_arg_parser():
                       'instead of using the root parameter', action='store_true')
     return argp
 
+
 def print_args(args):
     print('Arguments are:')
     for k, v in args.items():
         print('\t"{}": "{}"'.format(k, v))
     print('\n')
 
+
 def get_directory_tree(root_dir):
     return subprocess.check_output(['tree', '-J', root_dir], universal_newlines=True)
+
 
 def create_directory_tree(directory_tree, target_dir, pretend):
     for item in directory_tree:
