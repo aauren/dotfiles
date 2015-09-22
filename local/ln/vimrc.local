@@ -89,8 +89,6 @@ augroup END
 let g:indentLine_leadingSpaceEnabled = 1
 let g:indentLine_enabled = 0
 
-" Don't run syntastic check on open
-let g:syntastic_check_on_open = 0
 " }}}
 
 " Python pep8 configurations and pymode and jedi-vim shortcut configurations {{{
@@ -112,6 +110,25 @@ let g:jedi#documentation_command = "<C-j>k"
 let g:jedi#usages_command = "<C-j>n"
 let g:jedi#completions_command = "<C-Space>"
 let g:jedi#rename_command = "<C-j>r"
+
+" }}}
+
+" Syntastic specific configurations {{{
+
+" Don't run syntastic check on open
+let g:syntastic_check_on_open = 0
+" Don't run syntastic check when we're just going to close the window anyway
+let g:syntastic_check_on_wq        = 0
+" Aggregate errors from multiple checkers instead of stopping
+let g:syntastic_aggregate_errors   = 1
+" Disable python checkers since we have pymode for that anyway
+let g:syntastic_python_checkers    = []
+let g:syntastic_python_python_exec = '/bin/true'
+" Have syntastic user better symbols for marking errors and warnings
+let g:syntastic_error_symbol = "✗"
+let g:syntastic_warning_symbol = "⚠"
+" Automatically close and open the location list when errors are detected
+let g:syntastic_auto_loc_list = 1
 
 " }}}
 
@@ -250,6 +267,8 @@ map <leader>k :AG <cword> %<CR>
 map <leader>K :AG <cword><CR>
 " Toggle undo tree and then focus the original vim pane again with leader-u
 map <leader>u :UndotreeToggle<cr><C-w>l
+" Force a Synstastic check
+map <leader>s :SynasticCheck
 
 " Allow saving of files as sudo when I forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
