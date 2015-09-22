@@ -311,6 +311,10 @@ cmap w!! w !sudo tee > /dev/null %
 :map <C-K> $
 :inoremap <C-K> <C-o>$
 
+" Add shortcut for lnext and lprev with CTRL+n and CTRL+m
+:map <C-n> :lprev<CR>
+:map <C-m> :lnext<CR>
+
 " Jump to the end of the text you just pasted
 vnoremap <silent> y y`]
 vnoremap <silent> p p`]
