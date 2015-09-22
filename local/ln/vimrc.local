@@ -233,6 +233,23 @@ function! MyGrepCommand(...)
 endfunction
 command! -nargs=* AG :call MyGrepCommand(<f-args>)
 
+" Augments existing command to show and hide syntastic errors
+function! MyErrorsCommand()
+  if exists(":MBEClose")
+    exe "MBEClose"
+  endif
+  if exists(":Errors")
+    exe "Errors"
+  endif
+  exe "redraw!"
+  if exists(":MBEOpen")
+    exe "MBEOpen"
+  endif
+  if ! empty(getloclist(0))
+    exe "wincmd j"
+  endif
+endfunction
+
 " }}}
 
 " Remapping keys using combos and leaders {{{
@@ -247,7 +264,8 @@ map <Leader>w :ToggleTextWidth<CR>
 map <Leader>l :set list!<CR>:LeadingSpaceToggle<CR>
 map <Leader>n :set number!<CR>
 map <Leader>r :set relativenumber!<CR>
-map <Leader>e :RunInInteractiveShell<space>
+" Shows syntastic errors location window in a way that won't affect MiniBufExplorer
+map <Leader>e :call MyErrorsCommand()<CR>
 " Close the quickfix window (for things like pylint)
 map <Leader>c :lclose<CR>
 " Reset the color scheme to the default (in cases with unconfigured terminals)
