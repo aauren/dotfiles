@@ -16,7 +16,7 @@ alias cd..='cd ..'
 alias more='less'
 alias nano='nano -w'
 alias duu='ncdu'
-alias glgh='git lg | head'
+alias glgh='git lg | head -n 20'
 alias hg='history 1 | grep -i'
 
 # Start less at the bottom of the file rather than the beginning
