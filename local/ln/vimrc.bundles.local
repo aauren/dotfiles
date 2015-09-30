@@ -16,11 +16,13 @@ Plug 'terryma/vim-expand-region'
 Plug 'mattn/emmet-vim'
 " Useful for tracking down plugins that are messing with you
 "Plug 'dahu/bisectly'
-" Buffer exploration utility (puts buffer names at the top)
-Plug 'weynhamz/vim-plugin-minibufexpl'
+" Buffer exploration utility (puts buffer names at the top) disabled in favor of airline
+"Plug 'weynhamz/vim-plugin-minibufexpl'
 " Shows +/- along the left side of VIM screen
 Plug 'airblade/vim-gitgutter'
 " Allows for syntax completion and debugging of VIM scripts
 "Plug 'c9s/vim-dev-plugin'
 " Awesome python autocompletion for VIM
 Plug 'davidhalter/jedi-vim'
+" Airline plugin puts bars at the top and bottom
+Plug 'bling/vim-airline'
