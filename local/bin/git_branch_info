@@ -11,18 +11,24 @@ format_git_branches () {
 	local fmt="ref=%(refname:short); authordate=%(authordate:relative); commiterdate=%(committerdate); authorname=%(authorname); sha1=%(objectname);"
 	local not_merged="$(git branch --no-merge)"
 	echo -e "==========================================Branches================================================"
+	local -i count=1
+	local -a branches
 	while read entry; do
 		eval "${entry}"
 		local nomerge=""
 		local files_changed="$(git log "${ref}" --not --remotes=*/master --stat --pretty="format:" | grep '|')"
+		branches+=("${ref}")
 		# We'll use a hybrid of the above command and the output of git branch --no-merge to check for changes
-		if [[ ! -z "${files_changed}" ]] || echo "${not_merged}" | grep -q -e "^[ ]*${ref}[ ]*$"; then
+		if [[ "${files_changed}" ]] || echo "${not_merged}" | grep -q -e "^[ ]*${ref}[ ]*$"; then
 			nomerge="(*)"
+		fi
+		if [[ "${2}" && "${2}" == "-s" ]]; then
+			printf "${BOLD_RED}[%3i]${RESET} " $((count++))
 		fi
 		printf "${BLUE}%-30s${RESET}" "${authordate}"
 		printf "${RED}%-25s${RESET}" "${authorname}"
 		printf "${BOLD_WHITE}%s${RESET}${BOLD_RED}%s${RESET}\n" "${ref}" "${nomerge}"
-		if [[ ! -z "${2}" && ! -z "${files_changed}" ]]; then
+		if [[ "${2}" && "${2}" == "-v" && "${files_changed}" ]]; then
 			mystr="${mystr}$(printf "%s%s%s:\n " "${RED}" "${ref}" "${RESET}")"
 			while read file_lines; do
 				file_part1="${file_lines%|*}"
@@ -34,7 +40,21 @@ format_git_branches () {
 		fi
 	done <<<"$(git for-each-ref --tcl --sort=-committerdate --format="${fmt}" "${1}")"
 
-	if [[ ! -z "${2}" ]]; then
+	if [[ "${2}" && "${2}" == "-s" ]]; then
+		printf "\n%sSelect Branch to Switch to (q to quit): %s" "${BOLD_WHITE}" "${RESET}"
+		read -r uinput
+		if [[ "${uinput}" == "q" ]]; then
+			exit 0
+		fi
+		if ! [[ ${uinput} =~ ^[0-9]+$ && "$((uinput - 1))" -lt "${#branches[@]}" ]]; then
+			echo "Could not validate input"
+			exit 1
+		fi
+		echo "Switching to: ${branches[$((uinput - 1))]}"
+		git co "${branches[$((uinput - 1))]}"
+	fi
+
+	if [[ "${2}" && "${2}" == "-v" ]]; then
 		echo -e "\n========================================File Changes=============================================="
 		echo -e "${mystr}"
 	fi
