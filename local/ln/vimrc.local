@@ -218,8 +218,11 @@ function! ToggleCopyable()
     exe "LeadingSpaceToggle"
   endif
   call MyTogTW()
-  if exists("SyntasticToggleMode")
+  if exists(":SyntasticToggleMode")
     exe "SyntasticToggleMode"
+  endif
+  if exists(":GitGutterToggle")
+    exe "GitGutterToggle"
   endif
 endfunction
 command! ToggleCopyable :call ToggleCopyable()
