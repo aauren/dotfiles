@@ -33,11 +33,17 @@ else
 endif
 " }}}
 
-" Various items for NerdTree (Like close NerdTree when all other buffers are closed) {{{
+" Various items for NerdTree, and other plugins (Like close NerdTree when all other buffers are closed) {{{
 
 augroup nerdtree
   autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 augroup END
+
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#hunks#enabled=1
+let g:airline#extensions#branch#enabled=1
+let g:airline_theme="ubaryd"
 
 " }}}
 
