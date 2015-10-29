@@ -90,6 +90,9 @@ bind -t vi-copy 'C-g' next-word
 bind -t vi-copy 'C-j' start-of-line
 bind -t vi-copy 'C-k' end-of-line
 
+bind v select-pane -L \; copy-mode \; select-pane -L \; copy-mode \; select-pane -L
+bind V select-pane -L \; send-keys 'q' \; select-pane -L \; send-keys 'q' \; select-pane -L
+
 ##### Setup Mouse Commands ####
 #setw -g mode-mouse on
 ## Allows to select pane by clicking into it
