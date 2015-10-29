@@ -117,6 +117,10 @@ bindkey -M isearch '^F' history-incremental-search-forward
 #setopt inc_append_history # Not needed because it's already in the parent zshrc, but leaving here for completeness
 setopt share_history
 
+# Increase History size, to be gigantic
+HISTSIZE=32768
+SAVEHIST=32768
+
 # re-sets yank and kill shortcuts to bash/emacs mode
 bindkey -M viins '^P' push-line-or-edit
 bindkey -M viins '^Y' yank
