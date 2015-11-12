@@ -51,7 +51,7 @@ function TRAPINT() {
 }
 
 dir_info_prompt () {
-	print -P '${SSH_CONNECTION+"%{$fg_bold[green]%}%n@%m:"}%{$fg_bold[blue]%}%~%{$reset_color%}'
+	print -P '${SSH_CONNECTION+"%{$fg_bold[green]%}%n@%M:"}%{$fg_bold[blue]%}%~%{$reset_color%}'
 }
 rel_info_prompt () {
 	if [[ -e /etc/gaikai-release ]]; then
