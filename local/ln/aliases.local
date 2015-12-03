@@ -19,6 +19,7 @@ alias duu='ncdu'
 alias glgh='git lg | head -n 20'
 alias hg='history 1 | grep -i'
 alias cgrep='grep --color=always'
+alias cp='cp --reflink=auto'
 
 # Start less at the bottom of the file rather than the beginning
 alias lessg='less +G'
