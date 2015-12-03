@@ -57,7 +57,11 @@ declare -a pkgs
 while IFS= read -d $'\n' -r pkg; do
 	pkgs+=("${pkg}")
 	printf "[%s%3i%s] - %s%s%s\n" "${BOLD_RED}" "$((count++))" "${RESET}" "${BLUE}" "${pkg}" "${RESET}"
-done < <(find "${PORTAGE_ROOTS[@]}" -not -path '*profiles*' -iname "*${1}*" -type f | sort -V)
+done < <(find "${PORTAGE_ROOTS[@]}" \
+	-not -path '*profiles*' \
+	-not -path '*metadata*' \
+	-not -path '*.git*' \
+	-iname "*${1}*" -type f | sort -V)
 
 debug "Array contains: ${pkgs[*]}"
 printf "\n%sType Command (q to quit, @ for all): %s" "${BOLD_WHITE}" "${RESET}"
