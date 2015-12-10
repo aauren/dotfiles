@@ -27,6 +27,9 @@ bind f command-prompt -p "Go To Window:" "find-window -N %%"
 # Create a new window in insert mode
 bind C-c new-window -a
 
+# Go to the next window that has activity
+bind C-n next-window -a
+
 # Prefix+r causes reload of Tmux settings
 bind r source-file ~/.tmux.conf \; display "Reloaded!"
 
