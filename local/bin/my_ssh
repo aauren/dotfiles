@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# shellcheck source=/dev/null
 source "${HOME}/bin/helpers.sh"
 
 OPTIND=1
@@ -44,6 +45,7 @@ main ()
 	# Separate host string into parts
 	if [[ "${HOST}" == *@* ]]; then
 		hostname="${HOST##*@}"
+		# shellcheck disable=SC2034
 		username="${HOST%@*}"
 	else
 		hostname="${HOST}"
