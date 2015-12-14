@@ -19,8 +19,9 @@ main ()
 
 
 	# Check to see if an SSH port is explicitely defined in ssh config files
-	export my_ssh_port="$(parse_ssh_config | grep "${hostname}" |cut -d',' -f 3)"
-	export unaliased_ssh_host="$(resolve_host_from_ssh_config ${hostname})"
+	my_ssh_port="$(parse_ssh_config | grep "${hostname}" |cut -d',' -f 3)"
+	unaliased_ssh_host="$(resolve_host_from_ssh_config "${hostname}")"
+	export my_ssh_port unaliased_ssh_host
 
 	echo "Checking Host Status..."
 	is_node_up "${unaliased_ssh_host}" "${my_ssh_port:-22}"
@@ -33,7 +34,8 @@ main ()
 		echo "Setting Up Remove Env..."
 		setup_remote_env "${HOST}" "${unaliased_ssh_host}" "${my_ssh_port}"
 	fi
-	\ssh -Aq ${HOST} || RETVAL=${?}
+	# Command here will run SSH as the literally SSH and not loop back into this wrapper script
+	command ssh -Aq "${HOST}" || RETVAL=${?}
 
 	printf "\nSSH Exit Code: %d\n\n" ${RETVAL}
 	printf "\n%s\n\n" "$(date)"
@@ -42,6 +44,6 @@ main ()
 }
 
 time while : ; do
-	main ${1} && break
+	main "${1}" && break
 	sleep 15
 done
