@@ -1,3 +1,6 @@
+# Don't log to history if the command is prepended with a space
+setopt histignorespace
+
 if [[ $(uname -a) == *"Darwin"* ]]; then
 	SED_OPTS='-E'
 else
