@@ -33,6 +33,10 @@ bind C-n next-window -a
 # Clear activity marker on all windows
 bind C-k kill-session -C
 
+# Use PageUp to scroll up in the tmux copy buffer, unless we're in an alternate screen application like tmux or vim,
+# in which case you should just send them the PageUp key
+bind-key -T root PPage if-shell -F "#{alternate_on}" "send-keys PPage" "copy-mode -eu"
+
 # Prefix+r causes reload of Tmux settings
 bind r source-file ~/.tmux.conf \; display "Reloaded!"
 
