@@ -30,6 +30,9 @@ bind C-c new-window -a
 # Go to the next window that has activity
 bind C-n next-window -a
 
+# Clear activity marker on all windows
+bind C-k kill-session -C
+
 # Prefix+r causes reload of Tmux settings
 bind r source-file ~/.tmux.conf \; display "Reloaded!"
 
