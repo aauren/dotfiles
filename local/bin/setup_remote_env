@@ -3,12 +3,19 @@
 #### Constants ####
 SSH_OPTS="-A -o LogLevel=Error -o BatchMode=yes -o ConnectTimeout=5"
 RSYNC_OPTS="-rpt --size-only --ignore-times"
+
+# Dotfile location
 DOTFILE_LOCATION='${HOME}/dotfiles/'
 LITERAL_DOT_LOC="${HOME}/dotfiles/"
+
+# Vundle Location
 VUNDLE_LOC='${HOME}/.vim/bundle/'
 LIT_VUNDLE_LOC="${HOME}/.vim/bundle/"
+
+# Vim autoload Location
 VIMAUTO_LOC='${HOME}/.vim/autoload/'
 LIT_VIMAUTO_LOC="${HOME}/.vim/autoload/"
+
 GIT_REMOTE_UPDATE_COMMANDS="cd ${DOTFILE_LOCATION} && \
 	git stash &>/dev/null && \
 	git pull replaceme master &>/dev/null && \
@@ -37,12 +44,12 @@ update_git ()
 	IFS=${IFS_BAK}
 	for gremote in "${git_remotes[@]}"; do
 		url=$(grep -A2 "${gremote}" "${LITERAL_DOT_LOC}.git/config" | grep url | sed ${SED_OPTS} ${GIT_URL_EXTRACT})
-		if [[ $(\ssh ${SSH_OPTS} ${ssh_conn_str} "PATH=${PATH}:${DOTFILE_LOCATION}/local/bin is_node_up -n ${url} 22 &>/dev/null && \
+		if [[ $(command ssh ${SSH_OPTS} ${ssh_conn_str} "PATH=${PATH}:${DOTFILE_LOCATION}/local/bin is_node_up -n ${url} 22 &>/dev/null && \
 			echo ok") == "ok" ]]; then
 			echo "Syncing with ${url}"
-			\ssh ${SSH_OPTS} ${ssh_conn_str} "PATH=${PATH}:${DOTFILE_LOCATION}/local/bin ssh_key_del ${url} &>/dev/null"
+			command ssh ${SSH_OPTS} ${ssh_conn_str} "PATH=${PATH}:${DOTFILE_LOCATION}/local/bin ssh_key_del ${url} &>/dev/null"
 			git_update_cmd=${GIT_REMOTE_UPDATE_COMMANDS//replaceme/${gremote}}
-			if [[ $(\ssh ${SSH_OPTS} ${ssh_conn_str} ${git_update_cmd}) == "ok" ]]; then
+			if [[ $(command ssh ${SSH_OPTS} ${ssh_conn_str} ${git_update_cmd}) == "ok" ]]; then
 				echo "Sync successful"
 				break
 			fi
@@ -53,13 +60,13 @@ update_git ()
 update_home ()
 {
 	echo "Updating home env..."
-	\ssh ${SSH_OPTS} ${ssh_conn_str} ${UPDATE_HOME_COMMANDS}
+	command ssh ${SSH_OPTS} ${ssh_conn_str} ${UPDATE_HOME_COMMANDS}
 }
 
 #### Main Program Flow ####
 echo "Syncing dotfiles..."
 rsync ${RSYNC_OPTS} "${LITERAL_DOT_LOC}" "${ssh_conn_str}:${DOTFILE_LOCATION}" &>/dev/null
-\ssh ${SSH_OPTS} ${ssh_conn_str} "mkdir -p ${VUNDLE_LOC}" 2>/dev/null
+command ssh ${SSH_OPTS} ${ssh_conn_str} "mkdir -p ${VUNDLE_LOC}" 2>/dev/null
 rsync ${RSYNC_OPTS} "${LIT_VUNDLE_LOC}" "${ssh_conn_str}:${VUNDLE_LOC}" &>/dev/null
 rsync ${RSYNC_OPTS} "${LIT_VIMAUTO_LOC}" "${ssh_conn_str}:${VIMAUTO_LOC}" &>/dev/null
 update_home
