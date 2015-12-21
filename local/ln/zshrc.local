@@ -119,6 +119,9 @@ if [[ -e ${HOME}/bin ]]; then
 	export PATH=${HOME}/bin:${PATH}
 fi
 
+# Enter VI mode with jj
+bindkey jj vi-cmd-mode
+
 # Switch to incremental pattern search, plus ability to go forward and backward
 bindkey -M viins '^R' history-incremental-pattern-search-backward
 bindkey -M vicmd '/' history-incremental-pattern-search-backward
