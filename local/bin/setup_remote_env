@@ -7,6 +7,8 @@ DOTFILE_LOCATION='${HOME}/dotfiles/'
 LITERAL_DOT_LOC="${HOME}/dotfiles/"
 VUNDLE_LOC='${HOME}/.vim/bundle/'
 LIT_VUNDLE_LOC="${HOME}/.vim/bundle/"
+VIMAUTO_LOC='${HOME}/.vim/autoload/'
+LIT_VIMAUTO_LOC="${HOME}/.vim/autoload/"
 GIT_REMOTE_UPDATE_COMMANDS="cd ${DOTFILE_LOCATION} && \
 	git stash &>/dev/null && \
 	git pull replaceme master &>/dev/null && \
@@ -59,6 +61,7 @@ echo "Syncing dotfiles..."
 rsync ${RSYNC_OPTS} "${LITERAL_DOT_LOC}" "${ssh_conn_str}:${DOTFILE_LOCATION}" &>/dev/null
 \ssh ${SSH_OPTS} ${ssh_conn_str} "mkdir -p ${VUNDLE_LOC}" 2>/dev/null
 rsync ${RSYNC_OPTS} "${LIT_VUNDLE_LOC}" "${ssh_conn_str}:${VUNDLE_LOC}" &>/dev/null
+rsync ${RSYNC_OPTS} "${LIT_VIMAUTO_LOC}" "${ssh_conn_str}:${VIMAUTO_LOC}" &>/dev/null
 update_home
 
 # This was the old flow. Keeping it for now in case I ever want to go back
