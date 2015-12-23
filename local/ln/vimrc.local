@@ -276,6 +276,13 @@ augroup ExportKeys
   autocmd bufenter * if (winnr("$") == 1 && exists("b:mappings")) | q | endif
 augroup END
 
+" Split the current buffer and rotate main screen to previous buffer
+function! VSplitCurrentBuffer()
+  vs
+  wincmd h
+  bp
+endfunction
+
 " }}}
 
 " Remapping keys using combos and leaders {{{
@@ -313,6 +320,8 @@ map <leader>s :SyntasticCheck<CR>
 map <leader>j :%!python -m json.tool<CR>
 " Dump all of the current keys bindings/mappings to a file and open it
 map <leader>kd :call ExportKeys()<CR>
+" Split the current buffer to the other vertical
+map <leader>vs :call VSplitCurrentBuffer()<CR>
 
 " Allow saving of files as sudo when I forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
