@@ -1,12 +1,25 @@
-# Don't log to history if the command is prepended with a space
-setopt histignorespace
-
+# OS Specific Settings {{{
 if [[ $(uname -a) == *"Darwin"* ]]; then
 	SED_OPTS='-E'
 else
 	SED_OPTS='-r'
 fi
+# }}}
 
+# Variable and Option Settings {{{
+# Don't log to history if the command is prepended with a space
+setopt histignorespace
+
+# Shared command history
+#setopt inc_append_history # Not needed because it's already in the parent zshrc, but leaving here for completeness
+setopt share_history
+
+# Increase History size, to be gigantic
+HISTSIZE=32768
+SAVEHIST=32768
+# }}}
+
+# SSH Agent Setup {{{
 # Command to start up ssh-agen if there is an SSH key in your profile
 if [[ -z ${SSH_AUTH_SOCK} && -z $(pgrep ssh-agent) ]]; then
 	eval $(ssh-agent)
@@ -21,7 +34,9 @@ for file in $(ls ${HOME}/.ssh/id*.pub 2> /dev/null); do
 		ssh-add ${identity}
 	fi
 done
+# }}}
 
+# ZSH Prompt Setup {{{
 # Changes prompt to include information about Git repos and what zvim mode we're in
 source "${HOME}/dotfiles/local/lib/git_prompt/git_prompt.sh"
 local vi_normal_marker="[%{$fg[magenta]%}N%{$reset_color%}]"
@@ -63,13 +78,9 @@ rel_info_prompt () {
 }
 export PROMPT='$(dir_info_prompt) $(rel_info_prompt) $(git_super_status)
 %(?.%{$fg[green]%}[0].%{$fg[red]%}[%?])%{$reset_color%}${vi_mode}%# '
+# }}}
 
-# Binds keys appropriately so that special keys like Home, End, and Delete work
-# These maps can be created by running "sed -n l" and then typing the HOME, END, INSERT, and DELETE keys
-# once you get the output, add it to a new map, then you can either manually or automatically source it.
-#source "${HOME}/.keys/00-map"
-
-# create a zkbd compatible hash;
+# Key and Termcap Settings {{{
 # to add other keys to this hash, see: man 5 terminfo
 typeset -A key
 
@@ -113,12 +124,9 @@ function zle-line-finish () {
 }
 zle -N zle-line-init
 zle -N zle-line-finish
+# }}}
 
-# Add local bin file
-if [[ -e ${HOME}/bin ]]; then
-	export PATH=${HOME}/bin:${PATH}
-fi
-
+# Custom Key Bindings and Shortcuts {{{
 # Enter VI mode with jj
 bindkey jj vi-cmd-mode
 
@@ -127,14 +135,6 @@ bindkey -M viins '^R' history-incremental-pattern-search-backward
 bindkey -M vicmd '/' history-incremental-pattern-search-backward
 bindkey -M isearch '^R' history-incremental-search-backward
 bindkey -M isearch '^F' history-incremental-search-forward
-
-# Shared command history
-#setopt inc_append_history # Not needed because it's already in the parent zshrc, but leaving here for completeness
-setopt share_history
-
-# Increase History size, to be gigantic
-HISTSIZE=32768
-SAVEHIST=32768
 
 # re-sets yank and kill shortcuts to bash/emacs mode
 bindkey -M viins '^P' push-line-or-edit
@@ -147,16 +147,21 @@ bindkey -M viins '^G' forward-word
 bindkey -M viins '^F' backward-word
 bindkey -M viins '^J' vi-beginning-of-line
 bindkey -M viins '^K' vi-end-of-line
+# }}}
 
+# Local Functions (tmux_info, gitcm, load_colors, ff, fe) {{{
+# Displays the tmux var valued passed as the first parameter
 tmux_info() {
 	local tmux_var="${1}"
 	tmux display -pt "${TMUX_PANE:?}" "#{${tmux_var}}"
 }
 
+# Automatically creates a git commit message based on the files that are staged and prints it on the line
 gitcm () {
 	((sleep 0.1 && tmux send-keys -t "$(tmux_info session_name):$(tmux_info window_name).$(tmux_info pane_index)" "$(echo "git cm \"$(git diff --name-only --cached | grep -o '[^/]*$' | sed ':a;N;$!ba;s/\n/ \& /g'): ")") &)
 }
 
+# Loads a bunch of color variables into ZSH so that you can reference them as a variable by their name
 load_colors () {
 	autoload colors
 	for COLOR in RED GREEN YELLOW BLUE MAGENTA CYAN BLACK WHITE; do
@@ -166,15 +171,31 @@ load_colors () {
 	eval RESET='$reset_color'
 }
 
+# Find a file with a pattern in name
+ff() { find . -type f -iname '*'$*'*' -ls ; }
+
+# Find a file with pattern $1 in name and Execute $2 on it
+fe() { find . -type f -iname '*'$1'*' -exec "${2:-file}" {} \;  ; }
+# }}}
+
+# Additional File Sourcing (.zshrc.user.local & z) {{{
 # Adds z (directory hopper) to the command line
 source "${HOME}/dotfiles/local/lib/rupa-z/z.sh"
 
-# Add additional zsh functions
+# Add additional zsh functions not in git
 if [[ -e "${HOME}/.zshrc.user.local" ]]; then
 	source "${HOME}/.zshrc.user.local"
+fi
+# }}}
+
+# Path Additions and Cleanup {{{
+# Add local bin file
+if [[ -e ${HOME}/bin ]]; then
+	PATH=${HOME}/bin:${PATH}
 fi
 
 # Finally clean up the path by removing duplicate entries
 PATH=$(awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}' <<< "${PATH}")
+# }}}
 
-# vim: set noet ts=4 sw=4
+# vim: set noet ts=4 sw=4 fdm=marker
