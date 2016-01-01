@@ -1,0 +1,7 @@
+#!/bin/bash
+
+grep '!help!' "${HOME}/dotfiles/local/ln/vimrc.local" | sed 's/" !help! //g'
+
+echo "modeline [[["
+echo "vim: fdm=marker foldmarker=[[[,]]] foldnestmax=1 ft=text syntax=text"
+echo "]]]"
