@@ -39,6 +39,11 @@ augroup nerdtree
   autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 augroup END
 
+" If the any of the scratch buffers (opened in the functions below) is the last window open, then close it and exit vim
+augroup scratchbuffer
+  autocmd bufenter * if (winnr("$") == 1 && exists("b:scratch")) | q | endif
+augroup END
+
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#hunks#enabled=1
@@ -135,8 +140,7 @@ let g:syntastic_warning_symbol = "⚠"
 " }}}
 
 " Use multiple presses of v to expand and ctrl-v to shrink regions {{{
-vmap v <Plug>(expand_region_expand)
-vmap <C-v> <Plug>(expand_region_shrink)
+" Actual mappings down in the binding section, see: expand_region_
 " Default settings. (NOTE: Remove comments in dictionary before sourcing)
 let g:expand_region_text_objects = {
     \ 'iw'  :0,
@@ -167,8 +171,10 @@ endif
 
 " My functions (toggle solarized background, etc) {{{
 
-" Prevent replacing copy buffer on visual paste (preserve previous copy item on visual paste)
-" vp doesn't replace paste buffer
+" !help! Custom Functions [[[
+
+" !help! RestoreRegister: Prevent replacing copy buffer on visual paste (preserve previous copy item on visual paste)
+" hint: makes it so that vp doesn't replace paste buffer
 function! RestoreRegister()
   let @" = s:restore_reg
   return ''
@@ -178,8 +184,7 @@ function! s:Repl()
   return "p@=RestoreRegister()\<cr>"
 endfunction
 
-" Toggles the background and colorscheme on and off (this helps with screens that don't support it or copy/paste
-" operations)
+" !help! MyTogBG: Toggles the background and colorscheme on and off (this helps screens with bad color or copy/paste)
 function! MyTogBG()
   redir => s:curr_background
     silent execute "colorscheme"
@@ -193,9 +198,8 @@ function! MyTogBG()
   endif
   let s:background = s:curr_background
 endfunction
-command! ToggleBG :call MyTogBG()
 
-" Toggles the textwidth ruler on the right (useful for when you don't want autowrap or copy/paste operations)
+" !help! MyTogTW: Toggles the textwidth ruler on the right (useful when you don't want autowrap or copy/paste operations)
 function! MyTogTW()
   if &tw
     let s:txtwid = &textwidth
@@ -207,9 +211,8 @@ function! MyTogTW()
     let &wrapmargin = s:wrapmarg
   endif
 endfunction
-command! ToggleTextWidth :call MyTogTW()
 
-" Toggles all of the above, plus some extra to allow for select based copy/paste operations)
+" !help! ToggleCopyable: Toggles all of the above, plus some extra to allow for select based copy/paste operations)
 function! ToggleCopyable()
   call MyTogBG()
   set list!
@@ -225,10 +228,8 @@ function! ToggleCopyable()
     exe "GitGutterToggle"
   endif
 endfunction
-command! ToggleCopyable :call ToggleCopyable()
 
-" Augments the existing grep command to remove the problems with the minibufexpl plugin, weird screen artifacts when you
-" us the silent operation with grep, and automatically opening the quickfix pane
+" !help! MyGrepCommand: Automatically opening the quickfix pane (handles MiniBufExplorer)
 function! MyGrepCommand(...)
   exe "silent grep " . join(a:000, " ")
   if exists(":MBEClose")
@@ -240,9 +241,8 @@ function! MyGrepCommand(...)
     exe "MBEOpen"
   endif
 endfunction
-command! -nargs=* AG :call MyGrepCommand(<f-args>)
 
-" Augments existing command to show and hide syntastic errors
+" !help! MyErrorsCommand: Shows and hides errors and focuses the error list (handles MiniBufExplorer)
 function! MyErrorsCommand()
   if exists(":MBEClose")
     exe "MBEClose"
@@ -259,111 +259,218 @@ function! MyErrorsCommand()
   endif
 endfunction
 
-" Export current key bindings
+" !help! ExportKeys: Export current key bindings to a vertical split scratch buffer
 function! ExportKeys()
   redir! => l:mappings
     silent exe "map"
   redir END
   exe "vnew | put =l:mappings"
-  setlocal buftype=nofile
-  setlocal bufhidden=hide
-  setlocal noswapfile
-  let b:mappings = 1
-  exe "1"
+  setlocal buftype=nofile bufhidden=hide noswapfile
+  let b:scratch = 1
+  1
+  " This could be d 4 but then VIM stops to tell me that 4 lines were removed and X number of lines were added
+  d
+  d
+  d
+  d
 endfunction
-" If the key binding window is the last window open, then close it and exit vim (similar to NerdTree autocmd)
-augroup ExportKeys
-  autocmd bufenter * if (winnr("$") == 1 && exists("b:mappings")) | q | endif
-augroup END
 
-" Split the current buffer and rotate main screen to previous buffer
+" !help! VSplitCurrentBuffer: Split the current buffer and rotate main screen to previous buffer
 function! VSplitCurrentBuffer()
   vs
   wincmd h
   bp
 endfunction
 
+" !help! s:RunShellCommand: Function to paste the output of a command inside a scratch buffer
+function! s:RunShellCommand(cmdline)
+  let isfirst = 1
+  let words = []
+  for word in split(a:cmdline)
+    if isfirst
+      let isfirst = 0  " don't change first word (shell command)
+    else
+      if word[0] =~ '\v[%#<]'
+        let word = expand(word)
+      endif
+      let word = shellescape(word, 1)
+    endif
+    call add(words, word)
+  endfor
+  let expanded_cmdline = join(words)
+  botright vnew
+  setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
+  silent execute '$read !'. expanded_cmdline
+  let b:scratch = 1
+  1
+  d
+endfunction
+
+" !help! ShowVimCustomizations: Show VIM customizations
+function! ShowVimCustomizations()
+  call s:RunShellCommand('extract_vim_help')
+  set modeline | doautocmd BufRead
+endfunction
+
+" !help! ]]]
+" }}}
+
+" Custom commands {{{
+
+" !help! Custom Commands [[[
+" !help! ToggleBG: Calls function MyTogBG() to toggle the background color
+command! ToggleBG :call MyTogBG()
+" !help! toggleTextWidth: Calls function MyTogTW() to toggle the text width limitations
+command! ToggleTextWidth :call MyTogTW()
+" !help! ToggleCopyable: Calls function ToggleCopyable() to toggle copy mode of text
+command! ToggleCopyable :call ToggleCopyable()
+" !help! AG: Calls function MyGrepCommand to use AG to grep through stuff
+command! -nargs=* AG :call MyGrepCommand(<f-args>)
+" !help! Shell: Calls s:RunShellCommand to show command output in a vertical split
+command! -complete=shellcmd -nargs=+ Shell call s:RunShellCommand(<q-args>)
+" !help! ]]]
+
 " }}}
 
 " Remapping keys using combos and leaders {{{
 
-" Various leader mappings for setting things like paste-mode and list mode
-map <Leader>p :set paste!<CR>
-" Leader mapping to allow for copying from vim
-map <Leader>y :ToggleCopyable<CR>
-" Toggle text width on and off
-map <Leader>w :ToggleTextWidth<CR>
-" Toggle showing certain whitespace characters
-map <Leader>l :set list!<CR>:LeadingSpaceToggle<CR>
-map <Leader>n :set number!<CR>
-map <Leader>r :set relativenumber!<CR>
-" Shows syntastic errors location window in a way that won't affect MiniBufExplorer
-map <Leader>e :call MyErrorsCommand()<CR>
-" Close the quickfix window (for things like pylint)
-map <Leader>c :lclose<CR>
-" Reset the color scheme to the default (in cases with unconfigured terminals)
-map <Leader>csd :ToggleBG<CR>
-" Delete item to the blackhole register (meaning it won't write over the buffer you already have going
-nnoremap <Leader>dd "_dd
-nnoremap <Leader>d "_d
-vnoremap <Leader>d "_d
-" Map nerdtree to leader+t
-map <Leader>t :NERDTreeToggle<CR>
-" Search for item under the current cursor with "k" (search only this file) "K" (search entire working directory)
-map <leader>k :AG <cword> %<CR>
-map <leader>K :AG <cword><CR>
-" Toggle undo tree and then focus the original vim pane again with leader-u
-map <leader>u :UndotreeToggle<cr><C-w>l
-" Force a Synstastic check
-map <leader>s :SyntasticCheck<CR>
-" Re-format a JSON document, this allows you to write compactly, but read "prettily"
-map <leader>j :%!python -m json.tool<CR>
-" Dump all of the current keys bindings/mappings to a file and open it
-map <leader>kd :call ExportKeys()<CR>
-" Split the current buffer to the other vertical
-map <leader>vs :call VSplitCurrentBuffer()<CR>
+" Reminder of what stuff means:
+" (remap is the default, noremap means that the binding is not recursive, meaning that whatever the value of the binding
+" is, it takes that value regardless of other surrounding bindings)
+"
+" :map  - Normal, Visual, Select, Operator-pending
+" :nmap - Normal
+" :vmap - Visual and Select
+" :smap - Select
+" :xmap - Visual
+" :omap - Operator-pending
+" :map! - Insert and Command-line
+" :imap - Insert
+" :lmap - Insert, Command-line, Lang-Arg
+" :cmap - Command-line
 
-" Allow saving of files as sudo when I forgot to start vim using sudo
+" !help! Key Bindings [[[
+
+" !help! Command Bindings [[[
+
+" !help!  w!!: Allow saving of files as sudo when we forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
+" !help! ]]]
 
-" Remap jj and JJ in quick succession to escape
+" !help! Visual Bindings [[[
+" !help! v: Expand selection with multiple presses of v
+vmap v <Plug>(expand_region_expand)
+" !help! <CTRL-v>: Shrink Selection with multiple presses of CTRL-v
+vmap <C-v> <Plug>(expand_region_shrink)
+" !help! p: Change visual paste to use the Repl() function described in "Prevent replacing copy buffer..."
+vmap <silent> <expr> p <sid>Repl()
+" !help! y: Jump to the end of the text you just pasted
+vnoremap <silent> y y`]
+" !help! p: Jump to the end of the text you just pasted
+vnoremap <silent> p p`]
+" !help! <Leader-d>: Delete item to the blackhole register (meaning don't overwrite the current buffer)
+vnoremap <Leader>d "_d
+" !help! ]]]
+
+" !help! Normal Bindings [[[
+" !help! p: Jump to the end of the text you just pasted
+nnoremap <silent> p p`]
+" !help! <Leader-dd>: Delete line to the blackhole register (meaning don't overwrite the current buffer)
+nnoremap <Leader>dd "_dd
+" !help! <Leader-d>: Delete item to the blackhole register (meaning don't overwrite the current buffer)
+nnoremap <Leader>d "_d
+" !help! <Leader-x>: Delete character to the blackhole register (meaning don't overwrite the current buffer)
+nnoremap <Leader>x "_x
+" !help! ]]]
+
+" !help! Insert Bindings [[[
+" !help! jj: When hit in quick succession same as escape
 imap jj <Esc>
+" !help! JJ: When hit in quick succession same as escape
 imap JJ <Esc>
+" !help! ]]]
+
+" !help! Map Bindings [[[
+" !help! gV: Quickly select the text you just pasted
+noremap gV `[v`]
+
+" Add control based navigation to insert mode
+" !help! <CTRL-g>: Move right one word in any mode
+map <C-G> <C-Right>
+map! <C-G> <C-Right>
+" !help! <CTRL-f>: Move left one word in any mode
+map <C-F> <C-Left>
+map! <C-F> <C-Left>
+" !help! <CTRL-j>: Move to the beginning of the line in any mode
+map <C-J> ^
+map! <C-J> <Home>
+" !help! <CTRL-k>: Move to the end of the line in any mode
+map <C-K> $
+map! <C-K> <End>
+
+" !help! <CTRL-n>: Go to the previous error location
+map <C-n> :lprev<CR>
+" !help! <CTRL-m>:Go to the next error location
+map <C-m> :lnext<CR>
 
 " Set tab merge alias to vertically split current tab and the tab to the right (or barring that, to the left)
 " To put them back to tabs afterward, type CTRL+w, SHIFT+t
+" !help! <CTRL-t>: Vertically split the current tab with the one to the right (CTRL+w, SHIFT+t to put it back)
 map <C-t> <esc>:Tabmerge right<CR>
 
 " Remap next and previous tab to Ctrl-PgDn and Ctrl-PgUp
+" !help! <ALT-h>: Go to previous tab
 map <Esc>h :tabp<CR>
+" !help! <ALT-l>: Go to next tab
 map <Esc>l :tabn<CR>
+" !help! <ALT-j>: Go to next buffer
 map <Esc>j :bn<CR>
+" !help! <ALT-k>: Go to previous buffer
 map <Esc>k :bp<CR>
 
-" Add control based navigation to insert mode
-map <C-G> <C-Right>
-map! <C-G> <C-Right>
-map <C-F> <C-Left>
-map! <C-F> <C-Left>
-map <C-J> ^
-inoremap <C-J> <C-o>^
-map <C-K> $
-inoremap <C-K> <C-o>$
+" !help! <leader p>: Toggle paste mode
+map <Leader>p :set paste!<CR>
+" !help! <leader po>: Paste a partial yank on the line below
+map <leader>po :pu<CR>
+" !help! <leader pO>: Paste a partial yank on the line above
+map <leader>pO :pu!<CR>
+" !help! <leader y>: Leader mapping to allow for copying from vim
+map <Leader>y :ToggleCopyable<CR>
+" !help! <leader w>: Toggle text width on and off
+map <Leader>w :ToggleTextWidth<CR>
+" !help! <leader l>: Toggle showing certain whitespace characters
+map <Leader>l :set list!<CR>:LeadingSpaceToggle<CR>
+" !help! <leader n>: Toggle show number
+map <Leader>n :set number!<CR>
+" !help! <leader r>: Toggle relative line numbering
+map <Leader>r :set relativenumber!<CR>
+" !help! <leader e>: Shows syntastic errors location window in a way that won't affect MiniBufExplorer
+map <Leader>e :call MyErrorsCommand()<CR>
+" !help! <leader c>: Close the quickfix window (for things like pylint)
+map <Leader>c :lclose<CR>
+" !help! <leader csd>: Reset the color scheme to the default (in cases with unconfigured terminals)
+map <Leader>csd :ToggleBG<CR>
+" !help! <leader t>: Map nerdtree to leader+t
+map <Leader>t :NERDTreeToggle<CR>
+" !help! <leader k>: Search current buffer for item under the current cursor
+map <leader>k :AG <cword> %<CR>
+" !help! <leader K>: Search the entire working directory for the item under the cursor
+map <leader>K :AG <cword><CR>
+" !help! <leader u>: Toggle undo tree and then focus the original vim pane again with leader-u
+map <leader>u :UndotreeToggle<cr><C-w>l
+" !help! <leader s>: Force a Synstastic check
+map <leader>s :SyntasticCheck<CR>
+" !help! <leader j>: Re-format a JSON document, this allows you to write compactly, but read "prettily"
+map <leader>j :%!python -m json.tool<CR>
+" !help! <leader map>: Dump all of the current keys bindings/mappings to a file and open it
+map <leader>map :call ExportKeys()<CR>
+" !help! <leader vs>: Split the current buffer to the other vertical
+map <leader>vs :call VSplitCurrentBuffer()<CR>
+" !help! <leader vc>: Open my vim customizations to a vertical split
+map <leader>vc :call ShowVimCustomizations()<CR>
+" !help! ]]]
+" !help! ]]]
 
-" Add shortcut for lnext and lprev with CTRL+n and CTRL+m
-map <C-n> :lprev<CR>
-map <C-m> :lnext<CR>
-
-" Jump to the end of the text you just pasted
-vnoremap <silent> y y`]
-vnoremap <silent> p p`]
-nnoremap <silent> p p`]
-
-" Quickly select the text you just pasted
-noremap gV `[v`]
-
-" Change visual paste to use the Repl() function described in "Prevent replacing copy buffer..." section
-vmap <silent> <expr> p <sid>Repl()
 " }}}
 
 " vim: fdm=marker ts=2 et
