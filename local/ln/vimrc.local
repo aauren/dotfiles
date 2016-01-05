@@ -305,6 +305,35 @@ function! ShowVimCustomizations()
   set modeline | doautocmd BufRead
 endfunction
 
+" This is really just a helper function to the ToggleList option below
+function! s:GetBufferList()
+  redir =>buflist
+  silent! ls!
+  redir END
+  return buflist
+endfunction
+
+" !help! ToggleList: Toggles either the quickfix or location list windows if they are open
+function! ToggleList(bufname, pfx)
+  let buflist = s:GetBufferList()
+  for bufnum in map(filter(split(buflist, '\n'), 'v:val =~ "'.a:bufname.'"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
+    if bufwinnr(bufnum) != -1
+      exec(a:pfx.'close')
+      return
+    endif
+  endfor
+  if a:pfx == 'l' && len(getloclist(0)) == 0
+      echohl ErrorMsg
+      echo "Location List is Empty."
+      return
+  endif
+  let winnr = winnr()
+  exec(a:pfx.'open')
+  if winnr() != winnr
+    wincmd p
+  endif
+endfunction
+
 " !help! ]]]
 " }}}
 
@@ -448,16 +477,18 @@ map <leader>pO :pu!<CR>
 map <Leader>y :ToggleCopyable<CR>
 " !help! <leader w>: Toggle text width on and off
 map <Leader>w :ToggleTextWidth<CR>
-" !help! <leader l>: Toggle showing certain whitespace characters
-map <Leader>l :set list!<CR>:LeadingSpaceToggle<CR>
+" !help! <leader l>: Open/Close the location list window (for things like pylint)
+map <silent> <leader>l :call ToggleList("Location List", 'l')<CR>
+" !help! <leader q>: Open/Close the quickfix window
+map <silent> <leader>q :call ToggleList("Quickfix List", 'c')<CR>
+" !help! <leader li>: Toggle showing certain whitespace characters
+map <Leader>li :set list!<CR>:LeadingSpaceToggle<CR>
 " !help! <leader n>: Toggle show number
 map <Leader>n :set number!<CR>
 " !help! <leader r>: Toggle relative line numbering
 map <Leader>r :set relativenumber!<CR>
 " !help! <leader e>: Shows syntastic errors location window in a way that won't affect MiniBufExplorer
 map <Leader>e :call MyErrorsCommand()<CR>
-" !help! <leader c>: Close the quickfix window (for things like pylint)
-map <Leader>c :lclose<CR>
 " !help! <leader csd>: Reset the color scheme to the default (in cases with unconfigured terminals)
 map <Leader>csd :ToggleBG<CR>
 " !help! <leader t>: Map nerdtree to leader+t
