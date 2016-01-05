@@ -112,15 +112,6 @@ let g:pymode_lint_ignore="E501,E265"
 let g:pymode_run_bind = "<C-S-e>"
 let g:pymode_doc_bind = "<C-S-d>"
 
-" Overwrite jedi-vim shortcuts
-let g:jedi#goto_command = "<C-j>d"
-let g:jedi#goto_assignments_command = "<C-j>g"
-let g:jedi#goto_definitions_command = ""
-let g:jedi#documentation_command = "<C-j>k"
-let g:jedi#usages_command = "<C-j>n"
-let g:jedi#completions_command = "<C-Space>"
-let g:jedi#rename_command = "<C-j>r"
-
 " }}}
 
 " Syntastic specific configurations {{{
@@ -419,6 +410,23 @@ map <C-m> :lnext<CR>
 " To put them back to tabs afterward, type CTRL+w, SHIFT+t
 " !help! <CTRL-t>: Vertically split the current tab with the one to the right (CTRL+w, SHIFT+t to put it back)
 map <C-t> <esc>:Tabmerge right<CR>
+
+" Overwrite jedi-vim shortcuts
+" !help! Jedi Python Autocomplete and GoTo Mappings [[[
+" !help! <CTRL-j> d: Go to command
+let g:jedi#goto_command = "<C-j>d"
+" !help! <CTRL-j> g: Go to assignment
+let g:jedi#goto_assignments_command = "<C-j>g"
+let g:jedi#goto_definitions_command = ""
+" !help! <CTRL-j> k: Go to documentation
+let g:jedi#documentation_command = "<C-j>k"
+" !help! <CTRL-j> n: Find usages
+let g:jedi#usages_command = "<C-j>n"
+" !help! <CTRL-space>: Autocomplete word or phrase
+let g:jedi#completions_command = "<C-Space>"
+" !help! <CTRL-j> r: Rename item
+let g:jedi#rename_command = "<C-j>r"
+" !help! ]]]
 
 " Remap next and previous tab to Ctrl-PgDn and Ctrl-PgUp
 " !help! <ALT-h>: Go to previous tab
