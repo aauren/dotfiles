@@ -95,6 +95,7 @@ setw -g mode-keys v
 bind P choose-buffer
 unbind p
 bind p paste-buffer
+bind + command-prompt -p "save current paste buffer to:" -I "~/tmux_paste_buffer" "save-buffer %1;"
 bind -t vi-copy 'v' begin-selection
 bind -t vi-copy 'y' copy-selection
 bind -t vi-copy 'C-v' rectangle-toggle
