@@ -200,7 +200,7 @@ fi
 PATH=$(awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}' <<< "${PATH}")
 # }}}
 
-# Search history with peco <CTRL+p> (needs to be below path declaration) {{{
+# Search history with peco <ALT+r> (needs to be below path declaration) {{{
 # Search shell history with peco: https://github.com/peco/peco
 if which peco &> /dev/null; then
 	function peco_select_history() {
@@ -212,7 +212,7 @@ if which peco &> /dev/null; then
 	}
 
 	zle -N peco_select_history
-	bindkey '^P' peco_select_history
+	bindkey '\er' peco_select_history
 fi
 # }}}
 
