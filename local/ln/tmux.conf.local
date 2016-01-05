@@ -96,6 +96,7 @@ bind P choose-buffer
 unbind p
 bind p paste-buffer
 bind + command-prompt -p "save current paste buffer to:" -I "~/tmux_paste_buffer" "save-buffer %1;"
+bind _ command-prompt -p 'save history to:' -I '~/tmux.log' 'capture-pane -S -32768 ; save-buffer %1 ; delete-buffer'
 bind -t vi-copy 'v' begin-selection
 bind -t vi-copy 'y' copy-selection
 bind -t vi-copy 'C-v' rectangle-toggle
