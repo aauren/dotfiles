@@ -462,10 +462,10 @@ let g:jedi#rename_command = "<C-j>r"
 map <Esc>h :tabp<CR>
 " !help! <ALT-l>: Go to next tab
 map <Esc>l :tabn<CR>
-" !help! <ALT-j>: Go to next buffer
-map <Esc>j :bn<CR>
-" !help! <ALT-k>: Go to previous buffer
-map <Esc>k :bp<CR>
+" !help! <ALT-j>: Go to previous buffer
+map <Esc>j :bp<CR>
+" !help! <ALT-k>: Go to next buffer
+map <Esc>k :bn<CR>
 
 " !help! <leader p>: Toggle paste mode
 map <Leader>p :set paste!<CR>
