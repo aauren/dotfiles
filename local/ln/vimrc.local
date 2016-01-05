@@ -21,6 +21,7 @@ endif
 let g:ctrlp_use_caching = 0
 if executable('ag')
     set grepprg=ag\ --vimgrep\ $*
+    let g:ackprg = 'ag --vimgrep'
     set grepformat=%f:%l:%c:%m
 
     let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
@@ -231,7 +232,8 @@ endfunction
 
 " !help! MyGrepCommand: Automatically opening the quickfix pane (handles MiniBufExplorer)
 function! MyGrepCommand(...)
-  exe "silent grep " . join(a:000, " ")
+  " This actually runs ag because of the ackprg setting above
+  exe "silent Ack " . join(a:000, " ")
   if exists(":MBEClose")
     exe "MBEClose"
   endif
