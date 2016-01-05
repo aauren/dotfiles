@@ -139,6 +139,8 @@ bindkey -M isearch '^F' history-incremental-search-forward
 # re-sets yank and kill shortcuts to bash/emacs mode
 bindkey -M viins '^P' push-line-or-edit
 bindkey -M viins '^Y' yank
+# In order to use the below you must first yank without hitting enter, then subsequent alt-y combos will cycle through
+# kill ring
 bindkey -M viins '\ey' yank-pop
 bindkey -M viins '^U' backward-kill-line
 
