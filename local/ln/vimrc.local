@@ -229,8 +229,8 @@ function! MyGrepCommand(...)
     exe "MBEClose"
   endif
   copen
-  exe "redraw!"
   if exists(":MBEOpen")
+    exe "redraw!"
     exe "MBEOpen"
   endif
 endfunction
