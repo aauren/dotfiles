@@ -35,6 +35,7 @@ endif
 
 " Various items for NerdTree, and other plugins (Like close NerdTree when all other buffers are closed) {{{
 
+" Settings for NerdTree so that it autocloses if it's the last window opened
 augroup nerdtree
   autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 augroup END
@@ -44,10 +45,16 @@ augroup scratchbuffer
   autocmd bufenter * if (winnr("$") == 1 && exists("b:scratch")) | q | endif
 augroup END
 
+" Settings for Airline
+" Show buffers as well as tabs
 let g:airline#extensions#tabline#enabled = 1
+" Allow powerline fonts that pretty print the bars at the top and bottom
 let g:airline_powerline_fonts = 1
+" Enable/Disable showing a summary of changed hunks under source control
 let g:airline#extensions#hunks#enabled=1
+" Show branches in Airline
 let g:airline#extensions#branch#enabled=1
+" Airline theme that matches well with solarized theme
 let g:airline_theme="ubaryd"
 
 " }}}
