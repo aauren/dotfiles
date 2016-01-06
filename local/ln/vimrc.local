@@ -21,7 +21,6 @@ endif
 let g:ctrlp_use_caching = 0
 if executable('ag')
     set grepprg=ag\ --vimgrep\ $*
-    let g:ackprg = 'ag --vimgrep'
     set grepformat=%f:%l:%c:%m
 
     let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
@@ -224,13 +223,13 @@ endfunction
 " !help! MyGrepCommand: Automatically opening the quickfix pane (handles MiniBufExplorer)
 function! MyGrepCommand(...)
   " This actually runs ag because of the ackprg setting above
-  exe "silent Ack " . join(a:000, " ")
+  exe "silent grep " . join(a:000, " ")
   if exists(":MBEClose")
     exe "MBEClose"
   endif
   copen
+  redraw!
   if exists(":MBEOpen")
-    exe "redraw!"
     exe "MBEOpen"
   endif
 endfunction
@@ -511,17 +510,6 @@ map <leader>vs :call VSplitCurrentBuffer()<CR>
 map <leader>vc :call ShowVimCustomizations()<CR>
 " !help! ]]]
 
-" !help! QuickFix Window Bindings (Come from Ack plugin) [[[
-" !help! o: Open location
-" !help! O: Open location and close quickfix
-" !help! go: Preview file (Open, but maintain focus on ack.vim results)
-" !help! t: Open location in a new tab
-" !help! T: Open location in a new tab silently
-" !help! h: Open location in a horizontal split
-" !help! H: Open location in a horizontal split silently
-" !help! v: Open location in a vertical split
-" !help! gv: Open location in a vertical split silently
-" !help! q: Close the QuickFix window
 " !help! ]]]
 " !help! ]]]
 

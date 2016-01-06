@@ -1,7 +1,5 @@
 " Vim solarized color scheme
 Plug 'altercation/vim-colors-solarized'
-" Allows you to use ack from within vim (:Ack)
-Plug 'mileszs/ack.vim'
 " Refuses to execute malicious code that may be included in mondelines
 Plug 'ciaranm/securemodelines'
 " Tries to automatically detect indent settings
