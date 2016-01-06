@@ -19,6 +19,9 @@ endif
 
 " Search git directories faster by using silver searcher or ignoring git directories
 let g:ctrlp_use_caching = 0
+" r chooses the nearest ancestor that contains a .git, .hg, .svn, or .bzr directory
+" a the directory of the current file if the working directory of CTRLP isn't a direct ancestor of the file
+let g:ctrlp_working_path_mode = 'ra'
 if executable('ag')
     set grepprg=ag\ --vimgrep\ $*
     set grepformat=%f:%l:%c:%m
@@ -33,7 +36,7 @@ else
 endif
 " }}}
 
-" Various items for NerdTree, and other plugins (Like close NerdTree when all other buffers are closed) {{{
+" Plugin Configurations - Various items for NerdTree, scratch buffers, airline, etc {{{
 
 " Settings for NerdTree so that it autocloses if it's the last window opened
 augroup nerdtree
