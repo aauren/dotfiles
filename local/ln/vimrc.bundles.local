@@ -26,3 +26,5 @@ Plug 'davidhalter/jedi-vim'
 Plug 'bling/vim-airline'
 " NerdTree allows you to browse the file system from within VIM
 Plug 'scrooloose/nerdtree'
+" QFEnter allows you to go to locations indicated in either QuickFix windows or Location Lists
+Plug 'yssl/QFEnter'

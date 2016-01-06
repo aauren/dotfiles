@@ -510,6 +510,17 @@ map <leader>vs :call VSplitCurrentBuffer()<CR>
 map <leader>vc :call ShowVimCustomizations()<CR>
 " !help! ]]]
 
+" !help! QuickFix Window Bindings [[[
+" !help! <Enter>: Open location in a new buffer
+" let g:qfenter_open_map = ['<CR>', '<2-LeftMouse>']
+" !help! <CTRL-v>: Open location in a vertical split
+let g:qfenter_vopen_map = ['<C-v>']
+" !help! <CTRL-Enter> or <CTRL-s> or <CTRL-x>: Open in a horizontal split
+let g:qfenter_hopen_map = ['<C-CR>', '<C-s>', '<C-x>']
+" !help! <CTRL-t>: Open in a new tab
+let g:qfenter_topen_map = ['<C-t>']
+" !help! ]]]
+
 " !help! ]]]
 " !help! ]]]
 
