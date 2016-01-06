@@ -28,3 +28,5 @@ Plug 'bling/vim-airline'
 Plug 'scrooloose/nerdtree'
 " QFEnter allows you to go to locations indicated in either QuickFix windows or Location Lists
 Plug 'yssl/QFEnter'
+" Buffergator allows you to see all of your open buffers easily
+Plug 'jeetsukumaran/vim-buffergator'

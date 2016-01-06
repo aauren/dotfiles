@@ -57,6 +57,11 @@ let g:airline#extensions#branch#enabled=1
 " Airline theme that matches well with solarized theme
 let g:airline_theme="ubaryd"
 
+" Settings for buffergator
+" Horizontal split at the top to show the buffergator buffers
+let g:buffergator_viewport_split_policy = "T"
+let g:buffergator_autoupdate = 1
+
 " }}}
 
 " File type based autocmd's (e.g. python width 120, tab expansion for python, sh, etc, upconf and json settings {{{
@@ -117,6 +122,8 @@ let g:pymode_lint_ignore="E501,E265"
 " Overwrite pymode's run and doc key binding with my own for relative line numbers
 let g:pymode_run_bind = "<C-S-e>"
 let g:pymode_doc_bind = "<C-S-d>"
+" Disable breakpoint mapping so that it can be used for Buffergator
+let g:pymode_breakpoint = 0
 
 " }}}
 
@@ -515,6 +522,8 @@ map <leader>map :call ExportKeys()<CR>
 map <leader>vs :call VSplitCurrentBuffer()<CR>
 " !help! <leader vc>: Open my vim customizations to a vertical split
 map <leader>vc :call ShowVimCustomizations()<CR>
+" !help! <leader b>: Open buffergator split
+" !help! <leader B>: Close buffergator split
 " !help! ]]]
 
 " !help! QuickFix Window Bindings [[[
@@ -528,6 +537,11 @@ let g:qfenter_hopen_map = ['<C-CR>', '<C-s>', '<C-x>']
 let g:qfenter_topen_map = ['<C-t>']
 " !help! ]]]
 
+" !help! Buffergator Bindings [[[
+" !help! <Enter>: Open currently selected buffer
+" !help! <CTRL-v> or s: Open the currently selected buffer in a vertical split
+" !help! <CTRL-S> or i: Open the currently selected buffer in a horizontal split
+" !help! <CTRL-T> or t: Open the currently selected buffer in a tab
 " !help! ]]]
 " !help! ]]]
 
