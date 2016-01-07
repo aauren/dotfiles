@@ -298,10 +298,6 @@ for dest_and_src in $dests_and_srcs; do
   src="$2"
   sigil="$3"
 
-  if [[ $dest == *"vimrc.bundles"* && $has_internet_access -gt 0 ]]; then
-    continue
-  fi
-
   if is_nested "$dest"; then
     handle_dir "$dest"
   fi
