@@ -1,0 +1,40 @@
+# Displays the tmux var valued passed as the first parameter
+tmux_info() {
+	local tmux_var="${1}"
+	tmux display -pt "${TMUX_PANE:?}" "#{${tmux_var}}"
+}
+
+# Automatically creates a git commit message based on the files that are staged and prints it on the line
+gitcm () {
+	((sleep 0.1 && tmux send-keys -t "$(tmux_info session_name):$(tmux_info window_name).$(tmux_info pane_index)" "$(echo "git cm \"$(git diff --name-only --cached | grep -o '[^/]*$' | sed ':a;N;$!ba;s/\n/ \& /g'): ")") &)
+}
+
+# Loads a bunch of color variables into ZSH so that you can reference them as a variable by their name
+load_colors () {
+	autoload colors
+	for COLOR in RED GREEN YELLOW BLUE MAGENTA CYAN BLACK WHITE; do
+		eval $COLOR='$fg_no_bold[${(L)COLOR}]'
+		eval BOLD_$COLOR='$fg_bold[${(L)COLOR}]'
+	done
+	eval RESET='$reset_color'
+}
+
+# Find a file with a pattern in name
+ff() { find . -type f -iname '*'$*'*' -ls ; }
+
+# Find a file with pattern $1 in name and Execute $2 on it
+fe() { find . -type f -iname '*'$1'*' -exec "${2:-file}" {} \;  ; }
+
+# Elastic Search Functions {{{
+# Finds the field data usage for a given environment
+# Example: elastic_fielddata esd1.r6.03.laxa.gaikai.net
+elastic_fielddata() {
+	curl "http://${1}:9200/_nodes/stats/indices/fielddata?fields=*" 2>/dev/null \
+		| jq -r '.nodes[] | .name + " " + (.indices.fielddata.memory_size_in_bytes | tostring) + " " + (.indices.fielddata.evictions | tostring)' \
+		| grep esd \
+		| awk -F' ' '{ printf "%-20s %0.2f GB (evictions: %s)\n", $1, $2/1024/1024/1024, $3 }' \
+		| sort -V
+}
+# }}}
+
+# vim: set noet ts=4 sw=4 syntax=sh ft=sh fdm=marker
