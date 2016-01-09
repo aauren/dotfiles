@@ -63,7 +63,10 @@ let g:airline_theme="ubaryd"
 " Settings for buffergator
 " Horizontal split at the top to show the buffergator buffers
 let g:buffergator_viewport_split_policy = "T"
+" Auto update buffer list
 let g:buffergator_autoupdate = 1
+" Suppress keymaps from buffergator because they impact Nerdtree
+let g:buffergator_suppress_keymaps = 1
 
 " }}}
 
@@ -525,8 +528,8 @@ map <leader>map :call ExportKeys()<CR>
 map <leader>vs :call VSplitCurrentBuffer()<CR>
 " !help! <leader vc>: Open my vim customizations to a vertical split
 map <leader>vc :call ShowVimCustomizations()<CR>
-" !help! <leader b>: Open buffergator split
-" !help! <leader B>: Close buffergator split
+" !help! <leader b>: Open/close buffergator split
+map <leader>b :buffergatortoggle
 " !help! ]]]
 
 " !help! QuickFix Window Bindings [[[
