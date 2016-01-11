@@ -59,6 +59,9 @@ let g:airline#extensions#hunks#enabled=1
 let g:airline#extensions#branch#enabled=1
 " Airline theme that matches well with solarized theme
 let g:airline_theme="ubaryd"
+" Show vim-obsession session tracking status in airline (when tracking display [TRK SESS] in lower right)
+" In order to restore, use either vim -S or :source
+let g:airline_section_z = airline#section#create(['%{ObsessionStatus(''[TRK SESS]'', '''')}', 'windowswap', '%3p%% ', 'linenr', ':%3v '])
 
 " Settings for buffergator
 " Horizontal split at the top to show the buffergator buffers
@@ -563,6 +566,8 @@ map <leader>vc :call ShowVimCustomizations()<CR>
 map <leader>b :BuffergatorToggle<CR>
 " !help! <leader z>: Close current buffer
 map <leader>z :bd<CR>
+" !help! <leader T>: Begin tracking the current vim session with the obsession plugin
+map <leader>T :Obsess ~/.vim/session/%:t<CR>
 " !help! ]]]
 
 " !help! QuickFix Window Bindings [[[
