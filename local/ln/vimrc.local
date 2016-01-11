@@ -560,7 +560,7 @@ map <leader>vs :call VSplitCurrentBuffer()<CR>
 " !help! <leader vc>: Open my vim customizations to a vertical split
 map <leader>vc :call ShowVimCustomizations()<CR>
 " !help! <leader b>: Open/close buffergator split
-map <leader>b :BuffergatorToggle
+map <leader>b :BuffergatorToggle<CR>
 " !help! ]]]
 
 " !help! QuickFix Window Bindings [[[
