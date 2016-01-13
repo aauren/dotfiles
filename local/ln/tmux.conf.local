@@ -36,6 +36,9 @@ bind C-k kill-session -C
 # Zoom window when insert key is pressed (bind to root table so that you don't have to press the tmux modifier)
 bind -n IC resize-pane -Z
 
+# Show session selection tree when CTRL-Delete is pressed
+bind -n C-DC choose-tree
+
 # Use PageUp to scroll up in the tmux copy buffer, unless we're in an alternate screen application like tmux or vim,
 # in which case you should just send them the PageUp key
 bind-key -T root PPage if-shell -F "#{alternate_on}" "send-keys PPage" "copy-mode -eu"
