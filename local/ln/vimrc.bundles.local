@@ -33,3 +33,5 @@ Plug 'jeetsukumaran/vim-buffergator'
 " Obsession plugin allows easier tracking of vim sessions, just run it once in any session you think you might want to
 " keep and from then on out, it will track it in .vim/sessions
 Plug 'tpope/vim-obsession'
+" Better Python code checking (than out of date pymode)
+Plug 'nvie/vim-flake8'
