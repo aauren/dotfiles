@@ -23,7 +23,7 @@ GIT_REMOTE_UPDATE_COMMANDS="cd ${DOTFILE_LOCATION} && \
 	echo ok"
 UPDATE_HOME_COMMANDS="RCRC=${DOTFILE_LOCATION}/rcrc PATH=${PATH}:${DOTFILE_LOCATION}/local/init/linker/bin ${DOTFILE_LOCATION}/local/init/linker/bin/rcup && \
 	mkdir -p ~/bin && \
-	${DOTFILE_LOCATION}/local/bin/create_syms.sh &> /dev/null"
+	${DOTFILE_LOCATION}/local/bin/create_syms &> /dev/null"
 GIT_URL_EXTRACT='s/.*git@([^:]+).*/\1/g'
 # Set correct sed options based on kernel versions
 if [[ $(uname -a) == *"Darwin"* ]]; then
