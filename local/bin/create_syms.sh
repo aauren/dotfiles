@@ -8,7 +8,7 @@
 for DOT_FILE in "${HOME}/dotfiles/local/ln/"*; do
 	if [[ ! -d "${HOME}/.${DOT_FILE}" ]]; then
 		echo "linking ${DOT_FILE}"
-		ln -sf "${DOT_FILE}" "${HOME}/.$(basename DOT_FILE)"
+		ln -sf "${DOT_FILE}" "${HOME}/.$(basename "${DOT_FILE}")"
 	fi
 done
 
