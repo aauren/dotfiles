@@ -20,3 +20,7 @@ echo "linking bin files"
 if [[ -d ${HOME}/bin ]]; then
   ln -sf "${HOME}"/dotfiles/local/bin/* "${HOME}"/bin
 fi
+
+echo "linking config files"
+[[ -d ${HOME}/.config ]] || mkdir .config
+ln -sf "${HOME}"/dotfiles/local/config/* "${HOME}"/.config
