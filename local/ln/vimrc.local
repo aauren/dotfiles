@@ -71,6 +71,12 @@ let g:buffergator_autoupdate = 1
 " Suppress keymaps from buffergator because they impact Nerdtree
 let g:buffergator_suppress_keymaps = 1
 
+" Settings for vim-flake8 (Python syntax checking)
+let g:flake8_show_in_gutter = 1
+augroup flake8
+  autocmd BufWritePost *.py call Flake8()
+augroup END
+
 " }}}
 
 " File type based autocmd's (e.g. python width 120, tab expansion for python, sh, etc, upconf and json settings {{{
