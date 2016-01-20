@@ -33,11 +33,15 @@ bind C-n next-window -a
 # Clear activity marker on all windows
 bind C-k kill-session -C
 
+# Root bindings
 # Zoom window when insert key is pressed (bind to root table so that you don't have to press the tmux modifier)
 bind -n IC resize-pane -Z
 
 # Show session selection tree when CTRL-Delete is pressed
 bind -n C-DC choose-tree
+
+# Go into paste mode when CTRL-Space is pressed
+bind -n C-Space copy-mode
 
 # Use PageUp to scroll up in the tmux copy buffer, unless we're in an alternate screen application like tmux or vim,
 # in which case you should just send them the PageUp key
