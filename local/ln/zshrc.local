@@ -76,7 +76,10 @@ rel_info_prompt () {
 		print -P ' (%{$fg_bold[magenta]%}$(cat /etc/gaikai-release)%{$reset_color%})'
 	fi
 }
-export PROMPT='$(dir_info_prompt) $(rel_info_prompt) $(git_super_status)
+time_info_prompt () {
+	print -P ' (%{$fg_bold[blue]%}$(TZ="America/Los_Angeles" date "+%D %T")%{$reset_color%})'
+}
+export PROMPT='$(dir_info_prompt)$(rel_info_prompt)$(time_info_prompt) $(git_super_status)
 %(?.%{$fg[green]%}[0].%{$fg[red]%}[%?])%{$reset_color%}${vi_mode}%# '
 # }}}
 
