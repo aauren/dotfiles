@@ -43,6 +43,12 @@ bind -n C-DC choose-tree
 # Go into paste mode when CTRL-Space is pressed
 bind -n C-Space copy-mode
 
+# Allow for pane navigation with CTRL-Arrow keys
+bind -n C-Up select-pane -U
+bind -n C-Right select-pane -R
+bind -n C-Down select-pane -D
+bind -n C-Left select-pane -L
+
 # Use PageUp to scroll up in the tmux copy buffer, unless we're in an alternate screen application like tmux or vim,
 # in which case you should just send them the PageUp key
 bind-key -T root PPage if-shell -F "#{alternate_on}" "send-keys PPage" "copy-mode -eu"
