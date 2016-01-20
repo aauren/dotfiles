@@ -72,8 +72,8 @@ dir_info_prompt () {
 	print -P '${SSH_CONNECTION+"%{$fg_bold[green]%}%n@%M:"}%{$fg_bold[blue]%}%~%{$reset_color%}'
 }
 rel_info_prompt () {
-	if [[ -e /etc/gaikai-release ]]; then
-		print -P '(%{$fg_bold[magenta]%}$(cat /etc/gaikai-release)%{$reset_color%})'
+	if [[ -e /etc/gaikai-release && ( -n "${SSH_CLIENT}" || -n "${SSH_TTY}" ) ]]; then
+		print -P ' (%{$fg_bold[magenta]%}$(cat /etc/gaikai-release)%{$reset_color%})'
 	fi
 }
 export PROMPT='$(dir_info_prompt) $(rel_info_prompt) $(git_super_status)
