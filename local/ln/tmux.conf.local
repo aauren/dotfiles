@@ -41,7 +41,7 @@ bind -n IC resize-pane -Z
 bind -n C-DC choose-tree
 
 # Go into paste mode when CTRL-Space is pressed
-bind -n C-Space copy-mode
+bind -n C-Space if-shell -F "#{alternate_on}" "send-keys C-Space" "copy-mode"
 
 # Allow for pane navigation with CTRL-Arrow keys
 bind -n C-Up select-pane -U
