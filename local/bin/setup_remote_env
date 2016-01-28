@@ -21,7 +21,7 @@ GIT_REMOTE_UPDATE_COMMANDS="cd ${DOTFILE_LOCATION} && \
 	git stash &>/dev/null && \
 	git pull replaceme master &>/dev/null && \
 	echo ok"
-UPDATE_HOME_COMMANDS="RCRC=${DOTFILE_LOCATION}/rcrc PATH=${PATH}:${DOTFILE_LOCATION}/local/init/linker/bin ${DOTFILE_LOCATION}/local/init/linker/bin/rcup && \
+UPDATE_HOME_COMMANDS="RCRC=${DOTFILE_LOCATION}/rcrc PATH=${PATH}:${DOTFILE_LOCATION}/local/init/linker/bin ${DOTFILE_LOCATION}/local/init/linker/bin/rcup -x local && \
 	mkdir -p ~/bin && \
 	${DOTFILE_LOCATION}/local/bin/create_syms &> /dev/null"
 GIT_URL_EXTRACT='s/.*git@([^:]+).*/\1/g'
