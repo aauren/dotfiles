@@ -1,3 +1,8 @@
 #!/bin/bash
 
-alias ez="exec /bin/zsh"
+zsh_path="$(which zsh 2>&1)"
+if [[ $? == 0 && $- == *i* ]]; then
+	exec "${zsh_path}"
+else
+	alias ez="exec /bin/zsh"
+fi
