@@ -34,10 +34,10 @@ bind C-n next-window -a
 bind C-k kill-session -C
 
 # Vertically expand pane to consume the entire window height
-bind / run-shell 'tmux resizep -y #{window_height}'
+bind \; run-shell 'tmux resizep -y #{window_height}'
 
 # Vertically collapse pane to consume 50% of entire window height
-bind \; run-shell 'tmux resizep -y $(( #{window_height} / 2 ))'
+bind / run-shell 'tmux resizep -y $(( #{window_height} / 2 ))'
 
 # Root bindings
 # Zoom window when insert key is pressed (bind to root table so that you don't have to press the tmux modifier)
