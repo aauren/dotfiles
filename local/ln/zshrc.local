@@ -85,6 +85,9 @@ export PROMPT='$(dir_info_prompt)$(rel_info_prompt)$(time_info_prompt) $(git_sup
 
 # Key and Termcap Settings {{{
 # to add other keys to this hash, see: man 5 terminfo
+# Disable SGR escape sequences as some terminals don't support it for rendering man pages
+export GROFF_NO_SGR=1
+
 typeset -A key
 
 key[Home]=${terminfo[khome]}
