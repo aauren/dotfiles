@@ -87,6 +87,19 @@ export PROMPT='$(dir_info_prompt)$(rel_info_prompt)$(time_info_prompt) $(git_sup
 # Disable SGR escape sequences as some terminals don't support it for rendering man pages
 export GROFF_NO_SGR=1
 
+# The following fixes the rest of the problems I've had showing colors in man pages with less as the pager
+# source: https://linuxtidbits.wordpress.com/2009/03/23/less-colors-for-man-pages/
+man() {
+	env LESS_TERMCAP_mb=$'\E[01;31m' \
+	LESS_TERMCAP_md=$'\E[01;38;5;74m' \
+	LESS_TERMCAP_me=$'\E[0m' \
+	LESS_TERMCAP_se=$'\E[0m' \
+	LESS_TERMCAP_so=$'\E[38;5;246m' \
+	LESS_TERMCAP_ue=$'\E[0m' \
+	LESS_TERMCAP_us=$'\E[04;38;5;146m' \
+	man "$@"
+}
+
 # Everything below this point to the end of section comes from: http://zshwiki.org/home/zle/bindkeys#reading_terminfo
 # Create a zkbd compatible hash... to add other keys to this hash, see: man 5 terminfo
 typeset -A key
