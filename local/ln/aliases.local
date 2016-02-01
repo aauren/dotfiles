@@ -26,6 +26,9 @@ alias tf='tail -f'
 alias tm='tail -200f /var/log/messages'
 alias hf='hostname -f'
 
+# Always run jq with color output (meaning that less will get colors) which is a more sensible default for me
+alias jqc='jq --colour-output'
+
 # Start less at the bottom of the file rather than the beginning
 alias lessg='less +G'
 
