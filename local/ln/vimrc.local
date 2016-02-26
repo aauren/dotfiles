@@ -144,12 +144,13 @@ let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq        = 0
 " Aggregate errors from multiple checkers instead of stopping
 let g:syntastic_aggregate_errors   = 1
-" Disable python checkers since we have pymode for that anyway
-let g:syntastic_python_checkers    = []
-let g:syntastic_python_python_exec = '/bin/true'
+" Automatically open the location list when there are errors
+let g:syntastic_auto_loc_list = 1
 " Have syntastic user better symbols for marking errors and warnings
 let g:syntastic_error_symbol = "✗"
 let g:syntastic_warning_symbol = "⚠"
+" Specific message format for styntastic
+let g:syntastic_python_pylint_post_args = '--msg-template="{path}:{line}:{column}:{C}: {msg_id}[{symbol}] {msg}"'
 
 " }}}
 
