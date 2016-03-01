@@ -60,10 +60,6 @@ main ()
 	echo "Checking Host Status..."
 	is_node_up "${unaliased_ssh_host}" "${my_ssh_port:-22}"
 
-	# Start by deleting the old SSH key in case the system has been rebooted since then
-	echo "Removing previous known hosts that might exist..."
-	ssh_key_del "${unaliased_ssh_host}" "${my_ssh_port:-22}"
-
 	if [[ -z ${nosetup} && ("${HOST}" != *@* || ${HOST%@*} == $(whoami)) && "root" != $(whoami) ]]; then
 		echo "Setting Up Remove Env..."
 		setup_remote_env "${HOST}" "${unaliased_ssh_host}" "${my_ssh_port}"
