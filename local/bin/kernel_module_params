@@ -1,0 +1,27 @@
+#!/bin/bash
+
+list_modules_parameters() {
+	local module="${1}" parameter parameter_info
+	if [ -d "/sys/module/${module}/parameters" ]; then
+		find "/sys/module/${module}/parameters/" -type f | while read -r parameter_path; do
+			parameter="$(basename "${parameter_path}")"
+			parameter_info="$(modinfo "${module}" | grep "${parameter}" | awk '{ $1 = ""; print $0 }')"
+			echo -n "${parameter}:${parameter_info} --> "
+			cat "${parameter_path}"
+		done;
+	fi;
+}
+
+list_all_modules() {
+	while read -r module; do
+		echo "Module: ${module}";
+			list_modules_parameters "${module}"
+		echo;
+	done <<< "$( cut -f 1 -d " " /proc/modules )"
+}
+
+if [[ -z "${1}" ]]; then
+	list_all_modules
+else
+	list_modules_parameters "${1}"
+fi
