@@ -280,8 +280,9 @@ function! ExportKeys()
   redir! => l:mappings
     silent exe "map"
   redir END
-  exe "vnew | put =l:mappings"
-  setlocal buftype=nofile bufhidden=hide noswapfile
+  botright vnew
+  silent exe "put =l:mappings"
+  setlocal buftype=nofile bufhidden=wipe noswapfile nobuflisted nowrap
   let b:scratch = 1
   1
   " This could be d 4 but then VIM stops to tell me that 4 lines were removed and X number of lines were added
