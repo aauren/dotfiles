@@ -33,6 +33,11 @@
 	pof = push origin --force-with-lease
 	pot = push origin --tags
 	up = "!f() { git fetch origin --prune; git merge --ff-only origin/master || git rebase --preserve-merges origin/master; }; f"
+	sl = "!f() { git stash list | cat; }; f"
+	sp = "!f() { if [[ -z $1 ]]; then git stash pop; else git stash pop $(git stash list | grep -m 1 $1 | cut -d':' -f1); fi; }; f"
+	sa = "!f() { if [[ -z $1 ]]; then git stash apply; else git stash apply $(git stash list | grep -m 1 $1 | cut -d':' -f1); fi; }; f"
+	ss = "!f() { git stash save --keep-index $1; }; f"
+	ssp = "!f() { git stash save --patch --keep-index $1; }; f"
 [user]
 	name = Aaron U'Ren
 [core]
