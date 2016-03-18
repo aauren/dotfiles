@@ -26,14 +26,21 @@ if [[ -z ${SSH_AUTH_SOCK} && -z $(pgrep ssh-agent) ]]; then
 fi
 
 # Add any missing SSH identities
-SSH_ADD=$(ssh-add -l)
-for file in $(ls ${HOME}/.ssh/id*.pub 2> /dev/null); do
-	identity=$(echo ${file} | sed ${SED_OPTS} 's/.*(\.ssh.*).pub/\1/g')
-	if [[ $SSH_ADD != *${identity}* ]]; then
-		echo "Identity didn't exist, adding: ${identity}"
-		ssh-add ${identity}
+if [[ -d "${HOME}/.ssh" ]]; then
+	SSH_ADD=$(ssh-add -l)
+	declare -a identities
+	for file in ${HOME}/.ssh/id*.pub; do
+		[[ -e "${file}" ]] || break # in case it selected the wildcard (which isn't a real cert) abort
+		identity=$(sed ${SED_OPTS} 's/.*(\.ssh.*).pub/\1/g' <<<"${file}")
+		if [[ $SSH_ADD != *${identity}* ]]; then
+			identities+="${identity}"
+		fi
+	done
+	if [[ ${#identities} -ne 0 ]]; then
+		echo "Identities were missing, adding: ${identities[@]}"
+		ssh-add ${identities[@]}
 	fi
-done
+fi
 # }}}
 
 # ZSH Prompt Setup {{{
