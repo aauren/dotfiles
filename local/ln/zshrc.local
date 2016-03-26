@@ -31,7 +31,7 @@ if [[ -d "${HOME}/.ssh" ]]; then
 	declare -a identities
 	for file in ${HOME}/.ssh/id*.pub; do
 		[[ -e "${file}" ]] || break # in case it selected the wildcard (which isn't a real cert) abort
-		identity=$(sed ${SED_OPTS} 's/.*(\.ssh.*).pub/\1/g' <<<"${file}")
+		identity=$(ssh-keygen -lf ${file} | cut -f2 -d' ')
 		if [[ $SSH_ADD != *${identity}* ]]; then
 			identities+="${identity}"
 		fi
