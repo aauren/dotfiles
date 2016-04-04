@@ -16,6 +16,11 @@ set -g allow-rename off
 # Increase size of history buffer to 20,000 lines (previous dotfiles have it at 10,000)
 set -g history-limit 20000
 
+# Stop various environment settings from being overwritten by remote clients
+# The initial (local) environment should always be set from the global (first) creation, this only affects:
+# switch and attach operations, which is basically the equivalent of always specifying "-E" with each of theses commands
+set -g update-environment ""
+
 # Prefix+a causes us to return to previous window
 bind C-a last-window
 
