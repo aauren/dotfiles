@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 #### Constants ####
 SSH_OPTS="-AT -o LogLevel=Error -o BatchMode=yes -o ConnectTimeout=5"
