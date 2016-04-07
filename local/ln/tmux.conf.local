@@ -47,6 +47,9 @@ bind \; run-shell 'tmux resizep -y #{window_height}'
 # Vertically collapse pane to consume 50% of entire window height
 bind / run-shell 'tmux resizep -y $(( #{window_height} / 2 ))'
 
+# Output a sleep command to the window with the set delay based upon pane number
+bind C-d command-prompt -p "Delay:" "run-shell -b \"tmux_delay #{session_name} #{window_name} #{?pane_synchronized,yes,no} %%\""
+
 # Root bindings
 # Zoom window when insert key is pressed (bind to root table so that you don't have to press the tmux modifier)
 bind -n IC resize-pane -Z
