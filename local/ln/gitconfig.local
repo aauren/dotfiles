@@ -52,6 +52,18 @@
 		echo "merging/rebasing on top of ${upstream_br}..."; \
 		git merge --ff-only "${upstream_br}" || git rebase -s recursive -X ours "${upstream_br}"; \
 	}; f"
+	# Updates this branch and it's tracking branch (assuming that the tracking branch isn't a remote) using the "up" alias above
+	tup = "!f() { \
+		upstream_br="$(git rev-parse --abbrev-ref "$(git rev-parse --abbrev-ref HEAD)@{upstream}")"; \
+		if [[ ! ${upstream_br} == *"/"* ]]; then \
+			git co "${upstream_br}"; \
+			git up; \
+			git co -; \
+			git up; \
+		else \
+			echo "Tracking branch is a remote, not running"; \
+		fi; \
+	}; f"
 	sl = "!f() { git stash list | cat; }; f"
 	sp = "!f() { if [[ -z $1 ]]; then git stash pop; else git stash pop $(git stash list | grep -m 1 $1 | cut -d':' -f1); fi; }; f"
 	sa = "!f() { if [[ -z $1 ]]; then git stash apply; else git stash apply $(git stash list | grep -m 1 $1 | cut -d':' -f1); fi; }; f"
