@@ -42,6 +42,16 @@
 		echo "merging/rebasing on top of ${upstream_br}..."; \
 		git merge --ff-only "${upstream_br}" || git rebase --preserve-merges "${upstream_br}"; \
 	}; f"
+	# Like the above, except that this one is DANGEROUS because it will rebase accepting all of their branch's changes in the event of a conflict
+	fup = "!f() { \
+		upstream_br="$(git rev-parse --abbrev-ref "$(git rev-parse --abbrev-ref HEAD)@{upstream}")"; \
+		if [[ ${upstream_br} == *"/"* ]]; then \
+			echo "fetching ${upstream_br%%/*}..."; \
+			git fetch ${upstream_br%%/*} --prune; \
+		fi; \
+		echo "merging/rebasing on top of ${upstream_br}..."; \
+		git merge --ff-only "${upstream_br}" || git rebase -s recursive -X ours "${upstream_br}"; \
+	}; f"
 	sl = "!f() { git stash list | cat; }; f"
 	sp = "!f() { if [[ -z $1 ]]; then git stash pop; else git stash pop $(git stash list | grep -m 1 $1 | cut -d':' -f1); fi; }; f"
 	sa = "!f() { if [[ -z $1 ]]; then git stash apply; else git stash apply $(git stash list | grep -m 1 $1 | cut -d':' -f1); fi; }; f"
