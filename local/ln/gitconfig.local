@@ -38,6 +38,7 @@
 	sa = "!f() { if [[ -z $1 ]]; then git stash apply; else git stash apply $(git stash list | grep -m 1 $1 | cut -d':' -f1); fi; }; f"
 	ss = "!f() { git stash save --keep-index $1; }; f"
 	ssp = "!f() { git stash save --patch --keep-index $1; }; f"
+	edit = !$EDITOR $(git status --short | awk '$1 ~ /^M|A|U/ {print $2}' )
 [user]
 	name = Aaron U'Ren
 [core]
