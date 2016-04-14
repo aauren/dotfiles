@@ -32,7 +32,16 @@
 	po = push origin
 	pof = push origin --force-with-lease
 	pot = push origin --tags
-	up = "!f() { git fetch origin --prune; git merge --ff-only origin/master || git rebase --preserve-merges origin/master; }; f"
+	# Finds the upstream tracking branch, if it contains a remote, fetch the remote first, then attempt to merge, failing over into a rebase operation if that fails
+	up = "!f() { \
+		upstream_br="$(git rev-parse --abbrev-ref "$(git rev-parse --abbrev-ref HEAD)@{upstream}")"; \
+		if [[ ${upstream_br} == *"/"* ]]; then \
+			echo "fetching ${upstream_br%%/*}..."; \
+			git fetch ${upstream_br%%/*} --prune; \
+		fi; \
+		echo "merging/rebasing on top of ${upstream_br}..."; \
+		git merge --ff-only "${upstream_br}" || git rebase --preserve-merges "${upstream_br}"; \
+	}; f"
 	sl = "!f() { git stash list | cat; }; f"
 	sp = "!f() { if [[ -z $1 ]]; then git stash pop; else git stash pop $(git stash list | grep -m 1 $1 | cut -d':' -f1); fi; }; f"
 	sa = "!f() { if [[ -z $1 ]]; then git stash apply; else git stash apply $(git stash list | grep -m 1 $1 | cut -d':' -f1); fi; }; f"
