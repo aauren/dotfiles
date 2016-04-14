@@ -445,6 +445,10 @@ vnoremap <silent> y y`]
 vnoremap <silent> p p`]
 " !help! <Leader-d>: Delete item to the blackhole register (meaning don't overwrite the current buffer)
 vnoremap <Leader>d "_d
+" For more info on the below see: http://vim.wikia.com/wiki/Copy_or_change_search_hit
+" !help! Creates a simple search text object identified as "s" so that you can manipulate search hits (do things like yank, change, etc)
+vnoremap <silent> s //e<C-r>=&selection=='exclusive'?'+1':''<CR><CR>
+      \:<C-u>call histdel('search',-1)<Bar>let @/=histget('search',-1)<CR>gv
 " !help! ]]]
 
 " !help! Normal Bindings [[[
@@ -463,6 +467,12 @@ nnoremap <Leader>x "_x
 imap jj <Esc>
 " !help! JJ: When hit in quick succession same as escape
 imap JJ <Esc>
+" !help! ]]]
+
+" !help! Operator Pending Bindings [[[
+" For more information see: http://vim.wikia.com/wiki/Copy_or_change_search_hit
+" !help! Operator pending mode is entered with "c" or "y" pressing v after executes visual mode and then s after it which is defined above
+omap v :normal vs<CR>
 " !help! ]]]
 
 " !help! Map Bindings [[[
