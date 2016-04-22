@@ -31,8 +31,8 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'scrooloose/nerdtree'
 " QFEnter allows you to go to locations indicated in either QuickFix windows or Location Lists
 Plug 'yssl/QFEnter'
-" Buffergator allows you to see all of your open buffers easily
-Plug 'jeetsukumaran/vim-buffergator'
+" Buffergator allows you to see all of your open buffers easily (switched to mapping :ls)
+"Plug 'jeetsukumaran/vim-buffergator'
 " Obsession plugin allows easier tracking of vim sessions, just run it once in any session you think you might want to
 " keep and from then on out, it will track it in .vim/sessions
 Plug 'tpope/vim-obsession'

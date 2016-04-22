@@ -63,14 +63,6 @@ let g:airline_theme="ubaryd"
 " In order to restore, use either vim -S or :source
 let g:airline_section_z = airline#section#create(['%{ObsessionStatus(''[TRK SESS]'', '''')}', 'windowswap', '%3p%% ', 'linenr', ':%3v '])
 
-" Settings for buffergator
-" Horizontal split at the top to show the buffergator buffers
-let g:buffergator_viewport_split_policy = "T"
-" Auto update buffer list
-let g:buffergator_autoupdate = 1
-" Suppress keymaps from buffergator because they impact Nerdtree
-let g:buffergator_suppress_keymaps = 1
-
 " Settings for vim-flake8 (Python syntax checking)
 let g:flake8_show_in_gutter = 1
 augroup flake8
@@ -460,6 +452,11 @@ nnoremap <Leader>dd "_dd
 nnoremap <Leader>d "_d
 " !help! <Leader-x>: Delete character to the blackhole register (meaning don't overwrite the current buffer)
 nnoremap <Leader>x "_x
+" !help! <leader b>: Open/close buffer list and prompt for selection
+nnoremap <Leader>b :ls<CR>:b<Space>
+" !help! gb: Open/close buffer list and prompt for selection
+nnoremap gb :ls<CR>:b<Space>
+
 " !help! ]]]
 
 " !help! Insert Bindings [[[
@@ -574,8 +571,6 @@ map <leader>map :call ExportKeys()<CR>
 map <leader>vs :call VSplitCurrentBuffer()<CR>
 " !help! <leader vc>: Open my vim customizations to a vertical split
 map <leader>vc :call ShowVimCustomizations()<CR>
-" !help! <leader b>: Open/close buffergator split
-map <leader>b :BuffergatorToggle<CR>
 " !help! <leader z>: Close current buffer
 map <leader>z :bd<CR>
 " !help! <leader T>: Begin tracking the current vim session with the obsession plugin
@@ -591,14 +586,6 @@ let g:qfenter_vopen_map = ['<C-v>']
 let g:qfenter_hopen_map = ['<C-CR>', '<C-s>', '<C-x>']
 " !help! <CTRL-t>: Open in a new tab
 let g:qfenter_topen_map = ['<C-t>']
-" !help! ]]]
-
-" !help! Buffergator Bindings [[[
-" !help! <Enter>: Open currently selected buffer
-" !help! <CTRL-v> or s: Open the currently selected buffer in a vertical split
-" !help! <CTRL-S> or i: Open the currently selected buffer in a horizontal split
-" !help! <CTRL-T> or t: Open the currently selected buffer in a tab
-" !help! ]]]
 " !help! ]]]
 
 " }}}
