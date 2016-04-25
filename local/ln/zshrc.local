@@ -33,7 +33,7 @@ if [[ -d "${HOME}/.ssh" ]]; then
 		[[ -e "${file}" ]] || break # in case it selected the wildcard (which isn't a real cert) abort
 		identity=$(ssh-keygen -lf ${file} | cut -f2 -d' ')
 		if [[ $SSH_ADD != *${identity}* ]]; then
-			identities+="${identity}"
+			identities+="${file%.*}"
 		fi
 	done
 	if [[ ${#identities} -ne 0 ]]; then
