@@ -22,5 +22,27 @@ if [[ -d ${HOME}/bin ]]; then
 fi
 
 echo "linking config files"
-[[ -d ${HOME}/.config ]] || mkdir .config
+[[ -d ${HOME}/.config ]] || mkdir "${HOME}/.config"
 ln -sf "${HOME}"/dotfiles/local/config/* "${HOME}"/.config
+
+if [[ -n "${DISPLAY}" && -z "${SSH_TTY}" ]]; then
+	echo "linking fonts (X session detected, ssh not detected)"
+	[[ -d ${HOME}/.fonts ]] || mkdir "${HOME}/.fonts"
+	pushd "${HOME}/.fonts" >/dev/null 2>&1
+	added_fonts=false
+	while read -r font_file; do
+		font_name="$(basename "${font_file}")"
+		if [[ ! -e ${font_name} ]]; then
+			printf "\tlinking %s\n" "${font_name}"
+			ln -s "${font_file}" "${font_name}"
+			added_fonts=true
+		fi
+	done < <(find "../dotfiles/local/fonts" -type f -iname '*.ttf')
+	if $added_fonts; then
+		printf "\tre-hashing fonts\n"
+		xset fp rehash
+	fi
+	popd >/dev/null 2>&1
+else
+	echo "not linking fonts (X session wasn't detected or ssh was detected)"
+fi
