@@ -573,6 +573,8 @@ map <leader>vs :call VSplitCurrentBuffer()<CR>
 map <leader>vc :call ShowVimCustomizations()<CR>
 " !help! <leader z>: Close current buffer
 map <leader>z :bd<CR>
+" !help! <leader Z>: Close current window (use instead of :q)
+map <leader>Z :close<CR>
 " !help! <leader T>: Begin tracking the current vim session with the obsession plugin
 map <leader>T :Obsess ~/.vim/session/%:t<CR>
 " !help! ]]]
