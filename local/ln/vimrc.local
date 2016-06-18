@@ -19,6 +19,8 @@ endif
 
 " Search git directories faster by using silver searcher or ignoring git directories
 let g:ctrlp_use_caching = 0
+" When selecting multiple files, don't open any as splits (0), but instead open them as buffers (i)
+let g:ctrlp_open_multiple_files = '0i'
 " r chooses the nearest ancestor that contains a .git, .hg, .svn, or .bzr directory
 " a the directory of the current file if the working directory of CTRLP isn't a direct ancestor of the file
 let g:ctrlp_working_path_mode = 'ra'
