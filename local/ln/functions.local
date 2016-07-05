@@ -19,6 +19,13 @@ load_colors () {
 	eval RESET='$reset_color'
 }
 
+# Traverse up to the specified directory
+uptil () {
+	current_dir="$(pwd)"
+	while [[ "$(basename "${current_dir}")" != *"${1}"* ]]; do current_dir="$(dirname "${current_dir}")"; done
+	pushd "${current_dir}"
+}
+
 # Find a file with a pattern in name
 ff() { find . -type f -iname '*'$*'*' -ls ; }
 
