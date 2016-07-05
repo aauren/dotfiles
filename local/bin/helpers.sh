@@ -64,3 +64,10 @@ resolve_host_from_ssh_config() {
 	host=$(parse_ssh_config | grep -e "^${1}," | cut -d',' -f2)
 	echo "${host:-${1}}"
 }
+
+# Find the closest directory in a path that matches the specified pattern
+find_closest () {
+    current_dir="$(pwd)"
+    while [[ "$(basename "${current_dir}")" != *"${1}"* ]]; do current_dir="$(dirname "${current_dir}")"; done
+    echo "${current_dir}"
+}
