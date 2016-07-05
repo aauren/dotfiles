@@ -25,6 +25,7 @@ alias t='tail -200f'
 alias tf='tail -f'
 alias tm='tail -200f /var/log/messages'
 alias hf='hostname -f'
+alias ssh='my_ssh'
 
 # Always run jq with color output (meaning that less will get colors) which is a more sensible default for me
 alias jqc='jq --colour-output'
@@ -53,9 +54,6 @@ alias s='export SHELL=/bin/zsh && sudo -sE'
 
 # Lists all of the directories within the current directory (excepting the . directory)
 alias lsd='find . -maxdepth 1 -type d -exec ls -d {} \; | grep -v "^.$" | cut -c 3-'
-
-# Consolidate ssh config from .ssh/config.d and then execute my SSH wrapper
-alias ssh='cat ~/.ssh/config.d/* >~/.ssh/config; my_ssh'
 
 # Find all of the modules that are built against the currently running kernel
 alias findmod="find /lib/modules/$(uname -r)/ -type f -iname '*.o' -or -iname '*.ko'"
