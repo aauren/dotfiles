@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Here so that you're returned to a shell
+trap "{ exec /bin/zsh; }" SIGINT
+
+# Here to consolidate SSH files
+cat ~/.ssh/config.d/* >~/.ssh/config
+
 # shellcheck source=/dev/null
 source "${HOME}/bin/helpers.sh"
 
@@ -79,3 +85,5 @@ time while : ; do
 	main "${1}" && break
 	sleep 15
 done
+
+exec /bin/zsh
