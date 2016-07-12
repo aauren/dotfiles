@@ -117,8 +117,10 @@ augroup END
 match ExtraWhitespace /\s\+\%#\@<!$/
 
 " Shows leading space using the indentLine plugin from Yggdroot
-let g:indentLine_leadingSpaceEnabled = 1
-let g:indentLine_enabled = 0
+" Even though the following line is one of the main benefits of the plugin, it seems to REALLY slow things down
+"let g:indentLine_leadingSpaceEnabled = 1
+let g:indentLine_enabled = 1
+let g:indentLine_faster = 1
 
 " }}}
 
@@ -382,6 +384,22 @@ function! DoPrettyXML()
 endfunction
 command! PrettyXML call DoPrettyXML()
 
+function! ToggleLeadingSpaces()
+  if g:indentLine_faster == 1
+    let g:indentLine_leadingSpaceEnabled = 1
+    let g:indentLine_enabled = 1
+    let g:indentLine_faster = 0
+  else
+    let g:indentLine_leadingSpaceEnabled = 0
+    let g:indentLine_enabled = 1
+    let g:indentLine_faster = 1
+  endif
+  if exists(":LeadingSpaceToggle")
+    exe "LeadingSpaceToggle"
+  endif
+endfunction
+command! ToggleLeadingSpaces call ToggleLeadingSpaces()
+
 " !help! ]]]
 " }}}
 
@@ -459,6 +477,8 @@ nnoremap <Leader>x "_x
 nnoremap <Leader>b :ls<CR>:b<Space>
 " !help! gb: Open/close buffer list and prompt for selection
 nnoremap gb :ls<CR>:b<Space>
+" !help! <Leader-s>: Toggle showing/hiding leading spaces
+nnoremap <Leader>S :ToggleLeadingSpaces<CR>
 
 " !help! ]]]
 
