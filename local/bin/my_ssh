@@ -66,6 +66,10 @@ main ()
 	echo "Checking Host Status..."
 	is_node_up "${unaliased_ssh_host}" "${my_ssh_port:-22}"
 
+	if [[ -e "${HOME}/.ssh/no_setup_hosts" ]] && grep -q -f "${HOME}/.ssh/no_setup_hosts" <<<"${HOST}"; then
+		nosetup=true
+	fi
+
 	if [[ -z ${nosetup} && ("${HOST}" != *@* || ${HOST%@*} == $(whoami)) && "root" != $(whoami) ]]; then
 		echo "Setting Up Remove Env..."
 		setup_remote_env "${HOST}" "${unaliased_ssh_host}" "${my_ssh_port}"
