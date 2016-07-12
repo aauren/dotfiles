@@ -477,6 +477,8 @@ nnoremap <Leader>x "_x
 nnoremap <Leader>b :ls<CR>:b<Space>
 " !help! gb: Open/close buffer list and prompt for selection
 nnoremap gb :ls<CR>:b<Space>
+" !help! <CTRL-b>: Open ctrlp in tag mode for all files under the current working directory
+nnoremap <C-b> :CtrlPTag<CR>
 " !help! <Leader-s>: Toggle showing/hiding leading spaces
 nnoremap <Leader>S :ToggleLeadingSpaces<CR>
 
