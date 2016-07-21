@@ -192,8 +192,12 @@ fi
 
 # Path Additions and Cleanup {{{
 # Add local bin file
-if [[ -e ${HOME}/bin ]]; then
-	PATH=${HOME}/bin:${PATH}
+if [[ -e "${HOME}/.local/bin" ]]; then
+	PATH="${HOME}/.local/bin:${PATH}"
+fi
+
+if [[ -e "${HOME}/bin" ]]; then
+	PATH="${HOME}/bin:${PATH}"
 fi
 
 # Finally clean up the path by removing duplicate entries
