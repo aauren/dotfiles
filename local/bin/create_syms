@@ -3,7 +3,7 @@
 # contained in the parent directory.
 
 # if the dotfiles directory doesn't exist then there is really no reason to continue any of this
-[[ -d ${HOME}/dotfiles ]] || exit 1
+[[ -d "${HOME}/dotfiles" ]] || exit 1
 
 for DOT_FILE in "${HOME}/dotfiles/local/ln/"*; do
 	if [[ ! -d "${HOME}/.${DOT_FILE}" ]]; then
@@ -13,25 +13,25 @@ for DOT_FILE in "${HOME}/dotfiles/local/ln/"*; do
 done
 
 echo "linking ssh configurations"
-[[ -d ${HOME}/.ssh/config.d ]] || mkdir "${HOME}/.ssh/config.d"
+[[ -d "${HOME}/.ssh/config.d" ]] || mkdir "${HOME}/.ssh/config.d"
 
 echo "linking bin files"
-if [[ -d ${HOME}/bin ]]; then
-  ln -sf "${HOME}"/dotfiles/local/bin/* "${HOME}"/bin
+if [[ -d "${HOME}/bin" ]]; then
+  ln -sf "${HOME}/dotfiles/local/bin/"* "${HOME}/bin"
 fi
 
 echo "linking config files"
-[[ -d ${HOME}/.config ]] || mkdir "${HOME}/.config"
-ln -sf "${HOME}"/dotfiles/local/config/* "${HOME}"/.config
+[[ -d "${HOME}/.config" ]] || mkdir "${HOME}/.config"
+ln -sf "${HOME}/dotfiles/local/config/"* "${HOME}/.config"
 
 if [[ -n "${DISPLAY}" && -z "${SSH_TTY}" ]]; then
 	echo "linking fonts (X session detected, ssh not detected)"
-	[[ -d ${HOME}/.fonts ]] || mkdir "${HOME}/.fonts"
+	[[ -d "${HOME}/.fonts" ]] || mkdir "${HOME}/.fonts"
 	pushd "${HOME}/.fonts" >/dev/null 2>&1
 	added_fonts=false
 	while read -r font_file; do
 		font_name="$(basename "${font_file}")"
-		if [[ ! -e ${font_name} ]]; then
+		if [[ ! -e "${font_name}" ]]; then
 			printf "\tlinking %s\n" "${font_name}"
 			ln -s "${font_file}" "${font_name}"
 			added_fonts=true
