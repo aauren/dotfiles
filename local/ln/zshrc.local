@@ -17,6 +17,9 @@ setopt share_history
 # Increase History size, to be gigantic
 HISTSIZE=32768
 SAVEHIST=32768
+
+# Include additional paths for cheat
+export CHEATPATH="$CHEATPATH:/home/auren/.cheat.local"
 # }}}
 
 # SSH Agent Setup {{{
