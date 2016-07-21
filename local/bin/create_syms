@@ -45,3 +45,6 @@ if [[ -n "${DISPLAY}" && -z "${SSH_TTY}" ]]; then
 else
 	echo "not linking fonts (X session wasn't detected or ssh was detected)"
 fi
+
+echo "linking cheat files"
+[[ -L "${HOME}/.cheat" ]] || ln -sf "${HOME}/dotfiles/local/cheat" "${HOME}/.cheat"
