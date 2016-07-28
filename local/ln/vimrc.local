@@ -230,7 +230,10 @@ function! ToggleCopyable()
   set list!
   set number!
   if exists(":LeadingSpaceToggle")
-    exe "LeadingSpaceToggle"
+    if g:indentLine_leadingSpaceEnabled == 1
+      let g:indentLine_leadingSpaceEnabled = 0
+      exe "LeadingSpaceToggle"
+    endif
   endif
   call MyTogTW()
   if exists(":SyntasticToggleMode")
