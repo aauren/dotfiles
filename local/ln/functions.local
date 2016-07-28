@@ -35,6 +35,18 @@ fe() { find . -type f -iname '*'$1'*' -exec "${2:-file}" {} \;  ; }
 # Ping the specified host and include the date in the output
 pingd() { ping $1 | while read pong; do echo "$(date): $pong"; done }
 
+# Show broadcast routes for exabgp
+exabgp_show_routes() {
+	local socket_path="${1:-/run/exabgp/exabgp.socket}"
+	if [[ -S "${socket_path}" ]]; then
+		echo "show routes" | socat -  "UNIX-CONNECT:${socket_path}"
+		return 0
+	else
+		echo "exabgp socket does not exist: ${socket_path}"
+		return 1
+	fi
+}
+
 # Elastic Search Functions {{{
 # Finds the field data usage for a given environment
 elastic_fielddata() {
