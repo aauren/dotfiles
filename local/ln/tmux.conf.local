@@ -130,13 +130,14 @@ unbind p
 bind p paste-buffer
 bind + command-prompt -p "save current paste buffer to:" -I "~/tmux_paste_buffer" "save-buffer %1;"
 bind _ command-prompt -p 'save history to:' -I '~/tmux.log' 'capture-pane -S -32768 ; save-buffer %1 ; delete-buffer'
-bind -t vi-copy 'v' begin-selection
-bind -t vi-copy 'y' copy-selection
-bind -t vi-copy 'C-v' rectangle-toggle
-bind -t vi-copy 'C-f' previous-word
-bind -t vi-copy 'C-g' next-word
-bind -t vi-copy 'C-j' start-of-line
-bind -t vi-copy 'C-k' end-of-line
+bind-key -T copy-mode-vi v send-keys -X begin-selection
+bind -T copy-mode-vi v send-keys -X begin-selection
+bind -T copy-mode-vi y send-keys -X copy-selection
+bind -T copy-mode-vi C-v send-keys -X rectangle-toggle
+bind -T copy-mode-vi C-f send-keys -X previous-word
+bind -T copy-mode-vi C-g send-keys -X next-word
+bind -T copy-mode-vi C-j send-keys -X start-of-line
+bind -T copy-mode-vi C-k send-keys -X end-of-line
 
 bind v select-pane -L \; copy-mode \; select-pane -L \; copy-mode \; select-pane -L
 bind V select-pane -L \; send-keys 'q' \; select-pane -L \; send-keys 'q' \; select-pane -L
