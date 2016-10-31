@@ -194,6 +194,9 @@ fi
 # }}}
 
 # Path Additions and Cleanup {{{
+# Add GOPATH env variable
+export GOPATH=${HOME}/go-workspace
+
 # Add local bin file
 if [[ -e "${HOME}/.local/bin" ]]; then
 	PATH="${HOME}/.local/bin:${PATH}"
