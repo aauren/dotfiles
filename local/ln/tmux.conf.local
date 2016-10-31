@@ -101,9 +101,9 @@ bind -r L resize-pane -R 5
 
 # Pane movement commands
 bind @ command-prompt -p "create pane from:"  "join-pane -hs ':%%'"
-bind -n F1 break-pane
-bind -n F2 command-prompt -p "create pane from:"  "join-pane -hs ':%%'"
-bind -n F3 select-layout tiled
+#bind -n F1 break-pane
+#bind -n F2 command-prompt -p "create pane from:"  "join-pane -hs ':%%'"
+#bind -n F3 select-layout tiled
 
 # Swap window numbers
 bind C-s command-prompt -p "first window to swap:","second window to swap" "swap-window -s %% -t %%"
