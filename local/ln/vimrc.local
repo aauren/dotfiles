@@ -94,6 +94,7 @@ augroup filetypes
   autocmd Filetype python setlocal et ts=4 sw=4 sts=4 nowrap nofoldenable
   autocmd Filetype sh setlocal ts=4 sw=4 sts=4 noexpandtab nowrap
   autocmd Filetype ebuild setlocal ts=4 sw=4 sts=4 noexpandtab nowrap
+  autocmd Filetype java setlocal ts=4 sw=4 sts=4
 
   " Set file type to upconf template when it has deploy/config in the path
   autocmd BufRead,BufNewFile */deploy/config/* set filetype=upconf-template
