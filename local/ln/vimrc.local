@@ -415,6 +415,17 @@ function! ToggleLeadingSpaces()
 endfunction
 command! ToggleLeadingSpaces call ToggleLeadingSpaces()
 
+function! CreateCtagsInGit()
+  if isdirectory("./.git")
+    silent! !ctags -f ./.git/tags &>/dev/null
+    redraw!
+  else
+    echohl ErrorMsg
+    echo "Cannot find .git directory so cannot create ctags"
+  endif
+endfunction
+command! CreateCtags call CreateCtagsInGit()
+
 " !help! ]]]
 " }}}
 
@@ -496,6 +507,8 @@ nnoremap gb :ls<CR>:b<Space>
 nnoremap <C-b> :CtrlPTag<CR>
 " !help! <Leader-s>: Toggle showing/hiding leading spaces
 nnoremap <Leader>S :ToggleLeadingSpaces<CR>
+" !help! <CTRL-B>: Generate ctags in .git directory if it exists
+nnoremap <Leader>B :CreateCtags<CR>
 
 " !help! ]]]
 
