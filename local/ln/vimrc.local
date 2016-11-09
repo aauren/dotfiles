@@ -79,6 +79,10 @@ augroup flake8
   autocmd BufWritePost *.py call Flake8()
 augroup END
 
+" Settings for jedi-vim
+" Don't start auto-completing on . (if you still need auto-completion use Ctrl-Space)
+let g:jedi#popup_on_dot = 0
+
 " }}}
 
 " File type based autocmd's (e.g. python width 120, tab expansion for python, sh, etc, upconf and json settings {{{
