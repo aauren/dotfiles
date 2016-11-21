@@ -3,7 +3,7 @@
 #### Constants ####
 SSH_OPTS="-AT -o LogLevel=Error -o BatchMode=yes -o ConnectTimeout=5"
 RSYNC_OPTS="-rpt --size-only --ignore-times"
-EXCLUDE_GIT_DIR="--exclude=.git"
+EXCLUDE_GIT_DIR="--cvs-exclude"
 
 # Dotfile location
 DOTFILE_LOCATION='${HOME}/dotfiles/'
