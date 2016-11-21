@@ -68,8 +68,7 @@ update_home ()
 #### Main Program Flow ####
 echo "Syncing dotfiles..."
 rsync ${RSYNC_OPTS} ${EXCLUDE_GIT_DIR} "${LITERAL_DOT_LOC}" "${ssh_conn_str}:${DOTFILE_LOCATION}" &>/dev/null
-command ssh ${SSH_OPTS} ${ssh_conn_str} "mkdir -p ${VUNDLE_LOC}" 2>/dev/null
-rsync ${RSYNC_OPTS} ${EXCLUDE_GIT_DIR} "${LIT_VUNDLE_LOC}" "${ssh_conn_str}:${VUNDLE_LOC}" &>/dev/null
+rsync ${RSYNC_OPTS} ${EXCLUDE_GIT_DIR} --rsync-path="mkdir -p ${VUNDLE_LOC} && rsync" "${LIT_VUNDLE_LOC}" "${ssh_conn_str}:${VUNDLE_LOC}" &>/dev/null
 rsync ${RSYNC_OPTS} ${EXCLUDE_GIT_DIR} "${LIT_VIMAUTO_LOC}" "${ssh_conn_str}:${VIMAUTO_LOC}" &>/dev/null
 update_home
 
