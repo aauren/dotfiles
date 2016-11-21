@@ -282,9 +282,6 @@ handle_command_line "$@"
 
 run_hooks pre up
 
-wget -q --tries=1 --timeout=5 --spider http://github.com
-has_internet_access=$?
-
 dests_and_srcs="$(lsrc $LS_ARGS)"
 
 saved_ifs="$IFS"
