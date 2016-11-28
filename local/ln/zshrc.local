@@ -206,6 +206,10 @@ if [[ -e "${HOME}/bin" ]]; then
 	PATH="${HOME}/bin:${PATH}"
 fi
 
+if [[ -e "${HOME}/desktop_bin" ]]; then
+	PATH="${HOME}/desktop_bin:${PATH}"
+fi
+
 # Finally clean up the path by removing duplicate entries
 PATH=$(awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}' <<< "${PATH}")
 # }}}

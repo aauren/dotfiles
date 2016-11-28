@@ -20,6 +20,11 @@ if [[ -d "${HOME}/bin" ]]; then
   ln -sf "${HOME}/dotfiles/local/bin/"* "${HOME}/bin"
 fi
 
+echo "linking desktop bin files"
+if [[ -d "${HOME}/desktop_bin" ]]; then
+  ln -sf "${HOME}/dotfiles/local/desktop_bin/"* "${HOME}/desktop_bin"
+fi
+
 echo "linking config files"
 [[ -d "${HOME}/.config" ]] || mkdir "${HOME}/.config"
 ln -sf "${HOME}/dotfiles/local/config/"* "${HOME}/.config"
