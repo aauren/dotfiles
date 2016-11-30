@@ -5,6 +5,7 @@
 	unstg = reset HEAD
 	dt = difftool
 	dtc = difftool --cached
+	db = "!f() { git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative $1..$2; }; f"
 	lg = log --color --graph --pretty=format:'%Cred%<(8)%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --decorate
 	rc = rebase --continue
 	can = commit --amend --no-edit
