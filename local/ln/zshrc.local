@@ -20,6 +20,9 @@ SAVEHIST=32768
 
 # Include additional paths for cheat
 export CHEATPATH="$CHEATPATH:/home/auren/.cheat.local"
+
+# Include TTY for GPG
+export GPG_TTY="$(tty)"
 # }}}
 
 # SSH Agent Setup {{{
