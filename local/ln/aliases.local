@@ -25,7 +25,7 @@ alias t='tail -200f'
 alias tf='tail -f'
 alias tm='tail -200f /var/log/messages'
 alias hf='hostname -f'
-alias ssh='my_ssh'
+alias ssh='exec my_ssh'
 
 # Always run jq with color output (meaning that less will get colors) which is a more sensible default for me
 alias jqc='jq --colour-output'
