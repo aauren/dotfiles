@@ -50,6 +50,7 @@ parse_ssh_config() {
 		alias = $0
 		hostname = port = ""
 	}
+	$1 == "ProxyJump" { hostname = ",PROXYJUMP" }
 	$1 == "HostName" { hostname = "," $2 }
 	$1 == "Port" { port = "," $2 }
 	END {

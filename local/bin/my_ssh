@@ -63,16 +63,21 @@ main ()
 	unaliased_ssh_host="$(resolve_host_from_ssh_config "${hostname}")"
 	export my_ssh_port unaliased_ssh_host
 
-	echo "Checking Host Status..."
-	is_node_up "${unaliased_ssh_host}" "${my_ssh_port:-22}"
+	if [[ "PROXYJUMP" == "${unaliased_ssh_host}" ]]; then
+		echo "ProxyJump detected for host, skipping host setup and healthchecks..."
+	else
+		echo "Checking Host Status..."
+		is_node_up "${unaliased_ssh_host}" "${my_ssh_port:-22}"
 
-	if [[ -e "${HOME}/.ssh/no_setup_hosts" ]] && grep -q -f "${HOME}/.ssh/no_setup_hosts" <<<"${HOST}"; then
-		nosetup=true
-	fi
+		if [[ -e "${HOME}/.ssh/no_setup_hosts" ]] && grep -q -f "${HOME}/.ssh/no_setup_hosts" <<<"${unaliased_ssh_host}"; then
+			echo "Detected No Remote Env Setup Host (~/.ssh/no_setup_hosts)..."
+			nosetup=true
+		fi
 
-	if [[ -z ${nosetup} && ("${HOST}" != *@* || ${HOST%@*} == $(whoami)) && "root" != $(whoami) ]]; then
-		echo "Setting Up Remove Env..."
-		setup_remote_env "${HOST}" "${unaliased_ssh_host}" "${my_ssh_port}"
+		if [[ -z ${nosetup} && ("${HOST}" != *@* || ${HOST%@*} == $(whoami)) && "root" != $(whoami) ]]; then
+			echo "Setting Up Remove Env..."
+			setup_remote_env "${HOST}" "${unaliased_ssh_host}" "${my_ssh_port}"
+		fi
 	fi
 	# Command here will run SSH as the literally SSH and not loop back into this wrapper script
 	command ssh -Aq "${HOST}" || RETVAL=${?}
