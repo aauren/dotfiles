@@ -46,7 +46,8 @@ parse_ssh_config() {
 		if ( alias != "" ) {
 			output = output alias hostname port "\n"
 		}
-		alias = $2
+		$1 = ""
+		alias = $0
 		hostname = port = ""
 	}
 	$1 == "HostName" { hostname = "," $2 }
@@ -61,7 +62,7 @@ parse_ssh_config() {
 resolve_host_from_ssh_config() {
 	local host=
 	# Attempt to see if this host is a shortcut in our ssh config, if it is, resolve it's hostname first
-	host=$(parse_ssh_config | grep -e "^${1}," | cut -d',' -f2)
+	host=$(parse_ssh_config | grep -e "^ ${1}[^,]*" | cut -d',' -f2)
 	echo "${host:-${1}}"
 }
 
