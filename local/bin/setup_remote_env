@@ -17,6 +17,10 @@ LIT_VUNDLE_LOC="${HOME}/.vim/bundle/"
 VIMAUTO_LOC='${HOME}/.vim/autoload/'
 LIT_VIMAUTO_LOC="${HOME}/.vim/autoload/"
 
+# Mosh Location
+MOSH_LOC='${HOME}/bin/mosh-server'
+LIT_MOSH_LOC="${HOME}/bin/mosh-server"
+
 GIT_REMOTE_UPDATE_COMMANDS="cd ${DOTFILE_LOCATION} && \
 	git stash &>/dev/null && \
 	git pull replaceme master &>/dev/null && \
@@ -35,6 +39,7 @@ fi
 
 #### Initialize Input ####
 ssh_conn_str="${1}"
+mosh="${2}"
 
 #### Function Declarations ####
 update_git ()
@@ -71,6 +76,10 @@ rsync ${RSYNC_OPTS} ${EXCLUDE_GIT_DIR} --rsync-path="mkdir -p ${VUNDLE_LOC} && r
 rsync ${RSYNC_OPTS} ${EXCLUDE_GIT_DIR} "${LIT_VIMAUTO_LOC}" "${ssh_conn_str}:${VIMAUTO_LOC}" &>/dev/null &
 rsync ${RSYNC_OPTS} ${EXCLUDE_GIT_DIR} "${LITERAL_DOT_LOC}" "${ssh_conn_str}:${DOTFILE_LOCATION}" &>/dev/null
 update_home
+echo "Syncing Mosh..."
+if [[ -e "${LIT_MOSH_LOC}" && "${mosh}" == "mosh" ]]; then
+	rsync ${RSYNC_OPTS} ${EXCLUDE_GIT_DIR} "${LIT_MOSH_LOC}" "${ssh_conn_str}:${MOSH_LOC}" &>/dev/null
+fi
 
 # This was the old flow. Keeping it for now in case I ever want to go back
 #if \ssh ${SSH_OPTS} ${ssh_conn_str} "[[ -d ${DOTFILE_LOCATION} ]]"; then

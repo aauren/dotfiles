@@ -20,14 +20,16 @@ attempting to reconnect to the host.
 
 Options:
   -h,-?\t\tdisplay this help text and exit
-  -e\t\tdon't setup environment on remote machine"
+  -e\t\tdon't setup environment on remote machine
+  -m\t\tuse Mosh to connect to host"
 
 parse_args ()
 {
-	while getopts "h?e" opt; do
+	while getopts "h?em" opt; do
 		case "${opt}" in
 			h|\?) echo -e "${usage}"; exit 0;;
 			e) nosetup=true;;
+			m) mosh=true;;
 		esac
 	done
 
@@ -75,12 +77,31 @@ main ()
 		fi
 
 		if [[ -z ${nosetup} && ("${HOST}" != *@* || ${HOST%@*} == $(whoami)) && "root" != $(whoami) ]]; then
-			echo "Setting Up Remove Env..."
-			setup_remote_env "${HOST}" "${unaliased_ssh_host}" "${my_ssh_port}"
+			if [[ -n "${mosh}" ]]; then
+				echo "Setting Up Remove Env with mosh..."
+				setup_remote_env "${HOST}" "mosh"
+			else
+				echo "Setting Up Remove Env..."
+				setup_remote_env "${HOST}"
+			fi
+		fi
+	fi
+	# Check mosh status
+	if [[ -n "${mosh}" ]]; then
+		if ! command -v mosh-client >/dev/null 2>&1; then
+			echo >&2 "Mosh was chosen, but not in path, falling back to ssh"
+			unset mosh
+		elif [[ ! -e "${HOME}/bin/mosh-server" ]]; then
+			echo >&2 "Mosh server does not appear to be in path, and we can't guarantee it's on the other side, falling back to ssh"
+			unset mosh
 		fi
 	fi
 	# Command here will run SSH as the literally SSH and not loop back into this wrapper script
-	command ssh -Aq "${HOST}" || RETVAL=${?}
+	if [[ -n "${mosh}" && -z "${nosetup}" ]]; then
+		mosh -A --server='~/bin/mosh-server' "${HOST}"
+	else
+		command ssh -Aq "${HOST}" || RETVAL=${?}
+	fi
 
 	printf "\nSSH Exit Code: %d\n\n" ${RETVAL}
 	printf "\n%s\n\n" "$(date)"
