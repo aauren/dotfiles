@@ -1,0 +1,37 @@
+#!/bin/bash
+
+find_cacerts() {
+	java_cacerts=($(find /opt -name cacerts))
+}
+
+find_certs() {
+	local cert_locations=(${@})
+	certs=()
+	for loc in "${cert_locations[@]}"; do
+		certs+=($(find "${loc}" -iname '*.crt' -or -iname '*.pem'))
+	done
+}
+
+run_checks() {
+	[[ ${#} -lt 1 ]] && { echo >&2 "Must specify at least one certificate location"; exit 1; }
+	hash keytool 2>/dev/null || { echo >&2 "I require the java keytool command"; exit 2; }
+	[[ ${EUID} -ne 0 ]] && { echo >&2 "This script must be run as root"; exit 3; }
+}
+
+main() {
+	local cert_locations=(${@})
+	run_checks "${cert_locations[@]}"
+	find_cacerts
+	find_certs "${cert_locations[@]}"
+	for java_cacert in "${java_cacerts[@]}"; do
+		echo "========== Acting on ${java_cacert}: =========="
+		for cert in "${certs[@]}"; do
+			printf "\tImporting: %s\n" "${cert}"
+			cert_cn="$(openssl x509 -noout -subject -in "${cert}" | sed -r 's/.*CN=(.*)$/\1/')"
+			keytool -noprompt -importcert -trustcacerts -alias "${cert_cn}" -file "${cert}" \
+				-keystore "${java_cacert}" -storepass "changeit"
+		done
+	done
+}
+
+main "${@}"
