@@ -183,6 +183,8 @@ bindkey -M viins '^K' vi-end-of-line
 
 # Additional File Sourcing (.zshrc.user.local & z) {{{
 # Adds z (directory hopper) to the command line
+# This export is needed in order to ensure that z still works under sudo
+export _Z_OWNER="${SUDO_USER:-${USER}}"
 source "${HOME}/dotfiles/local/lib/rupa-z/z.sh"
 
 # Add additional zsh functions not in git
