@@ -247,6 +247,14 @@ function! ToggleCopyable()
       exe "LeadingSpaceToggle"
     endif
   endif
+  if exists(":IndentLinesToggle")
+    if g:indentLine_enabled == 1
+      let g:indentLine_enabled = 0
+    else
+      let g:indentLine_enabled = 1
+    endif
+    exe "IndentLinesToggle"
+  endif
   call MyTogTW()
   if exists(":SyntasticToggleMode")
     exe "SyntasticToggleMode"
