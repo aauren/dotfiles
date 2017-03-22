@@ -65,6 +65,8 @@ main ()
 
 	if [[ "PROXYJUMP" == "${unaliased_ssh_host}" ]]; then
 		echo "ProxyJump detected for host, skipping host setup and healthchecks..."
+	elif [[ -e "${HOME}/.ssh/no_check_hosts" ]] && grep -q -f "${HOME}/.ssh/no_check_hosts" <<<"${unaliased_ssh_host}"; then
+		echo "Detected No Check Host (~/.ssh/no_check_hosts)..."
 	else
 		echo "Checking Host Status..."
 		is_node_up "${unaliased_ssh_host}" "${my_ssh_port:-22}"
