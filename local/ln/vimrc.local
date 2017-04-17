@@ -517,6 +517,10 @@ nnoremap <C-b> :CtrlPTag<CR>
 nnoremap <Leader>S :ToggleLeadingSpaces<CR>
 " !help! <CTRL-B>: Generate ctags in .git directory if it exists
 nnoremap <Leader>B :CreateCtags<CR>
+" Set tab merge alias to vertically split current tab and the tab to the right (or barring that, to the left)
+" To put them back to tabs afterward, type CTRL+w, SHIFT+t
+" !help! <CTRL-t>: Vertically split the current tab with the one to the right (CTRL+w, SHIFT+t to put it back)
+nnoremap <C-t> :TlistToggle<CR>
 
 " !help! ]]]
 
@@ -558,8 +562,7 @@ map <C-m> :lnext<CR>
 
 " Set tab merge alias to vertically split current tab and the tab to the right (or barring that, to the left)
 " To put them back to tabs afterward, type CTRL+w, SHIFT+t
-" !help! <CTRL-t>: Vertically split the current tab with the one to the right (CTRL+w, SHIFT+t to put it back)
-map <C-t> <esc>:Tabmerge right<CR>
+" removing in favor of taglist, leaving this here for now for history: map <C-t> <esc>:Tabmerge right<CR>
 
 " Overwrite jedi-vim shortcuts
 " !help! Jedi Python Autocomplete and GoTo Mappings [[[
