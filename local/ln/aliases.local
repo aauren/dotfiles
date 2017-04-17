@@ -71,7 +71,7 @@ alias gabrs='git_branch_info "refs"'
 alias lsof-bypid='(for PID in $(ps axo pid); do echo "${PID} - $(lsof -p ${PID} 2>/dev/null | wc -l)"; done) | sort -nk 3'
 
 # Execute ps sorting by memory size listed in a human read-able format
-alias psm='ps -eo size,pid,user,command --sort -size | head -10 | awk '"'"'{
+alias psm='ps -eo rss,pid,user,command --sort -rss | head -10 | awk '"'"'{
 hr[1024**2]="GB"; hr[1024]="MB";
 for (x=1024**3; x>=1024; x/=1024) {
 if ($1>=x) { printf ("%-6.2f %s ", $1/x, hr[x]); break }
