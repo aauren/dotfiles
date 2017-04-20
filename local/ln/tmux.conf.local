@@ -177,7 +177,7 @@ set -g visual-activity on
 # Now on to the actual content of the status bar
 set -g status-left-length 22
 set -g status-left "#[fg=colour124,bold][#{session_name}] #[fg=colour12,bright]#(TZ=UTC date -u '+%%d %%H:%%M') UTC "
-set -g status-right " #[fg=colour12,bright]%m/%d/%Y %H:%M PST"
+set -g status-right " #[fg=colour12,bright]%m/%d/%Y %H:%M CST"
 
 
 # Make the pane divider of the current pane really noticable
