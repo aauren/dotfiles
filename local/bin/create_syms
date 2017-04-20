@@ -53,3 +53,13 @@ fi
 
 echo "linking cheat files"
 [[ -L "${HOME}/.cheat" ]] || ln -sf "${HOME}/dotfiles/local/cheat" "${HOME}/.cheat"
+
+if [[ -d "${HOME}/.setup.d" ]]; then
+	echo "running additional setup scripts"
+	for setup_file in "${HOME}/.setup.d/"*; do
+		if [[ -x "${setup_file}" ]]; then
+			echo "Running ${setup_file}..."
+			eval "${setup_file}"
+		fi
+	done
+fi
