@@ -73,12 +73,6 @@ let g:airline_theme="ubaryd"
 " In order to restore, use either vim -S or :source
 let g:airline_section_z = airline#section#create(['%{ObsessionStatus(''[TRK SESS]'', '''')}', 'windowswap', '%3p%% ', 'linenr', ':%3v '])
 
-" Settings for vim-flake8 (Python syntax checking)
-let g:flake8_show_in_gutter = 1
-augroup flake8
-  autocmd BufWritePost *.py call Flake8()
-augroup END
-
 " Settings for jedi-vim
 " Don't start auto-completing on . (if you still need auto-completion use Ctrl-Space)
 let g:jedi#popup_on_dot = 0
