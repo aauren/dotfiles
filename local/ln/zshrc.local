@@ -202,6 +202,13 @@ fi
 # Add GOPATH env variable
 export GOPATH=${HOME}/go-workspace
 
+# Add ruby gem bin directory
+if [[ -d "${HOME}/.gem/ruby" ]]; then
+	for ruby_ver in "${HOME}/.gem/ruby/"*; do
+		[[ -d "${ruby_ver}" && -d "${ruby_ver}/bin" ]] && PATH="${ruby_ver}/bin:${PATH}"
+	done
+fi
+
 # Add local bin file
 if [[ -e "${HOME}/.local/bin" ]]; then
 	PATH="${HOME}/.local/bin:${PATH}"
