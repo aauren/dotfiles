@@ -209,6 +209,9 @@ if [[ -d "${HOME}/.gem/ruby" ]]; then
 	done
 fi
 
+# Add node bin directory
+[[ -d "${HOME}/node_modules" && -d "${HOME}/node_modules/.bin" ]] && PATH="${HOME}/node_modules/.bin:${PATH}"
+
 # Add local bin file
 if [[ -e "${HOME}/.local/bin" ]]; then
 	PATH="${HOME}/.local/bin:${PATH}"

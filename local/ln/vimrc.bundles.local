@@ -40,3 +40,6 @@ Plug 'tpope/vim-obsession'
 "Plug 'nvie/vim-flake8'
 " A way to see all functions for a specific file (taglist)
 Plug 'majutsushi/tagbar'
+" Plugin for generating nodejs tags (after install you have to enter directory and run npm install see:
+" http://stackoverflow.com/questions/4777366/recommended-vim-plugins-for-javascript-coding/5893600#5893600
+Plug 'ternjs/tern_for_vim'
