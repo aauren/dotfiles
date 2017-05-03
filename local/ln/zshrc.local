@@ -171,8 +171,8 @@ bindkey -M viins '\ey' yank-pop
 bindkey -M viins '^U' backward-kill-line
 
 # sets ctrl+b and ctrl+f to forward and backword by word
-bindkey -M viins '^G' forward-word
-bindkey -M viins '^F' backward-word
+bindkey -M viins '^G' vi-forward-word
+bindkey -M viins '^F' vi-backward-word
 bindkey -M viins '^J' vi-beginning-of-line
 bindkey -M viins '^K' vi-end-of-line
 # }}}
