@@ -380,6 +380,7 @@ function! ToggleList(bufname, pfx)
   endif
 endfunction
 
+" !help! DoPrettyXML: formats the current XML document in a prettified way
 function! DoPrettyXML()
   " save the filetype so we can restore it later
   let l:origft = &ft
@@ -409,6 +410,7 @@ function! DoPrettyXML()
 endfunction
 command! PrettyXML call DoPrettyXML()
 
+" !help! ToggleLeadingSpaces: Disables all leading spaces to make it easier to copy/paste from window
 function! ToggleLeadingSpaces()
   if g:indentLine_faster == 1
     let g:indentLine_leadingSpaceEnabled = 1
@@ -425,6 +427,7 @@ function! ToggleLeadingSpaces()
 endfunction
 command! ToggleLeadingSpaces call ToggleLeadingSpaces()
 
+" !help! CreateCtagsInGit: Creates a file in .git/tags with all of the tags from the current project in it
 function! CreateCtagsInGit()
   if isdirectory("./.git")
     silent! !ctags -f ./.git/tags &>/dev/null
