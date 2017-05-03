@@ -77,6 +77,12 @@ let g:airline_section_z = airline#section#create(['%{ObsessionStatus(''[TRK SESS
 " Don't start auto-completing on . (if you still need auto-completion use Ctrl-Space)
 let g:jedi#popup_on_dot = 0
 
+" Settings for tagbar
+" When you toggle the tagbar, automatically give it focus
+let g:tagbar_autofocus = 1
+" Place the tag bar on the left instead of the right side of the window
+let g:tagbar_left = 1
+
 " }}}
 
 " File type based autocmd's (e.g. python width 120, tab expansion for python, sh, etc, upconf and json settings {{{
@@ -511,12 +517,12 @@ nnoremap gb :ls<CR>:b<Space>
 nnoremap <C-b> :CtrlPTag<CR>
 " !help! <Leader-s>: Toggle showing/hiding leading spaces
 nnoremap <Leader>S :ToggleLeadingSpaces<CR>
-" !help! <CTRL-B>: Generate ctags in .git directory if it exists
+" !help! <Leader-B>: Generate ctags in .git directory if it exists
 nnoremap <Leader>B :CreateCtags<CR>
 " Set tab merge alias to vertically split current tab and the tab to the right (or barring that, to the left)
 " To put them back to tabs afterward, type CTRL+w, SHIFT+t
-" !help! <CTRL-t>: Vertically split the current tab with the one to the right (CTRL+w, SHIFT+t to put it back)
-nnoremap <C-t> :TlistToggle<CR>
+" !help! <CTRL-t>: Open tag list side bar
+nnoremap <C-t> :TagbarToggle<CR>
 
 " !help! ]]]
 

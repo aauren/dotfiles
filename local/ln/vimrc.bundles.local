@@ -39,4 +39,4 @@ Plug 'tpope/vim-obsession'
 " Better Python code checking (than out of date pymode) - Commented out because syntastic already takes care of this
 "Plug 'nvie/vim-flake8'
 " A way to see all functions for a specific file (taglist)
-Plug 'vim-scripts/taglist.vim'
+Plug 'majutsushi/tagbar'
