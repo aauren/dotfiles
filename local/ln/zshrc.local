@@ -181,12 +181,7 @@ bindkey -M viins '^K' vi-end-of-line
 
 # }}}
 
-# Additional File Sourcing (.zshrc.user.local & z) {{{
-# Adds z (directory hopper) to the command line
-# This export is needed in order to ensure that z still works under sudo
-export _Z_OWNER="${SUDO_USER:-${USER}}"
-source "${HOME}/dotfiles/local/lib/rupa-z/z.sh"
-
+# Additional File Sourcing (.zshrc.user.local & .function.local) {{{
 # Add additional zsh functions not in git
 if [[ -e "${HOME}/.zshrc.user.local" ]]; then
 	source "${HOME}/.zshrc.user.local"
@@ -227,6 +222,17 @@ fi
 
 # Finally clean up the path by removing duplicate entries
 PATH=$(awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}' <<< "${PATH}")
+# }}}
+
+# Add fasd directory jumper {{{
+# Adds fasd (directory hopper) to the command line
+# By default FASD uses the ~/.fasd file. This makes it backwards compatible with the .z history I've already built.
+export _FASD_DATA="${HOME}/.z"
+# This export is needed in order to ensure that z still works under sudo
+export _FASD_OWNER="${SUDO_USER:-${USER}}"
+
+# This needs to be below the ~/bin PATH addition above or it will not work
+eval "$(${HOME}/bin/fasd --init auto)"
 # }}}
 
 # Search history with peco <ALT+r> (needs to be below path declaration) {{{
