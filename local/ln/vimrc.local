@@ -539,6 +539,8 @@ nnoremap <Leader>b :ls<CR>:b<Space>
 nnoremap gb :ls<CR>:b<Space>
 " !help! <CTRL-b>: Open ctrlp in tag mode for all files under the current working directory
 nnoremap <C-b> :CtrlPTag<CR>
+" !help! <ALT-p>: Open ctrlp in using a new root
+nnoremap <Esc>p :CtrlPCurWD<CR>
 " !help! <Leader-s>: Toggle showing/hiding leading spaces
 nnoremap <Leader>S :ToggleLeadingSpaces<CR>
 " !help! <Leader-B>: Generate ctags in .git directory if it exists
