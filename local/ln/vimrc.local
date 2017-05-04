@@ -439,6 +439,19 @@ function! CreateCtagsInGit()
 endfunction
 command! CreateCtags call CreateCtagsInGit()
 
+" !help! Z: cd to recent / frequent directories
+function! Z(...)
+  let cmd = 'fasd -d -e printf'
+  for arg in a:000
+    let cmd = cmd . ' ' . arg
+  endfor
+  let path = system(cmd)
+  if isdirectory(path)
+    echo path
+    exec 'cd ' . path
+  endif
+endfunction
+
 " !help! ]]]
 " }}}
 
@@ -455,6 +468,8 @@ command! ToggleCopyable :call ToggleCopyable()
 command! -nargs=* AG :call MyGrepCommand(<f-args>)
 " !help! Shell: Calls s:RunShellCommand to show command output in a vertical split
 command! -complete=shellcmd -nargs=+ Shell call s:RunShellCommand(<q-args>)
+" !help! Z: cd to recent / frequent directories
+command! -nargs=* Z :call Z(<f-args>)
 " !help! ]]]
 
 " }}}
@@ -526,6 +541,8 @@ nnoremap <Leader>B :CreateCtags<CR>
 " To put them back to tabs afterward, type CTRL+w, SHIFT+t
 " !help! <CTRL-t>: Open tag list side bar
 nnoremap <C-t> :TagbarToggle<CR>
+" !help! <Leader-g>: Pre-forms Z change of path command
+nnoremap <Leader>g :Z 
 
 " !help! ]]]
 
