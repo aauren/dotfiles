@@ -126,6 +126,12 @@ augroup whitespace
   endif
 augroup END
 
+" Makes it so that you never scroll into the quickfix buffer when using buffernext/bufferprevious commands
+augroup qfix
+  autocmd!
+  autocmd FileType qf set nobuflisted
+augroup END
+
 match ExtraWhitespace /\s\+\%#\@<!$/
 
 " Shows leading space using the indentLine plugin from Yggdroot
