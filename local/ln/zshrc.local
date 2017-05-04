@@ -196,6 +196,8 @@ fi
 # Path Additions and Cleanup {{{
 # Add GOPATH env variable
 export GOPATH=${HOME}/go-workspace
+# Add node bin directory
+[[ -d "${GOPATH}" && -d "${GOPATH}/bin" ]] && PATH="${GOPATH}/bin:${PATH}"
 
 # Add ruby gem bin directory
 if [[ -d "${HOME}/.gem/ruby" ]]; then
