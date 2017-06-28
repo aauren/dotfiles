@@ -84,10 +84,10 @@ bind | split-window -h
 bind - split-window -v
 
 # Remap pane navigation to vim movement keys
-bind -r h select-pane -L
-bind -r j select-pane -D
-bind -r k select-pane -U
-bind -r l select-pane -R
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
 
 # Remap window navigation to CTRL + vim left/right movement keys
 bind -r C-h select-window -t :-
