@@ -70,6 +70,10 @@ bind -n C-Left select-pane -L
 # in which case you should just send them the PageUp key
 bind-key -T root PPage if-shell -F "#{alternate_on}" "send-keys PPage" "copy-mode -eu"
 
+# Allows you to freeze or unfreeze input to a pane by pressing CTRL-Tab
+bind-key -T root F2 if-shell -F "#{pane_input_off}" "selectp -e" "selectp -d"
+bind-key -T root C-F2 if-shell -F "#{pane_input_off}" "selectp -e" "selectp -d"
+
 # Prefix+r causes reload of Tmux settings
 bind r source-file ~/.tmux.conf \; display "Reloaded!"
 
