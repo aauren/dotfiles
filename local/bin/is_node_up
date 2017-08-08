@@ -1,7 +1,7 @@
 #!/bin/bash
 
 OPTIND=1
-app_name="$(basename $0)"
+app_name="$(basename "$0")"
 app_signature="${app_name} [OPTION] IP_ADDRESS|DNS_NAME [PORT]"
 usage="usage: ${app_signature}
 Checks to see if a host is up. This script can either
@@ -11,14 +11,16 @@ if it can't find the host
 
 Options:
   -h,-?\t\tdisplay this help text and exit
-  -n\t\tperform operation as non-blocking"
+  -n\t\tperform operation as non-blocking
+  -p\t\tuse tsocks to proxy port check"
 
 parse_args ()
 {
-	while getopts "h?n" opt; do
+	while getopts "h?np" opt; do
 		case "${opt}" in
 			h|\?) echo -e "${usage}"; exit 0;;
 			n) nonblocking=true;;
+			p) proxy_port_check=true;;
 		esac
 	done
 
@@ -37,8 +39,7 @@ parse_args "$@"
 # Attempt to resolve the IP address of the host and use that instead of a hostname
 is_node_up_status=1
 while : ; do
-	is_node_up_ping_results=$(ping -w 5 -c 2 ${is_node_up_host} 2>&1)
-	if [[ ${?} == 0 ]]; then
+	if ping -w 5 -c 2 "${is_node_up_host}" 2>&1; then
 		echo "${is_node_up_host} is pingable"
 		is_node_up_status=0
 		break
@@ -55,7 +56,11 @@ done
 # Since we can really only do this check if there is a port available
 if [[ ! -z ${is_node_up_port} ]]; then
 	while : ; do
-		~/bin/nc -vzw 5 ${is_node_up_host} ${is_node_up_port} && is_node_up_status=0 && break
+		if [[ ${proxy_port_check} ]]; then
+			LD_PRELOAD="/lib64/libtsocks.so" "${HOME}/bin/nc" -vzw 5 "${is_node_up_host}" "${is_node_up_port}" && is_node_up_status=0 && break
+		else
+			"${HOME}/bin/nc" -vzw 5 "${is_node_up_host}" "${is_node_up_port}" && is_node_up_status=0 && break
+		fi
 		echo "${is_node_up_host} does not appear to be listening to port ${is_node_up_port}"
 		[[ ${nonblocking} ]] && is_node_up_status=1 && break
 		sleep 15
