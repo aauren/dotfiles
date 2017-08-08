@@ -61,6 +61,7 @@ main ()
 	# Check to see if an SSH port is explicitely defined in ssh config files
 	my_ssh_port="$(parse_ssh_config | grep "${hostname}" |cut -d',' -f 3)"
 	unaliased_ssh_host="$(resolve_host_from_ssh_config "${hostname}")"
+	local -a host_opts
 	export my_ssh_port unaliased_ssh_host
 
 	if [[ "PROXYJUMP" == "${unaliased_ssh_host}" ]]; then
@@ -68,8 +69,12 @@ main ()
 	elif [[ -e "${HOME}/.ssh/no_check_hosts" ]] && grep -q -f "${HOME}/.ssh/no_check_hosts" <<<"${unaliased_ssh_host}"; then
 		echo "Detected No Check Host (~/.ssh/no_check_hosts)..."
 	else
+		if [[ -e "${HOME}/.ssh/unavailable_hosts" ]] && grep -qf "${HOME}/.ssh/unavailable_hosts" <<<"${unaliased_ssh_host}"; then
+			echo "Unavailable host detected (~/.ssh/unavailable_hosts)"
+			host_opts+=("-p")
+		fi
 		echo "Checking Host Status..."
-		is_node_up "${unaliased_ssh_host}" "${my_ssh_port:-22}"
+		is_node_up "${host_opts[@]}" "${unaliased_ssh_host}" "${my_ssh_port:-22}"
 
 		if [[ -e "${HOME}/.ssh/no_setup_hosts" ]] && grep -q -f "${HOME}/.ssh/no_setup_hosts" <<<"${unaliased_ssh_host}"; then
 			echo "Detected No Remote Env Setup Host (~/.ssh/no_setup_hosts)..."
