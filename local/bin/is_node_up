@@ -39,7 +39,7 @@ parse_args "$@"
 # Attempt to resolve the IP address of the host and use that instead of a hostname
 is_node_up_status=1
 while : ; do
-	if ping -w 5 -c 2 "${is_node_up_host}" 2>&1; then
+	if ping -w 5 -c 2 "${is_node_up_host}" >/dev/null 2>&1; then
 		echo "${is_node_up_host} is pingable"
 		is_node_up_status=0
 		break
