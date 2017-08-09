@@ -27,7 +27,7 @@ bind C-a last-window
 bind a switch-client -l
 
 # Choose session
-bind s choose-tree
+bind s choose-tree -sw
 
 # Find window by title
 bind f command-prompt -p "Go To Window:" "find-window -N %%"
@@ -58,7 +58,7 @@ bind C-w command-prompt -p "Window:" "run-shell -b \"create_tmux #{session_name}
 bind -n IC resize-pane -Z
 
 # Show session selection tree when CTRL-Delete is pressed
-bind -n C-DC choose-tree
+bind -n C-DC choose-tree -sw
 
 # Go into paste mode when CTRL-Space is pressed
 bind -n C-Space if-shell -F "#{alternate_on}" "send-keys C-Space" "copy-mode"
