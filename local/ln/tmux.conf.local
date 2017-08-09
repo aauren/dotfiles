@@ -29,8 +29,14 @@ bind a switch-client -l
 # Choose session
 bind s choose-tree -sw
 
-# Find window by title
-bind f command-prompt -p "Go To Window:" "find-window -N %%"
+# Find window by title in current session
+bind f command-prompt -p "window:" "set -F @sess '#{session_name}'; choose-tree -f '#{&&:#{==:#{session_name},#{@sess}},#{m:*%%*,#{window_name}}}'"
+
+# Find window by title in all sessions
+bind C-f command-prompt -p "window:" "choose-tree -f '#{m:*%%*,#{window_name}}'"
+
+# Choose a window from a list in the current session
+bind w set -F @sess '#{session_name}'\; choose-tree -f '#{==:#{session_name},${@sess}}'
 
 # Create a new window in insert mode
 bind C-c new-window -a
