@@ -1,0 +1,12 @@
+#!/bin/bash
+
+session_id="${1}"
+window_name="${2}"
+
+window_results="$(tmux list-windows -F "#{&&:#{==:#{session_id},${session_id}},#{m:*${window_name}*,#{window_name}}} #{window_id}" | grep "^1")"
+if [[ $(wc -l <<<"${window_results}") -lt 2 ]]; then
+	window_results=(${window_results})
+	tmux selectw -t "${session_id}:${window_results[1]}"
+else
+	tmux choose-tree -f "#{&&:#{==:#{session_id},${session_id}},#{m:*${window_name}*,#{window_name}}}"
+fi
