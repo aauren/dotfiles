@@ -33,10 +33,10 @@ bind s choose-tree -sw
 bind f command-prompt -p "window:" "set -F @sess '#{session_name}'; choose-tree -f '#{&&:#{==:#{session_name},#{@sess}},#{m:*%%*,#{window_name}}}'"
 
 # Find window by title in all sessions
-bind C-f command-prompt -p "window:" "choose-tree -f '#{m:*%%*,#{window_name}}'"
+bind C-f command-prompt -p "window:" "choose-tree -wf '#{m:*%%*,#{window_name}}'"
 
 # Choose a window from a list in the current session
-bind w set -F @sess '#{session_name}'\; choose-tree -f '#{==:#{session_name},${@sess}}'
+bind w set -F @sess '#{session_name}'\; choose-tree -wf '#{==:#{session_name},${@sess}}'
 
 # Go to a specific window by name
 bind g command-prompt -p "window:" "run-shell \"~/bin/tmux_goto_window '#{session_id}' '%%'\""
