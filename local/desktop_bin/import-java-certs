@@ -2,6 +2,7 @@
 
 find_cacerts() {
 	java_cacerts=($(find /opt -name cacerts))
+	java_cacerts+=($(find ${HOME}/apps -name cacerts))
 }
 
 find_certs() {
