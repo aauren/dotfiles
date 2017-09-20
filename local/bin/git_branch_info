@@ -1,4 +1,9 @@
 #!/bin/bash
+# Shows a list of branches for the first parameter (usually something like "refs" or "refs/heads")
+# May be used with the following options as the second parameter (will only accept one of the following):
+#  * -c: non-color - strips color from the output (useful for pipeing into other commands)
+#  * -s: select - puts your into a mode to select a branch out of the output (automatically change to that branch)
+#  * -v: verbose - after it finishes listing the branches it will show you the file change differences
 
 format_git_branches () {
 	RED=$(tput setaf 1)
@@ -25,9 +30,15 @@ format_git_branches () {
 		if [[ "${2}" && "${2}" == "-s" ]]; then
 			printf "${BOLD_RED}[%3i]${RESET} " $((count++))
 		fi
-		printf "${BLUE}%-30s${RESET}" "${authordate}"
-		printf "${RED}%-25s${RESET}" "${authorname}"
-		printf "${BOLD_WHITE}%s${RESET}${BOLD_RED}%s${RESET}\n" "${ref}" "${nomerge}"
+		if [[ "${2}" && "${2}" == "-c" ]]; then
+			printf "%-30s" "${authordate}"
+			printf "%-25s" "${authorname}"
+			printf "%s%s\n" "${ref}" "${nomerge}"
+		else
+			printf "${BLUE}%-30s${RESET}" "${authordate}"
+			printf "${RED}%-25s${RESET}" "${authorname}"
+			printf "${BOLD_WHITE}%s${RESET}${BOLD_RED}%s${RESET}\n" "${ref}" "${nomerge}"
+		fi
 		if [[ "${2}" && "${2}" == "-v" && "${files_changed}" ]]; then
 			mystr="${mystr}$(printf "%s%s%s:\n " "${RED}" "${ref}" "${RESET}")"
 			while read file_lines; do
