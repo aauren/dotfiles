@@ -1,19 +1,23 @@
 [alias]
-	l = log --pretty=colored
+	# COMMIT
+	c = commit
 	cm = commit -m
-	dc = diff --cached
-	unstg = reset HEAD
-	dt = difftool
-	dtc = difftool --cached
-	db = "!f() { git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative $1..$2; }; f"
-	lg = log --color --graph --pretty=format:'%Cred%<(8)%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --decorate
-	rc = rebase --continue
 	can = commit --amend --no-edit
 	ca = commit --amend -v
-	# An alternative to git pull: git upfrom <remote> <branch-name>
-	upfrom = "!f() { git fetch $1 --prune; git merge --ff-only $1/$2 || git rebase --preserve-merges $1/$2; }; f"
-	sh = show HEAD
-	cp = cherry-pick
+
+	# DIFF
+	dc = diff --cached
+	dt = difftool
+	dtc = difftool --cached
+	# diff between two versions
+	db = "!f() { git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative $1..$2; }; f"
+
+	# LOG
+	l = log --pretty=colored
+	lg = log --color --graph --pretty=format:'%Cred%<(8)%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --decorate
+
+	# REBASE/RESET
+	rc = rebase --continue
 	r9 = rebase -i HEAD~9
 	r8 = rebase -i HEAD~8
 	r7 = rebase -i HEAD~7
@@ -23,17 +27,14 @@
 	r3 = rebase -i HEAD~3
 	r2 = rebase -i HEAD~2
 	r1 = rebase -i HEAD~1
+	rb = "!f() { git rebase -i HEAD~$1; }; f"
 	rs = "!f() { git reset --hard HEAD~$1; }; f"
-	cl = clone
-	# Fetch branch from origin
-	fob = fetch origin
-	br = branch --all
-	# Show all branches sorted, etc
-	abrs = for-each-ref --sort=-committerdate --format=\"%(color:blue)%(authordate:relative)\t%(color:red)%(authorname)\t%(color:white)%(color:bold)%(refname:short)\" refs
-	lbrs = for-each-ref --sort=-committerdate --format=\"%(color:blue)%(authordate:relative)\t%(color:red)%(authorname)\t%(color:white)%(color:bold)%(refname:short)\" refs/heads
-	po = push origin
-	pof = push origin --force-with-lease
-	pot = push origin --tags
+	rss = "!f() { git reset --soft HEAD~$1; }; f"
+	unstg = reset HEAD
+
+	# An alternative to git pull: git upfrom <remote> <branch-name>
+	upfrom = "!f() { git fetch $1 --prune; git merge --ff-only $1/$2 || git rebase --preserve-merges $1/$2; }; f"
+
 	# Finds the upstream tracking branch, if it contains a remote, fetch the remote first, then attempt to merge, failing over into a rebase operation if that fails
 	up = "!f() { \
 		upstream_br="$(git rev-parse --abbrev-ref "$(git rev-parse --abbrev-ref HEAD)@{upstream}")"; \
@@ -44,6 +45,7 @@
 		echo "=== merging/rebasing on top of ${upstream_br}..."; \
 		git merge --ff-only "${upstream_br}" || git rebase --preserve-merges "${upstream_br}"; \
 	}; f"
+
 	# Like the above, except that this one is DANGEROUS because it will rebase accepting all of their branch's changes in the event of a conflict
 	fup = "!f() { \
 		upstream_br="$(git rev-parse --abbrev-ref "$(git rev-parse --abbrev-ref HEAD)@{upstream}")"; \
@@ -54,6 +56,7 @@
 		echo "=== merging/rebasing on top of ${upstream_br}..."; \
 		git merge --ff-only "${upstream_br}" || git rebase -s recursive -X ours "${upstream_br}"; \
 	}; f"
+
 	# Updates this branch and it's tracking branch (assuming that the tracking branch isn't a remote) using the "up" alias above
 	tup = "!f() { \
 		upstream_br="$(git rev-parse --abbrev-ref "$(git rev-parse --abbrev-ref HEAD)@{upstream}")"; \
@@ -68,13 +71,39 @@
 			echo "Tracking branch is a remote, not running"; \
 		fi; \
 	}; f"
+
+	# BRANCH - Show all branches sorted, etc
+	br = branch --all
+	abrs = for-each-ref --sort=-committerdate --format=\"%(color:blue)%(authordate:relative)\t%(color:red)%(authorname)\t%(color:white)%(color:bold)%(refname:short)\" refs
+	lbrs = for-each-ref --sort=-committerdate --format=\"%(color:blue)%(authordate:relative)\t%(color:red)%(authorname)\t%(color:white)%(color:bold)%(refname:short)\" refs/heads
+
+	# PUSH
+	po = push origin
+	pof = push origin --force-with-lease
+	pot = push origin --tags
+	pu = push upstream
+
+	# STASH
+	# Stash list
 	sl = "!f() { git stash list | cat; }; f"
+	# Stash pop
 	sp = "!f() { if [[ -z $1 ]]; then git stash pop; else git stash pop $(git stash list | grep -m 1 $1 | cut -d':' -f1); fi; }; f"
+	# Stash apply
 	sa = "!f() { if [[ -z $1 ]]; then git stash apply; else git stash apply $(git stash list | grep -m 1 $1 | cut -d':' -f1); fi; }; f"
+	# Stash save with name
 	ss = "!f() { git stash save --keep-index $1; }; f"
+	# Stash save including untracked files
 	ssu = "!f() { git stash save --keep-index --include-untracked $1; }; f"
+	# Stash save in patch mode
 	ssp = "!f() { git stash save --patch --keep-index $1; }; f"
+
+	# MISC
+	# Opens up your editor with all files that are part of your working directory
 	edit = !$EDITOR $(git status --short | awk '$1 ~ /^M|A|U/ {print $2}' )
+	# Opens up your editor with all of the files that were modified as part of a specified commit
+	edc = "!f() { git diff-tree -p -r $1 >/tmp/gitdiff.patch; $EDITOR $(git diff-tree --no-commit-id --name-only -r $1) /tmp/gitdiff.patch; rm /tmp/gitdiff.patch; }; f"
+	sh = show HEAD
+	cp = cherry-pick
 [user]
 	name = Aaron U'Ren
 [core]
