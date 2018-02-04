@@ -10,8 +10,12 @@ set hidden
 
 " Change color scheme to dark solarized if bundles is available {{{
 if filereadable(expand("~/.vimrc.bundles"))
-  " This doesn't seem to be needed
-  "set background=dark
+  " On remote systems that run tmux not setting the background seems to cause issues with the margins
+  " appearing to be a yellow/white color, but on non-remote systems running tmux setting a background
+  " just causes poor performance. With this hopefully we only set it when necessary.
+  if $TERM == "screen-256color" && !empty($SSH_TTY)
+    set background=dark
+  endif
   " Tells solarized to use the default terminal background instead of it's own (speeds up terminal behavior)
   let g:solarized_termtrans=1
   colorscheme solarized
