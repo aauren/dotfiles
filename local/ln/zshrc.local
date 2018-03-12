@@ -226,6 +226,12 @@ fi
 PATH=$(awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}' <<< "${PATH}")
 # }}}
 
+# Helm completion setup {{{
+if type helm > /dev/null; then
+	source <(helm completion zsh)
+fi
+# }}}
+
 # Add fasd directory jumper {{{
 # Adds fasd (directory hopper) to the command line
 # By default FASD uses the ~/.fasd file. This makes it backwards compatible with the .z history I've already built.
