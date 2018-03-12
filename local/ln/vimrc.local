@@ -335,6 +335,13 @@ function! VSplitCurrentBuffer()
   bp
 endfunction
 
+" !help! SplitCurrentBuffer: Split the current buffer and rotate main screen to previous buffer
+function! SplitCurrentBuffer()
+  sp
+  wincmd h
+  bp
+endfunction
+
 " !help! s:RunShellCommand: Function to paste the output of a command inside a scratch buffer
 function! s:RunShellCommand(cmdline)
   let isfirst = 1
@@ -671,6 +678,8 @@ map <leader>X :call DoPrettyXML()<CR>
 map <leader>map :call ExportKeys()<CR>
 " !help! <leader vs>: Split the current buffer to the other vertical
 map <leader>vs :call VSplitCurrentBuffer()<CR>
+" !help! <leader sp>: Split the current buffer to the other horizontal
+map <leader>sp :call SplitCurrentBuffer()<CR>
 " !help! <leader vc>: Open my vim customizations to a vertical split
 map <leader>vc :call ShowVimCustomizations()<CR>
 " !help! <leader z>: Close current buffer
