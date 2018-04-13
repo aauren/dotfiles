@@ -8,6 +8,10 @@ WINDOW_TITLES="$(sed -r 's/([0-9]+) ([^ ]+ +){3}(.*)/\1 \3/g' <<<"${WINDOW_LIST_
 
 WINDOW_SELECTION=$(zenity --entry --title="Choose a Window" --text="${WINDOW_TITLES}")
 
+if [[ -z "${WINDOW_SELECTION}" ]]; then
+	exit 0
+fi
+
 if [[ "${WINDOW_SELECTION}" =~ ^[0-9]+$ ]]; then
 	# If the user's input was a number we assume that they identified the window by ID
 	WIN_ID=$(grep -E "^${WINDOW_SELECTION} " <<<"${WINDOW_LIST_WITH_NUM}" | sed -r 's/^[^ ]+ +([^ ]+).*/\1/g')
