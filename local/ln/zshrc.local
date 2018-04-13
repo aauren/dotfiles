@@ -222,8 +222,32 @@ if [[ -e "${HOME}/desktop_bin" ]]; then
 	PATH="${HOME}/desktop_bin:${PATH}"
 fi
 
-# Finally clean up the path by removing duplicate entries
+# Clean up the path by removing duplicate entries
 PATH=$(awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}' <<< "${PATH}")
+
+# For whatever reason, sometimes /usr/sbin and /sbin come after /usr/bin and /bin with ZSH, this statement makes sure
+# that if those paths exist in PATH that they always come first
+if grep -q /usr/sbin <<<"${PATH}"; then
+	PATH=$(awk -v RS=':' -v ORS=":" '
+	BEGIN { pattern = "^(/usr)?/(s)?bin$" }
+	{
+	if ($1 ~ pattern) {
+		if ($1 ~ /sbin/) {
+			print $1
+			gsub("sbin","bin",$1);
+			if (a[$1] > 0) {
+				print $1;
+			}
+		}
+		else {
+			a[$1]++;
+		}
+	}
+	else {
+	print $1;
+	}
+	}' <<< "${PATH}")
+fi
 # }}}
 
 # Helm completion setup {{{
