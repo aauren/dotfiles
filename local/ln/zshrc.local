@@ -51,7 +51,7 @@ fi
 
 # ZSH Prompt Setup {{{
 # Changes prompt to include information about Git repos and what zvim mode we're in
-source "${HOME}/dotfiles/local/lib/git_prompt/git_prompt.sh"
+source "${HOME}/dotfiles/local/lib/git_prompt/zshrc.sh"
 local vi_normal_marker="[%{$fg[magenta]%}N%{$reset_color%}]"
 local vi_insert_marker="[%{$fg[cyan]%}I%{$reset_color%}]"
 local vi_unknown_marker="[%{$fg[red]%}U%{$reset_color%}]"
