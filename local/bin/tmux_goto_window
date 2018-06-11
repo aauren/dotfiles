@@ -1,12 +1,17 @@
 #!/bin/bash
 
-session_id="${1}"
-window_name="${2}"
+search_type="${1}"
+session_id="${2}"
 
-window_results="$(tmux list-windows -F "#{&&:#{==:#{session_id},${session_id}},#{m:*${window_name}*,#{window_name}}} #{window_id}" | grep "^1")"
+if [[ "window" == "${search_type}" ]]; then
+	search_string="#{&&:#{==:#{session_id},${session_id}},#{m:*${3}*,#{window_name}}}"
+elif [[ "content" == "${search_type}" ]]; then
+	search_string="#{&&:#{==:#{session_id},${session_id}},#{C:${3}}}"
+fi
+	window_results="$(tmux list-windows -F "${search_string} #{window_id}" | grep "^1")"
 if [[ $(wc -l <<<"${window_results}") -lt 2 ]]; then
 	window_results=(${window_results})
 	tmux selectw -t "${session_id}:${window_results[1]}"
 else
-	tmux choose-tree -wf "#{&&:#{==:#{session_id},${session_id}},#{m:*${window_name}*,#{window_name}}}"
+	tmux choose-tree -wf "${search_string}"
 fi
