@@ -1,17 +1,38 @@
 #!/bin/bash
 
+find_window() {
+	local search_string="${1}"
+	tmux list-windows -F "${search_string} #{window_id}" | grep "^1"
+}
+
+go_to_window() {
+	local window_results="${1}"
+	if [[ $(wc -l <<<"${window_results}") -lt 2 ]]; then
+		# shellcheck disable=SC2206
+		window_results=(${window_results})
+		tmux selectw -t "${session_id}:${window_results[1]}"
+	else
+		tmux choose-tree -wf "${search_string}"
+	fi
+}
+
 search_type="${1}"
 session_id="${2}"
+query="${3}"
 
 if [[ "window" == "${search_type}" ]]; then
-	search_string="#{&&:#{==:#{session_id},${session_id}},#{m:*${3}*,#{window_name}}}"
+	search_string="#{&&:#{==:#{session_id},${session_id}},#{m:${query},#{window_name}}}"
+	# shellcheck disable=SC2178
+	window_results="$(find_window "${search_string}")"
+	# shellcheck disable=SC2128
+	if [[ -n "${window_results}" ]]; then
+		go_to_window "${window_results}"
+	else
+		search_string="#{&&:#{==:#{session_id},${session_id}},#{m:*${query}*,#{window_name}}}"
+		# shellcheck disable=SC2178
+		window_results="$(find_window "${search_string}")"
+		go_to_window "${window_results}"
+	fi
 elif [[ "content" == "${search_type}" ]]; then
-	search_string="#{&&:#{==:#{session_id},${session_id}},#{C:${3}}}"
-fi
-	window_results="$(tmux list-windows -F "${search_string} #{window_id}" | grep "^1")"
-if [[ $(wc -l <<<"${window_results}") -lt 2 ]]; then
-	window_results=(${window_results})
-	tmux selectw -t "${session_id}:${window_results[1]}"
-else
-	tmux choose-tree -wf "${search_string}"
+	search_string="#{&&:#{==:#{session_id},${session_id}},#{C:${query}}}"
 fi
