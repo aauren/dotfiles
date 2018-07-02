@@ -1,4 +1,6 @@
 # Displays the tmux var valued passed as the first parameter
+# shellcheck disable=SC2086
+# shellcheck disable=SC2046
 tmux_info() {
 	local tmux_var="${1}"
 	tmux display -pt "${TMUX_PANE:?}" "#{${tmux_var}}"
@@ -24,6 +26,7 @@ load_colors () {
 uptil () {
 	current_dir="$(pwd)"
 	while [[ "$(basename "${current_dir}")" != *"${1}"* ]]; do current_dir="$(dirname "${current_dir}")"; done
+	# shellcheck disable=SC2164
 	pushd "${current_dir}"
 }
 
@@ -34,7 +37,7 @@ ff() { find . -type f -iname '*'$*'*' -ls ; }
 fe() { find . -type f -iname '*'$1'*' -exec "${2:-file}" {} \;  ; }
 
 # Ping the specified host and include the date in the output
-pingd() { ping $1 | while read pong; do echo "$(date): $pong"; done }
+pingd() { ping $1 | while read -r pong; do echo "$(date): $pong"; done }
 
 # Show broadcast routes for exabgp
 exabgp_show_routes() {
@@ -57,13 +60,13 @@ prompt_for_selection() {
 	count=1
 	while read -r it; do
 		bg_color=""
-		if [[ $(( ${count} % 2 )) -eq 1 ]]; then
+		if [[ $(( count % 2 )) -eq 1 ]]; then
 			bg_color="${BG_BLACK}"
 		fi
-		printf "%s[%s%3i%s%s] - %s%s%s\n" "${bg_color}" "${BOLD_RED}" "$((count++))" "${RESET}" "${bg_color}" "${BLUE}" "${it}" "${RESET}" 1>&2
+		printf "%s[%s%3i%s%s] - %s%s%s\\n" "${bg_color}" "${BOLD_RED}" "$((count++))" "${RESET}" "${bg_color}" "${BLUE}" "${it}" "${RESET}" 1>&2
 		results+=( "${it}" )
 	done <<<"${1}"
-	printf "\n%sChoose option (q to quit): %s" "${BOLD_WHITE}" "${RESET}" 1>&2
+	printf "\\n%sChoose option (q to quit): %s" "${BOLD_WHITE}" "${RESET}" 1>&2
 	read -r uinput
 
 	for param in ${uinput}; do
@@ -110,7 +113,7 @@ kpr() {
 
 k8s_set_ns_option() {
 	if [[ -n "${K8S_NS}" ]]; then
-		printf -- "-n ${K8S_NS}"
+		printf -- "-n %s" "${K8S_NS}"
 	else
 		printf -- "--all-namespaces"
 	fi
@@ -121,7 +124,7 @@ k8sctl() {
 	shift
 
 	if [[ "${action}" == "logs" ]]; then
-		kubectl $(k8s_set_ns_option) logs $(k8s_set_pod_option) "${@}"
+		kubectl $(k8s_set_ns_option) logs ${K8S_POD} "${@}"
 		return
 	fi
 	shift
