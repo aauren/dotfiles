@@ -160,7 +160,7 @@ kdcrb() { k8sctl describe clusterrolebindings "${@}"; }
 kgsa() { k8sctl get serviceaccounts "${@}"; }
 kdsa() { k8sctl describe serviceaccounts "${@}"; }
 kgl() { k8sctl logs "${@}"; }
-kglc() { k8sctl get pods -o json | jq -r '.status | .initContainerStatuses[], .containerStatuses[] | .name'; }
+kglc() { k8sctl get pods -o json | jq -r '.status | .initContainerStatuses, .containerStatuses | select(. != null) | .name'; }
 kgcm() { k8sctl get configmaps "${@}"; }
 kdcm() { k8sctl describe configmaps "${@}"; }
 kge() { k8sctl get endpoints "${@}"; }
