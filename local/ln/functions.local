@@ -92,4 +92,87 @@ elastic_fielddata() {
 }
 # }}}
 
+# Kubernetes Query Functions {{{
+# kpp (kubernetes pick pod) - Allows you to pick a pod and a namespace dynamically from a list
+# Example: kpp
+kpp() {
+	local kube_results selection
+
+	kube_results="$(kubectl get pods --all-namespaces -o wide)"
+	selection="$(prompt_for_selection "${kube_results}")"
+	K8S_NS="$(awk '{print $1}' <<<"${selection}")"
+	K8S_POD="$(awk '{print $2}' <<<"${selection}")"
+}
+
+kpr() {
+	unset K8S_NS K8S_POD
+}
+
+k8s_set_ns_option() {
+	if [[ -n "${K8S_NS}" ]]; then
+		printf -- "-n ${K8S_NS}"
+	else
+		printf -- "--all-namespaces"
+	fi
+}
+
+k8sctl() {
+	local action="${1}" object="${2}"
+	shift
+
+	if [[ "${action}" == "logs" ]]; then
+		kubectl $(k8s_set_ns_option) logs $(k8s_set_pod_option) "${@}"
+		return
+	fi
+	shift
+	case "${object}" in
+		pods)
+			kubectl "${action}" "${object}" ${K8S_POD} $(k8s_set_ns_option) "${@}"
+			;;
+		namespaces)
+			kubectl "${action}" "${object}" ${K8S_NS} "${@}"
+			;;
+		clusterroles|clusterrolebindings|nodes)
+			kubectl "${action}" "${object}" "${@}"
+			;;
+		*)
+			kubectl "${action}" "${object}" $(k8s_set_ns_option) "${@}"
+			;;
+	esac
+}
+
+kgp() { k8sctl get pods "${@}"; }
+kdp() { k8sctl describe pods "${@}"; }
+kgdp() { k8sctl get deployments "${@}"; }
+kddp() { k8sctl describe deployments "${@}"; }
+kgds() { k8sctl get daemonsets "${@}"; }
+kdds() { k8sctl describe daemonsets "${@}"; }
+kgrs() { k8sctl get replicasets "${@}"; }
+kdrs() { k8sctl describe replicasets "${@}"; }
+kgss() { k8sctl get statefulsets "${@}"; }
+kdss() { k8sctl describe statefulsets "${@}"; }
+kgs() { k8sctl get services "${@}"; }
+kds() { k8sctl describe services "${@}"; }
+kgcr() { k8sctl get clusterroles "${@}"; }
+kdcr() { k8sctl describe clusterroles "${@}"; }
+kgcrb() { k8sctl get clusterrolebindings "${@}"; }
+kdcrb() { k8sctl describe clusterrolebindings "${@}"; }
+kgsa() { k8sctl get serviceaccounts "${@}"; }
+kdsa() { k8sctl describe serviceaccounts "${@}"; }
+kgl() { k8sctl logs "${@}"; }
+kglc() { k8sctl get pods -o json | jq -r '.status | .initContainerStatuses[], .containerStatuses[] | .name'; }
+kgcm() { k8sctl get configmaps "${@}"; }
+kdcm() { k8sctl describe configmaps "${@}"; }
+kge() { k8sctl get endpoints "${@}"; }
+kde() { k8sctl describe endpoints "${@}"; }
+kgns() { k8sctl get namespaces "${@}"; }
+kdns() { k8sctl describe namespaces "${@}"; }
+kgn() { k8sctl get nodes "${@}"; }
+kdn() { k8sctl describe nodes "${@}"; }
+kgr() { k8sctl get roles "${@}"; }
+kdr() { k8sctl describe roles "${@}"; }
+kgrb() { k8sctl get rolebindings "${@}"; }
+kdrb() { k8sctl describe rolebindings "${@}"; }
+# }}}
+
 # vim: set noet ts=4 sw=4 syntax=sh ft=sh fdm=marker
