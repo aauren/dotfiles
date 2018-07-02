@@ -48,6 +48,39 @@ exabgp_show_routes() {
 	fi
 }
 
+# Prompts the user for a selection from a list of line delimitted options
+prompt_for_selection() {
+	local it uinput option param count bg_color
+	local -a results
+	load_colors
+
+	count=1
+	while read -r it; do
+		bg_color=""
+		if [[ $(( ${count} % 2 )) -eq 1 ]]; then
+			bg_color="${BG_BLACK}"
+		fi
+		printf "%s[%s%3i%s%s] - %s%s%s\n" "${bg_color}" "${BOLD_RED}" "$((count++))" "${RESET}" "${bg_color}" "${BLUE}" "${it}" "${RESET}" 1>&2
+		results+=( "${it}" )
+	done <<<"${1}"
+	printf "\n%sChoose option (q to quit): %s" "${BOLD_WHITE}" "${RESET}" 1>&2
+	read -r uinput
+
+	for param in ${uinput}; do
+		if [[ "${param}" == "q" ]]; then
+			return 1
+		fi
+		if [[ "${param}" =~ ^[[:digit:]]+$ ]]; then
+			option="${results[${param}]}"
+			#echo "chose: ${option}" 1>&2
+		else
+			echo "Option selected was not recognized, quitting" 1>&2
+			return 2
+		fi
+	done
+	echo "${option}"
+}
+
 # Elastic Search Functions {{{
 # Finds the field data usage for a given environment
 elastic_fielddata() {
