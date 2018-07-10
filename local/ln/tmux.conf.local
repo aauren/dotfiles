@@ -62,6 +62,9 @@ bind / run-shell 'tmux resizep -y $(( #{window_height} / 2 ))'
 # Output a sleep command to the window with the set delay based upon pane number
 bind C-d command-prompt -p "Delay:" "run-shell -b \"tmux_delay #{session_name} #{window_name} #{?pane_synchronized,yes,no} %%\""
 
+# Output the numerical number of the pane's position within the window
+bind C-n run-shell -b "tmux_output_pane_number #{session_name} #{window_name} #{?pane_synchronized,yes,no}"
+
 # Create a tmux window based on machine a name with automation scripts
 bind C-w command-prompt -p "Window:" "run-shell -b \"create_tmux #{session_name} %% >/dev/null\""
 
