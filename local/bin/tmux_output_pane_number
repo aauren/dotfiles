@@ -1,0 +1,18 @@
+#!/bin/bash
+
+SESSION="${1}"
+WINDOW="${2}"
+SYNCED_PANE="${3}"
+
+if [[ "${SYNCED_PANE}" == "yes" ]]; then
+	tmux set-window-option -t "${SESSION}:${WINDOW}" synchronize-panes off
+fi
+
+for pane in $(tmux list-panes -t "${SESSION}:${WINDOW}" | cut -d":" -f1); do
+	#echo "Pane: ${i}"
+	tmux send-keys -t "${SESSION}:${WINDOW}.${pane}" "${pane}"
+done
+
+if [[ "${SYNCED_PANE}" == "yes" ]]; then
+	tmux set-window-option -t "${SESSION}:${WINDOW}" synchronize-panes on
+fi
