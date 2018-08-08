@@ -8,6 +8,7 @@ tmux_info() {
 
 # Automatically creates a git commit message based on the files that are staged and prints it on the line
 gitcm () {
+	# shellcheck disable=SC1105,SC2116
 	((sleep 0.1 && tmux send-keys -t "$(tmux_info session_name):$(tmux_info window_name).$(tmux_info pane_index)" "$(echo "git cm \"$(git diff --name-only --cached | grep -o '[^/]*$' | sed ':a;N;$!ba;s/\n/ \& /g'): ")") &)
 }
 
@@ -112,8 +113,18 @@ kpr() {
 }
 
 k8s_set_ns_option() {
-	if [[ -n "${K8S_NS}" ]]; then
-		printf -- "-n %s" "${K8S_NS}"
+	local namespace=""
+
+	# Check to see if one of the passed parameters is "-n" and if so, prefer that to set the namespace
+	if [[ ${#} -gt 1 ]]; then
+		for i in $(seq 1 ${#}); do
+			# shellcheck disable=SC2154
+			[[ "${argv[i]}" == "-n" && ${#} -gt ${i} ]] && namespace=${argv[i+1]} && break
+		done
+	fi
+
+	if [[ -n "${namespace:-${K8S_NS}}" ]]; then
+		printf -- "-n %s" "${namespace:-${K8S_NS}}"
 	else
 		printf -- "--all-namespaces"
 	fi
@@ -130,7 +141,7 @@ k8sctl() {
 	shift
 	case "${object}" in
 		pods)
-			kubectl "${action}" "${object}" ${K8S_POD} $(k8s_set_ns_option) "${@}"
+			kubectl "${action}" "${object}" ${K8S_POD} $(k8s_set_ns_option "${@}") "${@}"
 			;;
 		namespaces)
 			kubectl "${action}" "${object}" ${K8S_NS} "${@}"
@@ -139,7 +150,7 @@ k8sctl() {
 			kubectl "${action}" "${object}" "${@}"
 			;;
 		*)
-			kubectl "${action}" "${object}" $(k8s_set_ns_option) "${@}"
+			kubectl "${action}" "${object}" $(k8s_set_ns_option "${@}") "${@}"
 			;;
 	esac
 }
