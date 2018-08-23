@@ -33,6 +33,7 @@ git_make_commit_message () {
 
 # Automatically creates a git commit message based on the files that are staged and prints it on the line
 gitcm () {
+	git --no-pager dc
 	# shellcheck disable=SC1105,SC2116
 	((sleep 0.1 && tmux send-keys -t "$(tmux_info session_name):$(tmux_info window_name).$(tmux_info pane_index)" "$(echo "git cm \"$(git_make_commit_message): ")") &)
 }
