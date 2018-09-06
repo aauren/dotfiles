@@ -156,18 +156,62 @@ k8s_set_ns_option() {
 	fi
 }
 
+contains_k8s_selector() {
+	[[ "${*}" =~ "-l " ]] && return 0 || return 1
+}
+
+get_k8s_pod_based_on_input() {
+	if ! contains_k8s_selector "${@}"; then
+		echo "${K8S_POD}"
+	fi
+}
+
+k8s_get_service_logs() {
+	local log_selector pod line output
+	local -a log_selector_arr k8s_pods
+
+	# if the user has already passed a k8s selector like "-l" then we'll use that instead
+	if ! contains_k8s_selector "${@}"; then
+		# shellcheck disable=SC1117
+		log_selector="$(kgs -o jsonpath="{range .items[*]}{.spec.selector}{'\n'}{end}")"
+		if [[ $(wc -l <<<"${log_selector}") -gt 1 ]]; then
+			echo "Unable to determine service programatically it's likely that two services exist in the namespace."
+			echo "Please specify a '-l' service selector and try again."
+			return 1
+		fi
+		log_selector_arr=("-l" "$(sed -r 's/map\[(.*)\]/\1/g' <<<"${log_selector}" | tr ':' '=' | tr ' ' ',')")
+	fi
+
+	IFS=" " read -r -A k8s_pods <<<"$(kubectl get pods $(k8s_set_ns_option "${@}") "${log_selector_arr[@]}" "${@}" \
+		-o jsonpath='{range .items[*].metadata.name}{@}{" "}{end}' | awk '{$1=$1};1')"
+
+	if [[ -z "${k8s_pods[*]}" ]]; then
+		echo "No pods were found that match selector, please try again."
+		return 1
+	fi
+
+	for pod in "${k8s_pods[@]}"; do
+		output+=$(while read -r line; do \
+			printf "%s %s\\n" "${pod}" "${line}"; \
+			done < <(kubectl $(k8s_set_ns_option "${@}") logs "${pod}" --timestamps=true);
+			echo "."
+		)
+	done
+	sort -k2 <<<${output} | sed 's/^\.//g'
+}
+
 k8sctl() {
 	local action="${1}" object="${2}"
 	shift
 
 	if [[ "${action}" == "logs" ]]; then
-		kubectl $(k8s_set_ns_option) logs ${K8S_POD} "${@}"
+		kubectl $(k8s_set_ns_option "${@}") logs $(get_k8s_pod_based_on_input "${@}") --timestamps=true "${@}" | sort -k1
 		return
 	fi
 	shift
 	case "${object}" in
 		pods)
-			kubectl "${action}" "${object}" ${K8S_POD} $(k8s_set_ns_option "${@}") "${@}"
+			kubectl "${action}" "${object}" $(get_k8s_pod_based_on_input "${@}") $(k8s_set_ns_option "${@}") "${@}"
 			;;
 		namespaces)
 			kubectl "${action}" "${object}" ${K8S_NS} "${@}"
