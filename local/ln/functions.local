@@ -225,36 +225,55 @@ k8sctl() {
 	esac
 }
 
+# pods
 kgp() { k8sctl get pods "${@}"; }
 kdp() { k8sctl describe pods "${@}"; }
+# deployments
 kgdp() { k8sctl get deployments "${@}"; }
 kddp() { k8sctl describe deployments "${@}"; }
+# daemonsets
 kgds() { k8sctl get daemonsets "${@}"; }
 kdds() { k8sctl describe daemonsets "${@}"; }
+# replicaset
 kgrs() { k8sctl get replicasets "${@}"; }
 kdrs() { k8sctl describe replicasets "${@}"; }
+# statefulsets
 kgss() { k8sctl get statefulsets "${@}"; }
 kdss() { k8sctl describe statefulsets "${@}"; }
+# services
 kgs() { k8sctl get services "${@}"; }
 kds() { k8sctl describe services "${@}"; }
+# cluster roles
 kgcr() { k8sctl get clusterroles "${@}"; }
 kdcr() { k8sctl describe clusterroles "${@}"; }
+# cluster role bindings
 kgcrb() { k8sctl get clusterrolebindings "${@}"; }
 kdcrb() { k8sctl describe clusterrolebindings "${@}"; }
+# service accounts
 kgsa() { k8sctl get serviceaccounts "${@}"; }
 kdsa() { k8sctl describe serviceaccounts "${@}"; }
+# logs
 kgl() { k8sctl logs "${@}"; }
+# logs by service
+kgls() { k8s_get_service_logs "${@}"; }
+# list containers running in pod
 kglc() { k8sctl get pods -o json | jq -r '.status | .initContainerStatuses, .containerStatuses | select(. != null) | .[].name'; }
+# configmaps
 kgcm() { k8sctl get configmaps "${@}"; }
 kdcm() { k8sctl describe configmaps "${@}"; }
+# endpoints
 kge() { k8sctl get endpoints "${@}"; }
 kde() { k8sctl describe endpoints "${@}"; }
+# namespaces
 kgns() { k8sctl get namespaces "${@}"; }
 kdns() { k8sctl describe namespaces "${@}"; }
+# nodes
 kgn() { k8sctl get nodes "${@}"; }
 kdn() { k8sctl describe nodes "${@}"; }
+# roles
 kgr() { k8sctl get roles "${@}"; }
 kdr() { k8sctl describe roles "${@}"; }
+# role bindings
 kgrb() { k8sctl get rolebindings "${@}"; }
 kdrb() { k8sctl describe rolebindings "${@}"; }
 # }}}
