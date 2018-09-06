@@ -234,17 +234,18 @@ if grep -q /usr/sbin <<<"${PATH}"; then
 	if ($1 ~ pattern) {
 		if ($1 ~ /sbin/) {
 			print $1
-			gsub("sbin","bin",$1);
-			if (a[$1] > 0) {
-				print $1;
+			gsub("sbin","bin",$1)
+			if (a[$1] < 1) {
+				print $1
 			}
 		}
 		else {
-			a[$1]++;
+			a[$1]++
+			print $1
 		}
 	}
 	else {
-	print $1;
+	print $1
 	}
 	}' <<< "${PATH}")
 fi
