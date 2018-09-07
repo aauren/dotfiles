@@ -78,6 +78,22 @@ exabgp_show_routes() {
 	fi
 }
 
+# Parses input from selection
+prompt_yes_no() {
+	local prompt_text="${1}" uinput
+	load_colors
+
+	printf "\\n%s%s (y/n): %s" "${BOLD_WHITE}" "${prompt_text}" "${RESET}" 1>&2
+	read -r uinput
+
+	case "${uinput}" in
+		[yY][eE][sS]|[yY])
+			return 0;;
+		*)
+			return 1;;
+	esac
+}
+
 # Prompts the user for a selection from a list of line delimitted options
 prompt_for_selection() {
 	local it uinput option param count bg_color
