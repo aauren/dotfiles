@@ -241,6 +241,20 @@ k8sctl() {
 	esac
 }
 
+# Deletes everything from a given namespace after prompting
+k8s_delete_from_namespace() {
+	local object="${1}"
+	shift
+
+	printf "This will delete all ${object} in the namespace: %s" "$(k8s_set_ns_option "${@}")"
+	if prompt_yes_no "Continue?"; then
+		# shellcheck disable=SC1117
+		for i in $(k8sctl get "${object}" -o jsonpath="{range .items[*]}{.metadata.name}{'\n'}{end}"); do
+			k8sctl delete ${object} "${i}"
+		done
+	fi
+}
+
 # pods
 kgp() { k8sctl get pods "${@}"; }
 kdp() { k8sctl describe pods "${@}"; }
