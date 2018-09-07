@@ -277,30 +277,39 @@ kglc() {
 	k8sctl get pods -o json | \
 		jq -r '.status | .initContainerStatuses, .containerStatuses | select(. != null) | .[].name';
 }
+kgpd() { k8s_delete_from_namespace pod "${@}"; }
 # deployments
 kgdp() { k8sctl get deployments "${@}"; }
 kddp() { k8sctl describe deployments "${@}"; }
+kgdpd() { k8s_delete_from_namespace deployment "${@}"; }
 # daemonsets
 kgds() { k8sctl get daemonsets "${@}"; }
 kdds() { k8sctl describe daemonsets "${@}"; }
+kgdsd() { k8s_delete_from_namespace daemonset "${@}"; }
 # replicaset
 kgrs() { k8sctl get replicasets "${@}"; }
 kdrs() { k8sctl describe replicasets "${@}"; }
+kgrsd() { k8s_delete_from_namespace replicaset "${@}"; }
 # statefulsets
 kgss() { k8sctl get statefulsets "${@}"; }
 kdss() { k8sctl describe statefulsets "${@}"; }
+kgssd() { k8s_delete_from_namespace statefulset "${@}"; }
 # services
 kgs() { k8sctl get services "${@}"; }
 kds() { k8sctl describe services "${@}"; }
+kgsd() { k8s_delete_from_namespace service "${@}"; }
 # cluster roles
 kgcr() { k8sctl get clusterroles "${@}"; }
 kdcr() { k8sctl describe clusterroles "${@}"; }
+kgcrd() { k8s_delete_from_namespace clusterrole "${@}"; }
 # cluster role bindings
 kgcrb() { k8sctl get clusterrolebindings "${@}"; }
 kdcrb() { k8sctl describe clusterrolebindings "${@}"; }
+kgcrbd() { k8s_delete_from_namespace cluterrolebinding "${@}"; }
 # service accounts
 kgsa() { k8sctl get serviceaccounts "${@}"; }
 kdsa() { k8sctl describe serviceaccounts "${@}"; }
+kgsad() { k8s_delete_from_namespace serviceaccount "${@}"; }
 # logs
 kgl() { k8sctl logs "${@}"; }
 # logs by service
@@ -308,9 +317,11 @@ kgls() { k8s_get_service_logs "${@}"; }
 # configmaps
 kgcm() { k8sctl get configmaps "${@}"; }
 kdcm() { k8sctl describe configmaps "${@}"; }
+kgcmd() { k8s_delete_from_namespace configmap "${@}"; }
 # endpoints
 kge() { k8sctl get endpoints "${@}"; }
 kde() { k8sctl describe endpoints "${@}"; }
+kged() { k8s_delete_from_namespace endpoint "${@}"; }
 # namespaces
 kgns() { k8sctl get namespaces "${@}"; }
 kdns() { k8sctl describe namespaces "${@}"; }
@@ -320,9 +331,11 @@ kdn() { k8sctl describe nodes "${@}"; }
 # roles
 kgr() { k8sctl get roles "${@}"; }
 kdr() { k8sctl describe roles "${@}"; }
+kgrd() { k8s_delete_from_namespace role "${@}"; }
 # role bindings
 kgrb() { k8sctl get rolebindings "${@}"; }
 kdrb() { k8sctl describe rolebindings "${@}"; }
+kgrbd() { k8s_delete_from_namespace rolebinding "${@}"; }
 # }}}
 
 # vim: set noet ts=4 sw=4 syntax=sh ft=sh fdm=marker
