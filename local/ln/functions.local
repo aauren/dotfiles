@@ -255,6 +255,18 @@ k8s_delete_from_namespace() {
 	fi
 }
 
+k8swatch() {
+	local object="${1}"
+	shift
+
+	while :; do
+		date
+		K8S_POD="" k8sctl get "${object}" "${@}"
+		sleep 5
+		echo
+	done
+}
+
 # pods
 kgp() { k8sctl get pods "${@}"; }
 kdp() { k8sctl describe pods "${@}"; }
