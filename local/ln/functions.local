@@ -272,6 +272,11 @@ kgp() { k8sctl get pods "${@}"; }
 kdp() { k8sctl describe pods "${@}"; }
 # get pods by namespace instead of by pod name
 kgpn() { K8S_POD="" k8sctl get pods "${@}"; }
+# list containers running in pod
+kglc() {
+	k8sctl get pods -o json | \
+		jq -r '.status | .initContainerStatuses, .containerStatuses | select(. != null) | .[].name';
+}
 # deployments
 kgdp() { k8sctl get deployments "${@}"; }
 kddp() { k8sctl describe deployments "${@}"; }
@@ -300,8 +305,6 @@ kdsa() { k8sctl describe serviceaccounts "${@}"; }
 kgl() { k8sctl logs "${@}"; }
 # logs by service
 kgls() { k8s_get_service_logs "${@}"; }
-# list containers running in pod
-kglc() { k8sctl get pods -o json | jq -r '.status | .initContainerStatuses, .containerStatuses | select(. != null) | .[].name'; }
 # configmaps
 kgcm() { k8sctl get configmaps "${@}"; }
 kdcm() { k8sctl describe configmaps "${@}"; }
