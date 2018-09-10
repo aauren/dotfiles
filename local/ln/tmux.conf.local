@@ -70,8 +70,7 @@ bind C-w command-prompt -p "Window:" "run-shell -b \"create_tmux #{session_name}
 
 # Root bindings
 # Zoom window when insert key is pressed (bind to root table so that you don't have to press the tmux modifier)
-bind -n IC resize-pane -Z\; if-shell -F "#{window_zoomed_flag}" "set-window-option synchronize-panes off" "set-window-option synchronize-panes on"
-bind z resize-pane -Z\; if-shell -F "#{window_zoomed_flag}" "set-window-option synchronize-panes off" "set-window-option synchronize-panes on"
+bind -n IC resize-pane -Z
 
 # Show session selection tree when CTRL-Delete is pressed
 bind -n C-DC choose-tree -sw
