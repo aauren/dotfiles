@@ -209,7 +209,7 @@ k8s_get_service_logs() {
 	for pod in "${k8s_pods[@]}"; do
 		output+=$(while read -r line; do \
 			printf "%s %s\\n" "${pod}" "${line}"; \
-			done < <(kubectl $(k8s_set_ns_option "${@}") logs "${pod}" --timestamps=true);
+			done < <(kubectl $(k8s_set_ns_option "${@}") logs "${pod}" --timestamps=true --previous=true);
 			echo "."
 		)
 	done
