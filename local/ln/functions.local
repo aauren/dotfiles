@@ -181,6 +181,21 @@ contains_k8s_selector() {
 	[[ "${*}" =~ "-l " ]] && return 0 || return 1
 }
 
+# Strip -l and -n selectors from input parameters and return the rest
+k8s_strip_selectors() {
+	local stripped_params=""
+
+	while [[ $# -ne 0 ]]; do
+		if [[ "${1}" =~ ^(-n|-l)$ ]]; then
+			shift 2
+		else
+			stripped_params+="${1} "
+			shift
+		fi
+	done
+	printf -- "%s" "${stripped_params}"
+}
+
 get_k8s_pod_based_on_input() {
 	if ! contains_k8s_selector "${@}"; then
 		echo "${K8S_POD}"
@@ -203,7 +218,7 @@ k8s_get_service_logs() {
 		log_selector_arr=("-l" "$(sed -r 's/map\[(.*)\]/\1/g' <<<"${log_selector}" | tr ':' '=' | tr ' ' ',')")
 	fi
 
-	IFS=" " read -r -A k8s_pods <<<"$(kubectl get pods $(k8s_set_ns_option "${@}") "${log_selector_arr[@]}" "${@}" \
+	IFS=" " read -r -A k8s_pods <<<"$(kubectl get pods $(k8s_set_ns_option "${@}") "${log_selector_arr[@]}" \
 		-o jsonpath='{range .items[*].metadata.name}{@}{" "}{end}' | awk '{$1=$1};1')"
 
 	if [[ -z "${k8s_pods[*]}" ]]; then
@@ -214,7 +229,7 @@ k8s_get_service_logs() {
 	for pod in "${k8s_pods[@]}"; do
 		output+=$(while read -r line; do \
 			printf "%s %s\\n" "${pod}" "${line}"; \
-			done < <(kubectl $(k8s_set_ns_option "${@}") logs "${pod}" --timestamps=true --previous=true);
+			done < <(kubectl $(k8s_set_ns_option "${@}") logs "${pod}" --timestamps=true $(k8s_strip_selectors "${@}"));
 			echo "."
 		)
 	done
