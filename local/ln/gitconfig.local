@@ -32,6 +32,8 @@
 	rb = "!f() { git rebase -i HEAD~$1; }; f"
 	rs = "!f() { git reset --hard HEAD~$1; }; f"
 	rss = "!f() { git reset --soft HEAD~$1; }; f"
+	# Useful for resetting a local version of a user's branch to their changes (rebase and accept all of their changes)
+	rt = rebase -s recursive -X theirs
 	unstg = reset HEAD
 
 	# An alternative to git pull: git upfrom <remote> <branch-name>
