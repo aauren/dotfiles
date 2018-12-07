@@ -173,6 +173,9 @@ k8s_set_ns_option() {
 }
 
 k8s_set_default_output_option() {
+	local action="${1}"
+	shift
+	[[ "${action}" != "get" ]] && return 0
 	[[ "${*}" =~ "-o " ]] && return 0
 	echo "-o wide"
 }
@@ -248,16 +251,17 @@ k8sctl() {
 	case "${object}" in
 		pods)
 			kubectl "${action}" "${object}" $(get_k8s_pod_based_on_input "${@}") $(k8s_set_ns_option "${@}") \
-				$(k8s_set_default_output_option "${@}") "${@}"
+				$(k8s_set_default_output_option "${action}" "${@}") "${@}"
 			;;
 		namespaces)
-			kubectl "${action}" "${object}" ${K8S_NS} $(k8s_set_default_output_option "${@}") "${@}"
+			kubectl "${action}" "${object}" ${K8S_NS} $(k8s_set_default_output_option "${action}" "${@}") "${@}"
 			;;
 		clusterroles|clusterrolebindings|nodes)
-			kubectl "${action}" "${object}" $(k8s_set_default_output_option "${@}") "${@}"
+			kubectl "${action}" "${object}" $(k8s_set_default_output_option "${action}" "${@}") "${@}"
 			;;
 		*)
-			kubectl "${action}" "${object}" $(k8s_set_ns_option "${@}") $(k8s_set_default_output_option "${@}") "${@}"
+			kubectl "${action}" "${object}" $(k8s_set_ns_option "${@}") \
+				$(k8s_set_default_output_option "${action}" "${@}") "${@}"
 			;;
 	esac
 }
