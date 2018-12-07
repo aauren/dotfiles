@@ -74,7 +74,7 @@ let g:airline#extensions#hunks#enabled=1
 " Show branches in Airline
 let g:airline#extensions#branch#enabled=1
 " Airline theme that matches well with solarized theme
-let g:airline_theme="ubaryd"
+let g:airline_theme="papercolor"
 " Show vim-obsession session tracking status in airline (when tracking display [TRK SESS] in lower right)
 " In order to restore, use either vim -S or :source
 let g:airline_section_z = airline#section#create(['%{ObsessionStatus(''[TRK SESS]'', '''')}', 'windowswap', '%3p%% ', 'linenr', ':%3v '])
