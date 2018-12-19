@@ -481,7 +481,11 @@ command! ToggleLeadingSpaces call ToggleLeadingSpaces()
 " !help! CreateCtagsInGit: Creates a file in .git/tags with all of the tags from the current project in it
 function! CreateCtagsInGit()
   if isdirectory("./.git")
-    silent! !ctags -f ./.git/tags &>/dev/null
+    if &ft == 'go'
+      silent! !gotags -silent -tag-relative -sort -f ./.git/tags **/*.go
+    else
+      silent! !ctags -f ./.git/tags &>/dev/null
+    endif
     redraw!
   else
     echohl ErrorMsg
