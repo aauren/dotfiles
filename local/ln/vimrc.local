@@ -8,6 +8,8 @@ set textwidth=120
 " Allows you to open a new buffer when there are unwritten changes to the current buffer
 set hidden
 
+let tags="./.git/tags"
+
 " Change color scheme to dark solarized if bundles is available {{{
 if filereadable(expand("~/.vimrc.bundles"))
   " On remote systems that run tmux not setting the background seems to cause issues with the margins
