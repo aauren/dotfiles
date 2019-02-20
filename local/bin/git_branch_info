@@ -12,7 +12,7 @@ format_git_branches () {
 	RESET=$(tput sgr0)
 	BOLD_RED=$(tput bold; tput setaf 1)
 	GREEN=$(tput setaf 2)
-	local mystr not_merged
+	local mystr branch_name not_merged
 	local fmt="ref=%(refname:short); authordate=%(authordate:relative); commiterdate=%(committerdate); authorname=%(authorname); sha1=%(objectname);"
 	not_merged="$(git branch --no-merge)"
 	echo -e "==========================================Branches================================================"
@@ -67,8 +67,16 @@ format_git_branches () {
 			echo "Could not validate input"
 			exit 1
 		fi
-		echo "Switching to: ${branches[$((uinput - 1))]}"
-		git co "${branches[$((uinput - 1))]}"
+		# if the branch contains a slash, indicating that it is a remote, see if a non-remote version of the branch
+		# exists and if it does switch to that one instead
+		branch_name=${branches[$((uinput - 1))]}
+		if grep -q "/" <<<"${branch_name}" &>/dev/null; then
+			if git rev-parse --verify "${branch_name#*/}" &>/dev/null; then
+				branch_name="${branch_name#*/}"
+			fi
+		fi
+		echo "Switching to: ${branch_name}"
+		git co "${branch_name}"
 	fi
 
 	if [[ "${2}" && "${2}" == "-v" ]]; then
