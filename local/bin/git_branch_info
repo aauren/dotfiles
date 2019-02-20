@@ -12,16 +12,19 @@ format_git_branches () {
 	RESET=$(tput sgr0)
 	BOLD_RED=$(tput bold; tput setaf 1)
 	GREEN=$(tput setaf 2)
-	local mystr=""
+	local mystr not_merged
 	local fmt="ref=%(refname:short); authordate=%(authordate:relative); commiterdate=%(committerdate); authorname=%(authorname); sha1=%(objectname);"
-	local not_merged="$(git branch --no-merge)"
+	not_merged="$(git branch --no-merge)"
 	echo -e "==========================================Branches================================================"
 	local -i count=1
 	local -a branches
-	while read entry; do
+	while read -r entry; do
 		eval "${entry}"
-		local nomerge=""
-		local files_changed="$(git log "${ref}" --not --remotes=*/master --stat --pretty="format:" | grep '|')"
+		local nomerge files_changed
+		# $ref $authordate and $authorname is actually set but the eval entry above, format of "git for-each-ref" is as follows:
+		# ref="master"; authordate="25 hours ago"; commiterdate="Tue Feb 19 12:04:02 2019 -0600"; authorname="<auther_name>"; sha1="e132403f6cd07d2e12874a4c6f0b31a4d8d3637d";
+		# shellcheck disable=SC2154
+		files_changed="$(git log "${ref}" --not --remotes=*/master --stat --pretty="format:" | grep '|')"
 		branches+=("${ref}")
 		# We'll use a hybrid of the above command and the output of git branch --no-merge to check for changes
 		if [[ "${files_changed}" ]] || echo "${not_merged}" | grep -q -e "^[ ]*${ref}[ ]*$"; then
@@ -31,28 +34,31 @@ format_git_branches () {
 			printf "${BOLD_RED}[%3i]${RESET} " $((count++))
 		fi
 		if [[ "${2}" && "${2}" == "-c" ]]; then
+			# shellcheck disable=SC2154
 			printf "%-30s" "${authordate}"
+			# shellcheck disable=SC2154
 			printf "%-25s" "${authorname}"
-			printf "%s%s\n" "${ref}" "${nomerge}"
+			# shellcheck disable=SC2154
+			printf "%s%s\\n" "${ref}" "${nomerge}"
 		else
 			printf "${BLUE}%-30s${RESET}" "${authordate}"
 			printf "${RED}%-25s${RESET}" "${authorname}"
-			printf "${BOLD_WHITE}%s${RESET}${BOLD_RED}%s${RESET}\n" "${ref}" "${nomerge}"
+			printf "${BOLD_WHITE}%s${RESET}${BOLD_RED}%s${RESET}\\n" "${ref}" "${nomerge}"
 		fi
 		if [[ "${2}" && "${2}" == "-v" && "${files_changed}" ]]; then
-			mystr="${mystr}$(printf "%s%s%s:\n " "${RED}" "${ref}" "${RESET}")"
-			while read file_lines; do
+			mystr="${mystr}$(printf "%s%s%s:\\n " "${RED}" "${ref}" "${RESET}")"
+			while read -r file_lines; do
 				file_part1="${file_lines%|*}"
 				file_part2="${file_lines##*|}"
 				file_part1="$(sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' <<< "${file_part1}")"
-				file_part2="$(sed -r "s/(\+*)(-*)/${GREEN}\1${RESET}${RED}\2${RESET}/g" <<< "${file_part2}")"
-				mystr="${mystr}$(printf "	%s%-60s%s -%s\n " "${BOLD_WHITE}" "${file_part1}" "${RESET}" "${file_part2}")"
+				file_part2="$(sed -r "s/(\\+*)(-*)/${GREEN}\\1${RESET}${RED}\\2${RESET}/g" <<< "${file_part2}")"
+				mystr="${mystr}$(printf "	%s%-60s%s -%s\\n " "${BOLD_WHITE}" "${file_part1}" "${RESET}" "${file_part2}")"
 			done <<< "${files_changed}"
 		fi
 	done <<<"$(git for-each-ref --tcl --sort=-committerdate --format="${fmt}" "${1}")"
 
 	if [[ "${2}" && "${2}" == "-s" ]]; then
-		printf "\n%sSelect Branch to Switch to (q to quit): %s" "${BOLD_WHITE}" "${RESET}"
+		printf "\\n%sSelect Branch to Switch to (q to quit): %s" "${BOLD_WHITE}" "${RESET}"
 		read -r uinput
 		if [[ "${uinput}" == "q" ]]; then
 			exit 0
@@ -66,7 +72,7 @@ format_git_branches () {
 	fi
 
 	if [[ "${2}" && "${2}" == "-v" ]]; then
-		echo -e "\n========================================File Changes=============================================="
+		echo -e "\\n========================================File Changes=============================================="
 		echo -e "${mystr}"
 	fi
 }
