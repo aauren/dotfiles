@@ -68,7 +68,7 @@ if [[ ! -z ${TMUX_PANE} ]]; then
 fi
 
 # Aliases for showing more info about git commands
-alias glbrs='git_branch_info "refs/heads"'
+alias glbrs='git_branch_info "refs/remotes/$(git config user.email | cut -d'@' -f1)"'
 alias gabrs='git_branch_info "refs"'
 
 # Lists processes sorted by number of open files
