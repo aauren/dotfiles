@@ -552,6 +552,9 @@ command! -nargs=* Z :call Z(<f-args>)
 
 " !help!  w!!: Allow saving of files as sudo when we forgot to start vim using sudo
 cmap w!! w !sudo tee > /dev/null %
+" !helm! <Ctrl-g><CR>: Activate search as quick jump with <Ctrl-g><CR> key combo is used at the end of a search pattern
+cmap <C-g><CR> <Plug>(SearchAsQuickJump)
+
 " !help! ]]]
 
 " !help! Visual Bindings [[[

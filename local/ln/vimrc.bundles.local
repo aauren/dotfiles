@@ -43,3 +43,10 @@ Plug 'majutsushi/tagbar'
 " Plugin for generating nodejs tags (after install you have to enter directory and run npm install see:
 " http://stackoverflow.com/questions/4777366/recommended-vim-plugins-for-javascript-coding/5893600#5893600
 Plug 'ternjs/tern_for_vim'
+" Plugin for using search as a quick jump without adding the search to your search history and poluting your highlights
+" or next/previous search. Instead of hitting <CR> at the end of the search expression, press <ATL-CR>
+" The three plugins below it are dependencies and allow for enhanced searching when you map up to it's functions
+Plug 'inkarkat/vim-SearchAsQuickJump'
+Plug 'inkarkat/vim-SearchSpecial'
+Plug 'inkarkat/vim-SearchRepeat'
+Plug 'inkarkat/vim-ingo-library'
