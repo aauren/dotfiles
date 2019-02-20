@@ -70,6 +70,7 @@ fi
 # Aliases for showing more info about git commands
 alias glbrs='git_branch_info "refs/remotes/$(git config user.email | cut -d'@' -f1)"'
 alias gabrs='git_branch_info "refs"'
+alias gdrmb='git branch -r --merged | grep -Ev "((^[\W]*)\*|master)" | xargs git branch -rd'
 
 # Lists processes sorted by number of open files
 alias lsof-bypid='(for PID in $(ps axo pid); do echo "${PID} - $(lsof -p ${PID} 2>/dev/null | wc -l)"; done) | sort -nk 3'
