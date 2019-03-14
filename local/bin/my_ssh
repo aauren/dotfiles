@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC1117
 
 # Here so that you're returned to a shell
 trap "{ exec /bin/zsh; }" SIGINT
@@ -20,14 +21,16 @@ attempting to reconnect to the host.
 
 Options:
   -h,-?\t\tdisplay this help text and exit
-  -e\t\tdon't setup environment on remote machine"
+  -e\t\tdon't setup environment on remote machine
+  -c\t\trun a command upon SSH'ing"
 
 parse_args ()
 {
-	while getopts "h?e" opt; do
+	while getopts "h?ec:" opt; do
 		case "${opt}" in
-			h|\?) echo -e "${usage}"; exit 0;;
+			c) mycmd="${OPTARG}";;
 			e) nosetup=true;;
+			h|\?) echo -e "${usage}"; exit 0;;
 		esac
 	done
 
@@ -87,7 +90,11 @@ main ()
 		fi
 	fi
 	# Command here will run SSH as the literally SSH and not loop back into this wrapper script
-	command ssh -Aq "${HOST}" || RETVAL=${?}
+	if [[ -n "${mycmd}" ]]; then
+		command ssh -Aqtt "${HOST}" "${mycmd}" || RETVAL=${?}
+	else
+		command ssh -Aq "${HOST}" || RETVAL=${?}
+	fi
 
 	printf "\nSSH Exit Code: %d\n\n" ${RETVAL}
 	printf "\n%s\n\n" "$(date)"
