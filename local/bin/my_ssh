@@ -21,13 +21,15 @@ attempting to reconnect to the host.
 
 Options:
   -h,-?\t\tdisplay this help text and exit
+  -A\t\tforward the SSH agent
   -e\t\tdon't setup environment on remote machine
   -c\t\trun a command upon SSH'ing"
 
 parse_args ()
 {
-	while getopts "h?ec:" opt; do
+	while getopts "h?eAc:" opt; do
 		case "${opt}" in
+			A) additional_ssh_opts+=( "-A" );;
 			c) mycmd="${OPTARG}";;
 			e) nosetup=true;;
 			h|\?) echo -e "${usage}"; exit 0;;
@@ -91,9 +93,9 @@ main ()
 	fi
 	# Command here will run SSH as the literally SSH and not loop back into this wrapper script
 	if [[ -n "${mycmd}" ]]; then
-		command ssh -Aqtt "${HOST}" "${mycmd}" || RETVAL=${?}
+		command ssh -qtt "${additional_ssh_opts[@]}" "${HOST}" "${mycmd}" || RETVAL=${?}
 	else
-		command ssh -Aq "${HOST}" || RETVAL=${?}
+		command ssh -q "${additional_ssh_opts[@]}" "${HOST}" || RETVAL=${?}
 	fi
 
 	printf "\nSSH Exit Code: %d\n\n" ${RETVAL}
@@ -101,6 +103,8 @@ main ()
 
 	return ${RETVAL}
 }
+
+declare -a additional_ssh_opts
 
 parse_args "$@"
 
