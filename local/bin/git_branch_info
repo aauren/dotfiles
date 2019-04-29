@@ -26,6 +26,9 @@ format_git_branches () {
 		# shellcheck disable=SC2154
 		files_changed="$(git log "${ref}" --not --remotes=*/master --stat --pretty="format:" | grep '|')"
 		branches+=("${ref}")
+		if grep -q "/" <<<"${ref}"; then
+			ref="$(sed -r 's;[a-zA-Z]+/(.*)$;\1;'<<<"${ref}")"
+		fi
 		# We'll use a hybrid of the above command and the output of git branch --no-merge to check for changes
 		if [[ "${files_changed}" ]] || echo "${not_merged}" | grep -q -e "^[ ]*${ref}[ ]*$"; then
 			nomerge="(*)"
