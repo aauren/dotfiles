@@ -49,6 +49,24 @@ load_colors () {
 	eval RESET='$reset_color'
 }
 
+# Show all local branches based on current user if possible
+glbrs() {
+	if ! git rev-parse --git-dir &>/dev/null; then
+		echo "not in a git repo!"
+	fi
+	local git_dir user default
+	default="refs/heads"
+	user="$(git config user.email | cut -d'@' -f1)"
+	git_dir="$(git rev-parse --git-dir)"
+	if [[ -d "${git_dir}/refs/remots/${user}" ]]; then
+		git_branch_info "refs/remotes/${user}" "${@}"
+	elif [[ -d "${git_dir}/${default}" ]]; then
+		git_branch_info "${default}" "${@}"
+	else
+		echo "unable to find local remote"
+	fi
+}
+
 # Traverse up to the specified directory
 uptil () {
 	current_dir="$(pwd)"
