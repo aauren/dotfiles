@@ -1,6 +1,7 @@
 #!/bin/bash
 
 DOTFILEDIR="${HOME}/dotfiles"
+DESKTOPBIN="${HOME}/desktop_bin"
 
 # zsh-git-prompt
 git_prompt_dir="$(mktemp -d git_prompt.XXXXXXXXX)"
@@ -40,3 +41,34 @@ make
 cp bfs "${DOTFILEDIR}/local/bin/bfs"
 popd &>/dev/null
 rm -rf "${bfs}"
+
+# dive (I seem to have a lot of problems building this project from src)
+# Go here and find the latest release: https://github.com/wagoodman/dive/releases
+dive_release="0.7.2"
+dive="$(mktemp -d dive.XXXXXXXXX)"
+pushd "${dive}" &>/dev/null
+wget "https://github.com/wagoodman/dive/releases/download/v${dive_release}/dive_${dive_release}_linux_amd64.tar.gz"
+tar xf "dive_${dive_release}_linux_amd64.tar.gz"
+cp dive "${DESKTOPBIN}/dive"
+popd &>/dev/null
+rm -rf "${dive}"
+
+# Reg
+go get -v github.com/genuinetools/reg
+cp "${GOPATH}/bin/reg" "${DESKTOPBIN}/reg"
+
+# Lab
+lab="$(mktemp -d lab.XXXXXXXXX)"
+git clone "https://github.com/zaquestion/lab.git" "${lab}"
+pushd "${lab}" &>/dev/null
+make
+cp lab "${DESKTOPBIN}/lab"
+popd &>/dev/null
+rm -rf "${lab}"
+
+# Helm & Tiller
+# Go here and find the latest release: https://github.com/helm/helm/releases
+helm_release="2.14.1"
+wget -O "${HOME}/Downloads/helm.tar.gz" "https://get.helm.sh/helm-v${helm_release}-linux-amd64.tar.gz"
+tar -xC "${DESKTOPBIN}" -f ~/Downloads/helm.tar.gz --strip-components=1 linux-amd64/helm
+tar -xC "${DESKTOPBIN}" -f ~/Downloads/helm.tar.gz --strip-components=1 linux-amd64/tiller
