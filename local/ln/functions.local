@@ -56,7 +56,7 @@ glbrs() {
 	fi
 	local git_dir user default
 	default="refs/heads"
-	user="$(git config user.email | cut -d'@' -f1)"
+	user="$(git config user.email | cut -d'@' -f1 | tr -d "'")"
 	git_dir="$(git rev-parse --git-dir)"
 	if [[ -d "${git_dir}/refs/remots/${user}" ]]; then
 		git_branch_info "refs/remotes/${user}" "${@}"
