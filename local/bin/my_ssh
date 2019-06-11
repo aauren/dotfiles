@@ -23,16 +23,18 @@ Options:
   -h,-?\t\tdisplay this help text and exit
   -A\t\tforward the SSH agent
   -e\t\tdon't setup environment on remote machine
-  -c\t\trun a command upon SSH'ing"
+  -c\t\trun a command upon SSH'ing
+  -z\t\trun ZSH upon SSH'ing"
 
 parse_args ()
 {
-	while getopts "h?eAc:" opt; do
+	while getopts "h?eAzc:" opt; do
 		case "${opt}" in
 			A) additional_ssh_opts+=( "-A" );;
 			c) mycmd="${OPTARG}";;
 			e) nosetup=true;;
 			h|\?) echo -e "${usage}"; exit 0;;
+			z) zsh=true;;
 		esac
 	done
 
@@ -94,6 +96,8 @@ main ()
 	# Command here will run SSH as the literally SSH and not loop back into this wrapper script
 	if [[ -n "${mycmd}" ]]; then
 		command ssh -qtt "${additional_ssh_opts[@]}" "${HOST}" "${mycmd}" || RETVAL=${?}
+	elif [[ -n "${zsh}" ]]; then
+		command ssh -qtt "${additional_ssh_opts[@]}" "${HOST}" "[[ -x /bin/zsh ]] && exec bash -l -c 'exec /bin/zsh'" || RETVAL=${?}
 	else
 		command ssh -q "${additional_ssh_opts[@]}" "${HOST}" || RETVAL=${?}
 	fi
