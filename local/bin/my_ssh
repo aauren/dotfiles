@@ -5,7 +5,9 @@
 trap "{ exec /bin/zsh; }" SIGINT
 
 # Here to consolidate SSH files
-cat ~/.ssh/config.d/* >~/.ssh/config
+if [[ -d "${HOME}/.ssh/config.d" ]]; then
+	cat "${HOME}/.ssh/config.d/"* >"${HOME}/.ssh/config"
+fi
 
 # shellcheck source=/dev/null
 source "${HOME}/bin/helpers.sh"

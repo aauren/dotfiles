@@ -12,9 +12,6 @@ for DOT_FILE in "${HOME}/dotfiles/local/ln/"*; do
 	fi
 done
 
-echo "linking ssh configurations"
-[[ -d "${HOME}/.ssh/config.d" ]] || mkdir "${HOME}/.ssh/config.d"
-
 echo "linking bin files"
 if [[ -d "${HOME}/bin" ]]; then
   ln -sf "${HOME}/dotfiles/local/bin/"* "${HOME}/bin"
