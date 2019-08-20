@@ -37,7 +37,7 @@
 	unstg = reset HEAD
 
 	# An alternative to git pull: git upfrom <remote> <branch-name>
-	upfrom = "!f() { git fetch $1 --prune; git merge --ff-only $1/$2 || git rebase --preserve-merges $1/$2; }; f"
+	upfrom = "!f() { git fetch $1 --prune; git merge --ff-only $1/$2 || git rebase --rebase-merges $1/$2; }; f"
 
 	# Finds the upstream tracking branch, if it contains a remote, fetch the remote first, then attempt to merge, failing over into a rebase operation if that fails
 	up = "!f() { \
@@ -47,7 +47,7 @@
 			git fetch ${upstream_br%%/*} --prune; \
 		fi; \
 		echo "=== merging/rebasing on top of ${upstream_br}..."; \
-		git merge --ff-only "${upstream_br}" || git rebase --preserve-merges "${upstream_br}"; \
+		git merge --ff-only "${upstream_br}" || git rebase --rebase-merges "${upstream_br}"; \
 	}; f"
 
 	# Like the above, except that this one is DANGEROUS because it will rebase accepting all of their branch's changes in the event of a conflict
