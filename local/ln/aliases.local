@@ -31,6 +31,9 @@ alias tree="tree -C -I '*pycache*|.git|test|doc'"
 alias v='fasd -sife vim' # Open vim with fasd file alias
 alias jctl='journalctl --since $(date "+%Y-%m-%d" -d "5 days ago")'
 
+# Get the current ipv4 address
+alias myip="ip addr | grep -E 'inet [^/]+/24'"
+
 # Always run jq with color output (meaning that less will get colors) which is a more sensible default for me
 alias jqc='jq --colour-output'
 
