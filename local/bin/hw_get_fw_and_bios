@@ -1,0 +1,10 @@
+#!/bin/bash
+
+bios="$(dmidecode -s bios-version)"
+ipmi_tool_output="$(ipmitool mc info)"
+fw_version="$(awk '/Firmware Revision/ {print $4}' <<<"${ipmi_tool_output}")"
+fw_version+=".$(printf "ibase=16; %s\n" "$(awk -F'[ x]+' 'c&&!--c{print $3}; /Aux Firmware Rev Info/{c=3}' <<<${ipmi_tool_output})" | bc)"
+fw_version+=".$(printf "ibase=16; %s\n" "$(awk -F'[ x]+' 'c&&!--c{print $3}; /Aux Firmware Rev Info/{c=4}' <<<${ipmi_tool_output})" | bc)"
+
+printf "BIOS: %s\n" "${bios}"
+printf "FW: %s\n" "${fw_version}"
