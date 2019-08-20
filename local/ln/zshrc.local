@@ -18,9 +18,6 @@ setopt share_history
 HISTSIZE=32768
 SAVEHIST=32768
 
-# Include additional paths for cheat
-export CHEATPATH="$CHEATPATH:/home/auren/.cheat.local"
-
 # Include TTY for GPG
 export GPG_TTY="$(tty)"
 
@@ -198,6 +195,9 @@ fi
 # }}}
 
 # Path Additions and Cleanup {{{
+# Include additional paths for cheat
+export CHEATPATH="$CHEATPATH:/home/auren/.cheat.local"
+
 # Add GOPATH env variable
 export GOPATH=${HOME}/go-workspace
 # Add node bin directory
