@@ -381,4 +381,14 @@ kdrb() { k8sctl describe rolebindings "${@}"; }
 kgrbd() { k8s_delete_from_namespace rolebinding "${@}"; }
 # }}}
 
+# Linux Networking Functions {{{
+
+# Get all of the IPs behind an IPVS VIP along with their stats
+ipvs-get-vip() {
+	local vip="${1}"
+	ipvsadm -l -n | awk -v vip="${vip}" \
+		'BEGIN{a=0}; $0 ~ vip {a=1; print $0; next}; a==1 {if($0 ~ /TCP/) {exit}; print $0};'
+}
+# }}}
+
 # vim: set noet ts=4 sw=4 syntax=sh ft=sh fdm=marker
