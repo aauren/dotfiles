@@ -23,6 +23,10 @@ export CHEATPATH="$CHEATPATH:/home/auren/.cheat.local"
 
 # Include TTY for GPG
 export GPG_TTY="$(tty)"
+
+# Disable command hashing to keep from running "hash -r" all the time
+setopt nohashcmds
+
 # }}}
 
 # SSH Agent Setup {{{
