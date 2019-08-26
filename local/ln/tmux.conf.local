@@ -27,7 +27,7 @@ bind C-a last-window
 bind a switch-client -l
 
 # Choose session
-bind s choose-tree -sw -O name "switch-client -Z -t '%%'"
+bind s choose-tree -Nws -O name "switch-client -Z -t '%%'"
 
 # Find window by title in current session
 bind f command-prompt -p "window:" "set -sF @sess '#{session_name}'; choose-tree -Nwf '#{&&:#{==:#{session_name},#{@sess}},#{m:*%%*,#{window_name}}}'"
