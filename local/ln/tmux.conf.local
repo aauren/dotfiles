@@ -36,7 +36,7 @@ bind f command-prompt -p "window:" "set -sF @sess '#{session_name}'; choose-tree
 bind C-f command-prompt -p "window:" "choose-tree -Nwf '#{m:*%%*,#{window_name}}'"
 
 # Choose a window from a list in the current session
-bind w set -sF @sess '#{session_name}'\; choose-tree -NGwf '#{==:#{session_name},#{@sess}}'
+bind w set -sF @sess '#{session_name}'\; choose-tree -NGwZf '#{==:#{session_name},#{@sess}}'
 
 # Go to a specific window by name
 bind g command-prompt -p "window:" "run-shell \"~/bin/tmux_goto_window window '#{session_id}' '%%'\""
