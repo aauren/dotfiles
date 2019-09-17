@@ -226,6 +226,16 @@ if [[ -e "${HOME}/desktop_bin" ]]; then
 	PATH="${HOME}/desktop_bin:${PATH}"
 fi
 
+# If this is a Mac we'll add some more stuff
+if [[ $(uname -a) == *"Darwin"* ]]; then
+	if [[ -d "/usr/local/opt/coreutils/libexec/gnubin" ]]; then
+		PATH="/usr/local/opt/coreutils/libexec/gnubin:${PATH}"
+	fi
+	if [[ -d "/usr/local/go/bin" ]]; then
+		PATH="/usr/local/go/bin:${PATH}"
+	fi
+fi
+
 # Clean up the path by removing duplicate entries
 PATH=$(awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}' <<< "${PATH}")
 
