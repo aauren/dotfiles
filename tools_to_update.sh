@@ -24,7 +24,11 @@ popd &>/dev/null
 
 # Gron
 go get -vu github.com/tomnomnom/gron
-cp "${GOPATH}/bin/gron" "${DOTFILEDIR}/local/bin/gron"
+pushd "${GOPATH}/src/github.com/tomnomnom/gron" &>/dev/null
+go build -ldflags="-s -w"
+~/go-workspace/bin/goupx gron
+cp gron "${DOTFILEDIR}/local/bin/gron"
+popd &>/dev/null
 
 # the_silver_searcher
 silver_search="$(mktemp -d silver_search.XXXXXXXXX)"
