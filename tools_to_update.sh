@@ -13,8 +13,10 @@ rm -rf "${git_prompt_dir}"
 # peco
 pushd "${GOPATH}/src/github.com/peco/peco" &>/dev/null
 git pull
-make build
-cp releases/peco_linux_amd64/peco "${DOTFILEDIR}/local/bin/peco"
+#make build
+GO111MODULE=on go build -ldflags="-s -w" cmd/peco/peco.go
+~/go-workspace/bin/goupx peco
+cp peco "${DOTFILEDIR}/local/bin/peco"
 popd &>/dev/null
 
 # Technically fasd too, but it hasn't been updated in forever
