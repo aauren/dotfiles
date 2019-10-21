@@ -19,7 +19,7 @@ LIT_VIMAUTO_LOC="${HOME}/.vim/autoload/"
 
 # Bin location
 BIN_LOC='${HOME}/bin'
-LIT_BIN_LOC="${HOME}/bin"
+LIT_BIN_LOC="${HOME}/bin/"
 
 GIT_REMOTE_UPDATE_COMMANDS="cd ${DOTFILE_LOCATION} && \
 	git stash &>/dev/null && \
