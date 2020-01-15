@@ -635,7 +635,7 @@ nnoremap <C-b> :CtrlPTag<CR>
 " !help! <ALT-p>: Open ctrlp in using a new root
 nnoremap <Esc>p :CtrlPCurWD<CR>
 " !help! <Leader-s>: Toggle showing/hiding leading spaces
-nnoremap <Leader>S :ToggleLeadingSpaces<CR>
+nnoremap <Leader>s :ToggleLeadingSpaces<CR>
 " !help! <Leader-B>: Generate ctags in .git directory if it exists
 nnoremap <Leader>B :CreateCtags<CR>
 " Set tab merge alias to vertically split current tab and the tab to the right (or barring that, to the left)
@@ -746,8 +746,8 @@ map <leader>k :AG <cword> %<CR>
 map <leader>K :AG <cword><CR>
 " !help! <leader u>: Toggle undo tree and then focus the original vim pane again with leader-u
 map <leader>u :UndotreeToggle<cr><C-w>l
-" !help! <leader s>: Force a Synstastic check
-map <leader>s :SyntasticCheck<CR>
+" !help! <leader S>: Force a Synstastic check
+map <leader>S :SyntasticCheck<CR>
 " !help! <leader j>: Re-format a JSON document, this allows you to write compactly, but read "prettily"
 map <leader>j :%!python -m json.tool<CR>
 " !help! <leader X>: Re-format an XML document in a way that is easy to read but may not be syntatically the same
