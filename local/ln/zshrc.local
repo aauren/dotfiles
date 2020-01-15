@@ -277,6 +277,8 @@ fi
 export _FASD_DATA="${HOME}/.z"
 # This export is needed in order to ensure that z still works under sudo
 export _FASD_OWNER="${SUDO_USER:-${USER}}"
+# Increase the maximum history that is kept
+export _FASD_MAX="99999"
 
 # This needs to be below the ~/bin PATH addition above or it will not work
 eval "$(${HOME}/bin/fasd --init auto)"
