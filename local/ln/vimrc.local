@@ -134,7 +134,6 @@ augroup filetypes
 
   " Set file type to upconf template when it has deploy/config in the path
   autocmd BufRead,BufNewFile */deploy/config/* set filetype=upconf-template
-  autocmd Filetype json let b:indentLine_ConcealOptionSet = 1
 
   " Treat .input files the same as JSON
   autocmd BufRead,BufNewFile *.input set filetype=json
@@ -142,18 +141,43 @@ augroup END
 
 " }}}
 
-" Various whitespace highlighting, autocmds for EOL highlights and Yggdroot plugin configs for BOL highlights {{{
-" The following pattern will match trailing whitespace, except when typing at the end of a line.
+" Various whitespace highlighting, autocmds for EOL highlights {{{
+" Setup highlights to be used in autocmds and the functions that autocmds call
 highlight ExtraWhitespace ctermbg=red guibg=red
+highlight WhiteSpaceBol guifg=darkgrey ctermfg=darkgrey
+" These two numbers are the same term color that my solarized terminal uses and can be used to effectively hide
+" characters by setting the foreground and background to the same as my terminal
+highlight WhiteSpaceMol ctermfg=8 ctermbg=8
+
+" Used in the ToggleLeadingSpace function below, used to indicate that when we open files we don't want them to show
+" leading spaces initially
+let g:show_leading_space = 0
 
 augroup whitespace
-  :autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
+  " Upon buffer read or new buffer setup our listchars settings
+  autocmd BufRead,BufNewFile * call SetupLCS()
 
-  " If you use this alternate pattern, you may want to consider using the following autocmd to let the highlighting show
-  " up as soon as you leave insert mode after entering trailing whitespace:
-  " :autocmd InsertLeave * redraw!
-  :autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-  :autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+  " This can be used just in case future colorscheme commands attempt to clear our manually added highlights, this adds
+  " them back directly after any colorscheme changes. In practice I haven't found this necessary, commentting for now
+  "autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
+  "autocmd ColorScheme * highlight WhiteSpaceBol guifg=darkgrey ctermfg=darkgrey
+  "autocmd ColorScheme * highlight WhiteSpaceMol ctermfg=8 ctermbg=8
+
+  " This shows extra whitespace EXCEPT when we're typing at the end of the line, therefore, we only want this match
+  " loaded when we are in insert mode. We'll load this one, and delete the match below when we enter insert mode. We
+  " have to add silent! to the beginning of this call because on the first InsertEnter after opening a file 104 won't
+  " exist and 103 will already exist. See call matchadd("ExtraWhitespace"... below.
+  " matchadd parameters: matchadd(<highlight_name>, <pattern>, <priority_greater_num_means_more_prio>, <id>)
+  autocmd InsertEnter * silent! call matchadd("ExtraWhitespace", '\s\+\%#\@<!$', 10, 103)
+  " IDs 100 and 101 are created below in section: My functions (toggle solarized background, etc)
+  autocmd insertEnter * call matchdelete(104)
+
+  " This always shows whitespace at the end of the line, we use this pattern when we leave insert mode. When we leave
+  " insert we'll load this one and delete the match above. No silent is needed as everything is already setup the way it
+  " should (unlike above where it might be the first insert of the session) so no errors are thrown.
+  autocmd InsertLeave * call matchadd("ExtraWhitespace", '\s\+$', 10, 104)
+  " IDs 100 and 101 are created below in section: My functions (toggle solarized background, etc)
+  autocmd InsertLeave * call matchdelete(103)
 
   " Uses the detectindent plugin to try to figure out what indent this file should use if a modeline is not available
   if exists(":DetectIndent")
@@ -161,7 +185,7 @@ augroup whitespace
     let g:detectindent_preferred_indent    = 4
     " When you can't detect spaces vs. tabs, prefer tabs
     let g:detectindent_preferred_expandtab = 0
-    :autocmd BufReadPost * :DetectIndent
+    autocmd BufReadPost * :DetectIndent
   endif
 augroup END
 
@@ -171,13 +195,9 @@ augroup qfix
   autocmd FileType qf set nobuflisted
 augroup END
 
-match ExtraWhitespace /\s\+\%#\@<!$/
-
-" Shows leading space using the indentLine plugin from Yggdroot
-" Even though the following line is one of the main benefits of the plugin, it seems to REALLY slow things down
-"let g:indentLine_leadingSpaceEnabled = 1
-let g:indentLine_enabled = 1
-let g:indentLine_faster = 1
+" When we first open VIM we need to have a rule that maches EOL whitespace (before the InsertEnter and InsertLeave
+" autocmds above are called) so that we can see whitespace before messing with insertmode.
+call matchadd("ExtraWhitespace", '\s\+$', 10, 104)
 
 " }}}
 
@@ -290,20 +310,6 @@ function! ToggleCopyable()
   call MyTogBG()
   set list!
   set number!
-  if exists(":LeadingSpaceToggle")
-    if g:indentLine_leadingSpaceEnabled == 1
-      let g:indentLine_leadingSpaceEnabled = 0
-      exe "LeadingSpaceToggle"
-    endif
-  endif
-  if exists(":IndentLinesToggle")
-    if g:indentLine_enabled == 1
-      let g:indentLine_enabled = 0
-    else
-      let g:indentLine_enabled = 1
-    endif
-    exe "IndentLinesToggle"
-  endif
   call MyTogTW()
   if exists(":SyntasticToggleMode")
     exe "SyntasticToggleMode"
@@ -464,19 +470,51 @@ function! DoPrettyXML()
 endfunction
 command! PrettyXML call DoPrettyXML()
 
-" !help! ToggleLeadingSpaces: Disables all leading spaces to make it easier to copy/paste from window
-function! ToggleLeadingSpaces()
-  if g:indentLine_faster == 1
-    let g:indentLine_leadingSpaceEnabled = 1
-    let g:indentLine_enabled = 1
-    let g:indentLine_faster = 0
+" !help! SetupLCS: Sets up initial (normal) listchars in VIM. It is used on start by autocmd above.
+function! SetupLCS()
+  if has("patch-8.1-0759")
+    set listchars=tab:\|->
   else
-    let g:indentLine_leadingSpaceEnabled = 0
-    let g:indentLine_enabled = 1
-    let g:indentLine_faster = 1
+    set listchars=tab:->
   endif
-  if exists(":LeadingSpaceToggle")
-    exe "LeadingSpaceToggle"
+  set listchars+=nbsp:·,trail:·
+  set listchars+=extends:>,precedes:<
+endfunction
+
+" !help! ToggleLeadingSpaces: Disables all leading spaces to make it easier to copy/paste from window
+function! ToggleLeadingSpaces(...)
+  " A one should be passed as the first argument to this function if you don't want to toggle the functionality, but
+  " just want it to re-run existing settings instead.
+  if a:0 != 1
+    if g:show_leading_space == 0
+      let g:show_leading_space = 1
+    else
+      let g:show_leading_space = 0
+    endif
+  endif
+  if g:show_leading_space == 1 " Show leading spaces
+    call SetupLCS()
+    " Show the space character as a ·
+    set listchars+=space:·
+
+    " IDs 103 and 104 along with highlight definitions are described above in the section titled:
+    " Various whitespace highlighting, autocmds for EOL highlights
+
+    " This one matches all whitespace and applies the highlight WhiteSpaceMol hides the space listchar above ^^ by
+    " making it's foreground and background the same color as my solarized terminal
+    call matchadd("WhiteSpaceMol", " ", -5, 100)
+
+    " This one overrides the above match (by giving it a higher priority -4 > -5) and applies the highlight
+    " WhiteSpaceBol which shows the space listchar above ^^ by applying a proper foreground and background
+    call matchadd("WhiteSpaceBol", '^ \+', -4, 101)
+
+  else " Hide leading spaces
+
+    call SetupLCS()
+
+    " Delete our above matches so that space characters in any position aren't hidden or improperly displayed
+    call matchdelete(100)
+    call matchdelete(101)
   endif
 endfunction
 command! ToggleLeadingSpaces call ToggleLeadingSpaces()
@@ -691,7 +729,7 @@ map <silent> <leader>l :call ToggleList("Location List", 'l')<CR>
 " !help! <leader q>: Open/Close the quickfix window
 map <silent> <leader>q :call ToggleList("Quickfix List", 'c')<CR>
 " !help! <leader li>: Toggle showing certain whitespace characters
-map <Leader>li :set list!<CR>:LeadingSpaceToggle<CR>
+map <Leader>li :set list!<CR>
 " !help! <leader n>: Toggle show number
 map <Leader>n :set number!<CR>
 " !help! <leader r>: Toggle relative line numbering

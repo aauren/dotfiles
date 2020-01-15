@@ -7,8 +7,6 @@ Plug 'ciaranm/detectindent'
 " Allows you to move from tabs to vsplits and back (ctrl-m to bring them back: ctrl-w, T) (I don't really use tabs
 " anymore)
 "Plug 'vim-scripts/Tabmerge'
-" Allows you to see leading spaces
-Plug 'Yggdroot/indentLine'
 " Allows you to expand and shrink regions during select
 Plug 'terryma/vim-expand-region'
 " Gives the ability to expand complex xml tags (hint: ctrl-y+,)
@@ -50,3 +48,9 @@ Plug 'inkarkat/vim-SearchAsQuickJump'
 Plug 'inkarkat/vim-SearchSpecial'
 Plug 'inkarkat/vim-SearchRepeat'
 Plug 'inkarkat/vim-ingo-library'
+
+" Allows you to see leading spaces
+"Plug 'Yggdroot/indentLine'
+" JSON plugin that allows me to keep indentLine plugin as well as not conceal quotation marks in JSON
+" It also has support for enhanced syntax highlighting
+"Plug 'elzr/vim-json'
