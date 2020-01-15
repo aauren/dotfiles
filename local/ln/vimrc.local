@@ -135,6 +135,9 @@ augroup filetypes
   " Set file type to upconf template when it has deploy/config in the path
   autocmd BufRead,BufNewFile */deploy/config/* set filetype=upconf-template
   autocmd Filetype json let b:indentLine_ConcealOptionSet = 1
+
+  " Treat .input files the same as JSON
+  autocmd BufRead,BufNewFile *.input set filetype=json
 augroup END
 
 " }}}
