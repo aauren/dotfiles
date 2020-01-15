@@ -756,8 +756,8 @@ map <leader>X :call DoPrettyXML()<CR>
 map <leader>map :call ExportKeys()<CR>
 " !help! <leader vs>: Split the current buffer to the other vertical
 map <leader>vs :call VSplitCurrentBuffer()<CR>
-" !help! <leader sp>: Split the current buffer to the other horizontal
-map <leader>sp :call SplitCurrentBuffer()<CR>
+" !help! <leader hs>: Split the current buffer to the other horizontal
+map <leader>hs :call SplitCurrentBuffer()<CR>
 " !help! <leader vc>: Open my vim customizations to a vertical split
 map <leader>vc :call ShowVimCustomizations()<CR>
 " !help! <leader z>: Close current buffer
