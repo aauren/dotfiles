@@ -17,6 +17,7 @@ git pull
 GO111MODULE=on go build -ldflags="-s -w" cmd/peco/peco.go
 ~/go-workspace/bin/goupx peco
 cp peco "${DOTFILEDIR}/local/bin/peco"
+setfattr -n user.pax.flags -v m "${DOTFILEDIR}/local/bin/peco"
 popd &>/dev/null
 
 # Technically fasd too, but it hasn't been updated in forever
@@ -28,6 +29,7 @@ pushd "${GOPATH}/src/github.com/tomnomnom/gron" &>/dev/null
 go build -ldflags="-s -w"
 ~/go-workspace/bin/goupx gron
 cp gron "${DOTFILEDIR}/local/bin/gron"
+setfattr -n user.pax.flags -v m "${DOTFILEDIR}/local/bin/gron"
 popd &>/dev/null
 
 # the_silver_searcher
