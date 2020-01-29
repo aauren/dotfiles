@@ -8,7 +8,7 @@ set textwidth=120
 " Allows you to open a new buffer when there are unwritten changes to the current buffer
 set hidden
 
-let tags="./.git/tags"
+set tags^=./.git/tags;
 
 " Change color scheme to dark solarized if bundles is available {{{
 if filereadable(expand("~/.vimrc.bundles"))
