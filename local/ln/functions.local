@@ -262,7 +262,14 @@ k8sctl() {
 	shift
 
 	if [[ "${action}" == "logs" ]]; then
-		kubectl $(k8s_set_ns_option "${@}") logs $(get_k8s_pod_based_on_input "${@}") --timestamps=true "${@}" | sort -k1
+		local nosort=0
+		# If we're following we don't want to pipe into sort or it will never return or show output
+		[[ "${*}" =~ "-f" ]] && nosort=1
+		if [[ "${nosort}" -eq 1 ]]; then
+			kubectl $(k8s_set_ns_option "${@}") logs $(get_k8s_pod_based_on_input "${@}") --timestamps=true "${@}"
+		else
+			kubectl $(k8s_set_ns_option "${@}") logs $(get_k8s_pod_based_on_input "${@}") --timestamps=true "${@}" | sort -k1
+		fi
 		return
 	fi
 	shift
@@ -337,10 +344,17 @@ kgrsd() { k8s_delete_from_namespace replicaset "${@}"; }
 kgss() { k8sctl get statefulsets "${@}"; }
 kdss() { k8sctl describe statefulsets "${@}"; }
 kgssd() { k8s_delete_from_namespace statefulset "${@}"; }
+# prometheus
+kgpr() { k8sctl get prometheus "${@}"; }
+kdpr() { k8sctl describe prometheus "${@}"; }
 # services
 kgs() { k8sctl get services "${@}"; }
 kds() { k8sctl describe services "${@}"; }
 kgsd() { k8s_delete_from_namespace service "${@}"; }
+# service monitors
+kgsm() { k8sctl get servicemonitors "${@}"; }
+kdsm() { k8sctl describe servicemonitors "${@}"; }
+kgsmd() { k8s_delete_from_namespace servicemonitors "${@}"; }
 # cluster roles
 kgcr() { k8sctl get clusterroles "${@}"; }
 kdcr() { k8sctl describe clusterroles "${@}"; }
@@ -379,6 +393,16 @@ kgrd() { k8s_delete_from_namespace role "${@}"; }
 kgrb() { k8sctl get rolebindings "${@}"; }
 kdrb() { k8sctl describe rolebindings "${@}"; }
 kgrbd() { k8s_delete_from_namespace rolebinding "${@}"; }
+# secrets
+kgse() { k8sctl get secrets "${@}"; }
+kdse() { k8sctl describe secrets "${@}"; }
+# jobs
+kgj() { k8sctl get secrets "${@}"; }
+kdj() { k8sctl describe secrets "${@}"; }
+kgjd() { k8s_delete_from_namespace job "${@}"; }
+# resource quotas
+kgrq() { k8sctl get resourcequotas "${@}"; }
+kdrq() { k8sctl describe resourcequotas "${@}"; }
 # }}}
 
 # Linux Networking Functions {{{
