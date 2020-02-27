@@ -397,8 +397,8 @@ kgrbd() { k8s_delete_from_namespace rolebinding "${@}"; }
 kgse() { k8sctl get secrets "${@}"; }
 kdse() { k8sctl describe secrets "${@}"; }
 # jobs
-kgj() { k8sctl get secrets "${@}"; }
-kdj() { k8sctl describe secrets "${@}"; }
+kgj() { k8sctl get job "${@}"; }
+kdj() { k8sctl describe job "${@}"; }
 kgjd() { k8s_delete_from_namespace job "${@}"; }
 # resource quotas
 kgrq() { k8sctl get resourcequotas "${@}"; }
