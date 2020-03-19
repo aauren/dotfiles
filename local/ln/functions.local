@@ -305,12 +305,21 @@ k8sctl() {
 	esac
 }
 
+# Deletes pod from a given namespace based upon selection after prompting
+k8s_delete_pod_from_namespace() {
+	printf "This will delete the given pod %s in the namespace: %s" "${K8S_POD}" "${K8S_NS}"
+	if prompt_yes_no "Continue?"; then
+		k8sctl delete pod "${K8S_POD}" "${@}"
+	fi
+}
+
+
 # Deletes everything from a given namespace after prompting
 k8s_delete_from_namespace() {
 	local object="${1}"
 	shift
 
-	printf "This will delete all ${object} in the namespace: %s" "$(k8s_set_ns_option "${@}")"
+	printf "This will delete all %s in the namespace: %s" "${object}" "$(k8s_set_ns_option "${@}")"
 	if prompt_yes_no "Continue?"; then
 		# shellcheck disable=SC1117
 		for i in $(k8sctl get "${object}" "${@}" -o jsonpath="{range .items[*]}{.metadata.name}{'\n'}{end}"); do
@@ -341,7 +350,7 @@ kglc() {
 	k8sctl get pods -o json | \
 		jq -r '.status | .initContainerStatuses, .containerStatuses | select(. != null) | .[].name';
 }
-kgpd() { k8s_delete_from_namespace pod "${@}"; }
+kgpd() { k8s_delete_pod_from_namespace "${@}"; }
 # deployments
 kgdp() { k8sctl get deployments "${@}"; }
 kddp() { k8sctl describe deployments "${@}"; }
