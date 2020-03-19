@@ -76,7 +76,7 @@ rm -rf "${lab}"
 
 # Helm & Tiller
 # Go here and find the latest release: https://github.com/helm/helm/releases
-helm_release="2.14.1"
+helm_release="3.1.2"
 wget -O "${HOME}/Downloads/helm.tar.gz" "https://get.helm.sh/helm-v${helm_release}-linux-amd64.tar.gz"
 tar -xC "${DESKTOPBIN}" -f ~/Downloads/helm.tar.gz --strip-components=1 linux-amd64/helm
 tar -xC "${DESKTOPBIN}" -f ~/Downloads/helm.tar.gz --strip-components=1 linux-amd64/tiller
