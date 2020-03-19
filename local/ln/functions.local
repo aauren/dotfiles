@@ -160,19 +160,26 @@ elastic_fielddata() {
 # kpp (kubernetes pick pod) - Allows you to pick a pod and a namespace dynamically from a list
 # Example: kpp
 kpp() {
-	local kube_results selection
+	local kube_results selection namespace
 
-	kube_results="$(kubectl get pods --all-namespaces -o wide)"
+	unset K8S_NS K8S_POD
+	kube_results="$(k8sctl get pods "${@}")"
 	selection="$(prompt_for_selection "${kube_results}")"
-	K8S_NS="$(awk '{print $1}' <<<"${selection}")"
-	K8S_POD="$(awk '{print $2}' <<<"${selection}")"
+	namespace="$(k8s_get_ns_option "${@}")"
+	if [[ -z "${namespace}" ]]; then # if -n wasn't specified in our options
+		K8S_NS="$(awk '{print $1}' <<<"${selection}")"
+		K8S_POD="$(awk '{print $2}' <<<"${selection}")"
+	else
+		K8S_NS="${namespace}"
+		K8S_POD="$(awk '{print $1}' <<<"${selection}")"
+	fi
 }
 
 kpr() {
 	unset K8S_NS K8S_POD
 }
 
-k8s_set_ns_option() {
+k8s_get_ns_option() {
 	local namespace=""
 
 	# Check to see if one of the passed parameters is "-n" and if so, prefer that to set the namespace
@@ -182,6 +189,13 @@ k8s_set_ns_option() {
 			[[ "${argv[i]}" == "-n" && ${#} -gt ${i} ]] && namespace=${argv[i+1]} && break
 		done
 	fi
+	printf -- "%s" "${namespace}"
+}
+
+k8s_set_ns_option() {
+	local namespace=""
+
+	namespace="$(k8s_get_ns_option "${@}")"
 
 	if [[ -n "${namespace:-${K8S_NS}}" ]]; then
 		printf -- "-n %s" "${namespace:-${K8S_NS}}"
