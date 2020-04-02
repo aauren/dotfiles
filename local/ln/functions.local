@@ -175,6 +175,13 @@ kpp() {
 	fi
 }
 
+# Pick pod using name label as a subset
+kppl() {
+	local pod_name="${1}"
+	shift
+	kpp -l app.kubernetes.io/name="${pod_name}" "${@}"
+}
+
 kpr() {
 	unset K8S_NS K8S_POD
 }
@@ -345,6 +352,9 @@ kgp() { k8sctl get pods "${@}"; }
 kdp() { k8sctl describe pods "${@}"; }
 # get pods by namespace instead of by pod name
 kgpn() { K8S_POD="" k8sctl get pods "${@}"; }
+# get pods by name label
+kgpl() { local pod_name="${1}"; shift; k8sctl get pods -l app.kubernetes.io/name="${pod_name}" "${@}"; }
+kdpl() { local pod_name="${1}"; shift; k8sctl describe pods -l app.kubernetes.io/name="${pod_name}" "${@}"; }
 # list containers running in pod
 kglc() {
 	k8sctl get pods -o json | \
