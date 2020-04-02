@@ -182,10 +182,12 @@ kppl() {
 	kpp -l app.kubernetes.io/name="${pod_name}" "${@}"
 }
 
+# Reset kpp selection
 kpr() {
 	unset K8S_NS K8S_POD
 }
 
+# Check to see if a namespace is passed as part of the paramters
 k8s_get_ns_option() {
 	local namespace=""
 
@@ -199,6 +201,7 @@ k8s_get_ns_option() {
 	printf -- "%s" "${namespace}"
 }
 
+# Set the namespace if it exists
 k8s_set_ns_option() {
 	local namespace=""
 
@@ -211,6 +214,7 @@ k8s_set_ns_option() {
 	fi
 }
 
+# Check to see if an output option is specified, and if not, define a default of -o wide
 k8s_set_default_output_option() {
 	local action="${1}"
 	shift
@@ -219,6 +223,7 @@ k8s_set_default_output_option() {
 	echo "-o wide"
 }
 
+# Check to see if the args contain a k8s label selector (-l)
 contains_k8s_selector() {
 	[[ "${*}" =~ "-l " ]] && return 0 || return 1
 }
@@ -238,12 +243,15 @@ k8s_strip_selectors() {
 	printf -- "%s" "${stripped_params}"
 }
 
+# Sets the k8s pod if the input doesn't already contain a selector
 get_k8s_pod_based_on_input() {
 	if ! contains_k8s_selector "${@}"; then
 		echo "${K8S_POD}"
 	fi
 }
 
+# Attempts to aggregate logs of all pods that match a given selector or by service if there is only one service in the
+# pre-selected namespace
 k8s_get_service_logs() {
 	local log_selector pod line output
 	local -a log_selector_arr k8s_pods
@@ -278,6 +286,7 @@ k8s_get_service_logs() {
 	sort -k2 <<<${output} | sed 's/^\.//g'
 }
 
+# Generic kubectl abstraction that attempts to take care of practical defaults and previous selections
 k8sctl() {
 	local action="${1}" object="${2}"
 	shift
@@ -335,6 +344,7 @@ k8s_delete_from_namespace() {
 	fi
 }
 
+# manually watch a given object with given selectors by printing info about it every 5 seconds
 k8swatch() {
 	local object="${1}"
 	shift
