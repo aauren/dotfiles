@@ -442,6 +442,9 @@ kdpdb() { k8sctl describe poddisruptionbudgets.policy "${@}"; }
 # network policy
 kgnp() { k8sctl get networkpolicy "${@}"; }
 kdnp() { k8sctl describe networkpolicy "${@}"; }
+# pod security policy
+kgpsp() { k8sctl get podsecuritypolicy "${@}"; }
+kdpsp() { k8sctl describe podsecuritypolicy "${@}"; }
 # }}}
 
 # Linux Networking Functions {{{
