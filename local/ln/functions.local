@@ -438,7 +438,7 @@ kgrq() { k8sctl get resourcequotas "${@}"; }
 kdrq() { k8sctl describe resourcequotas "${@}"; }
 # pod disruption budgets
 kgpdb() { k8sctl get poddisruptionbudgets.policy "${@}"; }
-kdpdb() { k8sctl get poddisruptionbudgets.policy "${@}"; }
+kdpdb() { k8sctl describe poddisruptionbudgets.policy "${@}"; }
 # }}}
 
 # Linux Networking Functions {{{
