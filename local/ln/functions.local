@@ -463,7 +463,7 @@ kdpsp() { k8sctl describe podsecuritypolicy "${@}"; }
 ipvs-get-vip() {
 	local vip="${1}"
 	ipvsadm -l -n | awk -v vip="${vip}" \
-		'BEGIN{a=0}; $0 ~ vip {a=1; print $0; next}; a==1 {if($0 ~ /TCP/) {exit}; print $0};'
+		'BEGIN{a=0}; $0 ~ vip {a=1; print $0; next}; a==1 {if($0 ~ /TCP|UDP/) {exit}; print $0};'
 }
 # }}}
 
