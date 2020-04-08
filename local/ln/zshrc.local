@@ -144,10 +144,14 @@ key[Backspace]=${terminfo[kbs]}
 # Finally, make sure the terminal is in application mode, when zle is active.
 # Only then are the values from $terminfo valid.
 function zle-line-init () {
-	echoti smkx
+	if [[ -n ${terminfo[smkx]} ]]; then
+		echoti smkx
+	fi
 }
 function zle-line-finish () {
-	echoti rmkx
+	if [[ -n ${terminfo[rmkx]} ]]; then
+		echoti rmkx
+	fi
 }
 zle -N zle-line-init
 zle -N zle-line-finish
