@@ -34,5 +34,8 @@ if [[ "window" == "${search_type}" ]]; then
 		go_to_window "${window_results}"
 	fi
 elif [[ "content" == "${search_type}" ]]; then
+	# This is unused for now as it only generates a search_string and doesn't really do anything else. Leaving it around
+	# just in case I ever want to come back here, but for now the built-in functions of tmux seem more than enough for
+	# this edge use-case
 	search_string="#{&&:#{==:#{session_id},${session_id}},#{C:${query}}}"
 fi
