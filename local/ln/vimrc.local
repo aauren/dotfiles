@@ -548,6 +548,19 @@ function! Z(...)
   endif
 endfunction
 
+" !help! V: edit file based on frequent list
+function! V(...)
+  let cmd = 'fasd -f -e printf'
+  for arg in a:000
+    let cmd = cmd . ' ' . arg
+  endfor
+  let path = system(cmd)
+  if filereadable(path)
+    "echo path
+    exe "edit" . path
+  endif
+endfunction
+
 " !help! ]]]
 " }}}
 
@@ -566,6 +579,8 @@ command! -nargs=* AG :call MyGrepCommand(<f-args>)
 command! -complete=shellcmd -nargs=+ Shell call s:RunShellCommand(<q-args>)
 " !help! Z: cd to recent / frequent directories
 command! -nargs=* Z :call Z(<f-args>)
+" !help! V: edit file based on frequent list
+command! -nargs=* V :call V(<f-args>)
 " !help! ]]]
 
 " }}}
