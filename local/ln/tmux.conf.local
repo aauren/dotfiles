@@ -42,7 +42,7 @@ bind w set -sF @sess '#{session_name}'\; choose-tree -NGwZf '#{==:#{session_name
 bind g command-prompt -p "window (current session):" "run-shell \"~/bin/tmux_goto_window window '#{session_id}' '%%'\""
 
 # Go to a specific window by content
-bind C-g command-prompt -p "window:" "run-shell \"~/bin/tmux_goto_window content '#{session_id}' '%%'\""
+bind C-g command-prompt -p "window content (all sessions):" "find-window -C '%%'"
 
 # Create a new window in insert mode
 bind C-c new-window -a
