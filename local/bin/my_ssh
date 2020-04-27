@@ -92,7 +92,7 @@ main ()
 			nosetup=true
 		fi
 
-		if [[ -z ${nosetup} && ("${HOST}" != *@* || ${HOST%@*} == $(whoami)) && "root" != $(whoami) ]]; then
+		if [[ -z ${nosetup} && ("${HOST}" != *@* || ${HOST%@*} != "root") ]]; then
 			echo "Setting Up Remove Env..."
 			setup_remote_env "${HOST}" "${unaliased_ssh_host}" "${my_ssh_port}"
 		fi
