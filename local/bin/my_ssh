@@ -82,8 +82,10 @@ main ()
 			echo "Unavailable host detected (~/.ssh/unavailable_hosts)"
 			host_opts+=("-p")
 		fi
-		echo "Checking Host Status..."
-		is_node_up "${host_opts[@]}" "${unaliased_ssh_host}" "${my_ssh_port:-22}"
+		if [[ -e "${HOME}/.ssh/no_nodeup_hosts" ]] && ! grep -q -f "${HOME}/.ssh/no_nodeup_hosts" <<<"${unaliased_ssh_host}"; then
+			echo "Checking Host Status..."
+			is_node_up "${host_opts[@]}" "${unaliased_ssh_host}" "${my_ssh_port:-22}"
+		fi
 
 		if [[ -e "${HOME}/.ssh/no_setup_hosts" ]] && grep -q -f "${HOME}/.ssh/no_setup_hosts" <<<"${unaliased_ssh_host}"; then
 			echo "Detected No Remote Env Setup Host (~/.ssh/no_setup_hosts)..."
