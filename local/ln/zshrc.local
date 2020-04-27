@@ -213,6 +213,9 @@ if [[ -d "${HOME}/.gem/ruby" ]]; then
 		[[ -d "${ruby_ver}" && -d "${ruby_ver}/bin" ]] && PATH="${ruby_ver}/bin:${PATH}"
 	done
 fi
+if [[ -d "${HOME}/.rbenv/bin" ]]; then
+	PATH="$HOME/.rbenv/bin:$PATH"
+fi
 
 # Add node bin directory
 [[ -d "${HOME}/node_modules" && -d "${HOME}/node_modules/.bin" ]] && PATH="${HOME}/node_modules/.bin:${PATH}"
