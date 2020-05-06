@@ -48,6 +48,8 @@ Plug 'inkarkat/vim-SearchAsQuickJump'
 Plug 'inkarkat/vim-SearchSpecial'
 Plug 'inkarkat/vim-SearchRepeat'
 Plug 'inkarkat/vim-ingo-library'
+" A plugin that allows you to vizualize VIM's undo tree
+Plug 'mbbill/undotree'
 
 " Allows you to see leading spaces
 "Plug 'Yggdroot/indentLine'
