@@ -28,8 +28,12 @@ setopt nohashcmds
 
 # SSH Agent Setup {{{
 # Command to start up ssh-agen if there is an SSH key in your profile
-if [[ -z ${SSH_AUTH_SOCK} && -z $(pgrep ssh-agent) ]]; then
-	eval $(ssh-agent)
+if [[ -z ${SSH_AUTH_SOCK} ]]; then
+	if [[ -e "${XDG_RUNTIME_DIR}/ssh-agent.socket" ]]; then
+		export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
+	elif [[ -z $(pgrep ssh-agent) ]]; then
+		eval $(ssh-agent)
+	fi
 fi
 
 # Add any missing SSH identities
