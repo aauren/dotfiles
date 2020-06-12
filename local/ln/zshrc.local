@@ -47,6 +47,9 @@ if [[ -d "${HOME}/.ssh" ]]; then
 			identities+="${file%.*}"
 		fi
 	done
+	for file in ${HOME}/.ssh/*.pem; do
+		identities+="${file}"
+	done
 	if [[ ${#identities} -ne 0 ]]; then
 		echo "Identities were missing, adding: ${identities[@]}"
 		ssh-add ${identities[@]}
