@@ -81,6 +81,10 @@ let g:airline_theme="papercolor"
 " In order to restore, use either vim -S or :source
 let g:airline_section_z = airline#section#create(['%{ObsessionStatus(''[TRK SESS]'', '''')}', 'windowswap', '%3p%% ', 'linenr', ':%3v '])
 
+" Gitgutter settings
+" Set SignColumn highight group to same as LineNr so that it doesn't turn grey
+highlight! link SignColumn LineNr
+
 " Settings for jedi-vim
 " Don't start auto-completing on . (if you still need auto-completion use Ctrl-Space)
 let g:jedi#popup_on_dot = 0
