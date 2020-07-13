@@ -110,6 +110,7 @@
 	sh = show HEAD
 	cp = cherry-pick
 	pr = !"pr() { git fetch origin pull/$1/head:prs/$1; git co prs/$1; }; pr"
+	mr = !"mr() { git fetch origin merge-requests/$1/head:mr/$1; git co mr/$1; }; mr"
 [user]
 	name = Aaron U'Ren
 [core]
