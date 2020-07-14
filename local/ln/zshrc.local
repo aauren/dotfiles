@@ -48,6 +48,7 @@ if [[ -d "${HOME}/.ssh" ]]; then
 		fi
 	done
 	for file in ${HOME}/.ssh/*.pem; do
+		[[ -e "${file}" ]] || break # in case it selected the wildcard (which isn't a real cert) abort
 		identities+="${file}"
 	done
 	if [[ ${#identities} -ne 0 ]]; then
