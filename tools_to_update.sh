@@ -41,6 +41,19 @@ cp ag "${DOTFILEDIR}/local/bin/ag"
 popd &>/dev/null
 rm -rf "${silver_search}"
 
+# ripgrep
+rg="$(mktemp -d ripgrep.XXXXXXXXX)"
+git clone "https://github.com/BurntSushi/ripgrep" "${rg}"
+pushd "${rg}" &>/dev/null
+sed -i '/^\[profile.release]$/a opt-level = "z"' Cargo.toml
+sed -i '/^\[profile.release]$/a lto = true' Cargo.toml
+sed -i '/^\[profile.release]$/a codegen-units = 1' Cargo.toml
+PCRE2_SYS_STATIC=1 cargo build --release --features 'pcre2'
+strip target/release/rg
+cp target/release/rg "${DOTFILEDIR}/local/bin/rg"
+popd &>/dev/null
+rm -rf "${rg}"
+
 # bfs (breadth first search)
 bfs="$(mktemp -d bfs.XXXXXXXXX)"
 git clone "https://github.com/tavianator/bfs.git" "${bfs}"
