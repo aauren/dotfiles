@@ -52,7 +52,7 @@ rm -rf "${bfs}"
 
 # dive (I seem to have a lot of problems building this project from src)
 # Go here and find the latest release: https://github.com/wagoodman/dive/releases
-dive_release="0.7.2"
+dive_release="0.9.2"
 dive="$(mktemp -d dive.XXXXXXXXX)"
 pushd "${dive}" &>/dev/null
 wget "https://github.com/wagoodman/dive/releases/download/v${dive_release}/dive_${dive_release}_linux_amd64.tar.gz"
@@ -76,7 +76,6 @@ rm -rf "${lab}"
 
 # Helm & Tiller
 # Go here and find the latest release: https://github.com/helm/helm/releases
-helm_release="3.1.2"
+helm_release="3.2.4"
 wget -O "${HOME}/Downloads/helm.tar.gz" "https://get.helm.sh/helm-v${helm_release}-linux-amd64.tar.gz"
 tar -xC "${DESKTOPBIN}" -f ~/Downloads/helm.tar.gz --strip-components=1 linux-amd64/helm
-tar -xC "${DESKTOPBIN}" -f ~/Downloads/helm.tar.gz --strip-components=1 linux-amd64/tiller
