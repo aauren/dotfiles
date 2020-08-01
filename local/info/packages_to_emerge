@@ -9,6 +9,7 @@ mlocate
 # Quick code searching:
 ack
 the_silver_searcher #(ag command)
+ripgrep
 inotify-tools # provides inotifywait command
 incron # provides cron like functionality but based on inotify
 

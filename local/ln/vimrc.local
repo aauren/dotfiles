@@ -330,7 +330,7 @@ endfunction
 
 " !help! MyGrepCommand: Automatically opening the quickfix pane (handles MiniBufExplorer)
 function! MyGrepCommand(...)
-  " This actually runs ag because of the ackprg setting above
+  " This actually runs rg/ag because of the greprg setting above
   exe "silent grep " . join(a:000, " ")
   if exists(":MBEClose")
     exe "MBEClose"
@@ -584,6 +584,8 @@ command! ToggleTextWidth :call MyTogTW()
 command! ToggleCopyable :call ToggleCopyable()
 " !help! AG: Calls function MyGrepCommand to use AG to grep through stuff
 command! -nargs=* AG :call MyGrepCommand(<f-args>)
+" !help! AG: Calls function MyGrepCommand to use RG to grep through stuff
+command! -nargs=* RG :call MyGrepCommand(<f-args>)
 " !help! Shell: Calls s:RunShellCommand to show command output in a vertical split
 command! -complete=shellcmd -nargs=+ Shell call s:RunShellCommand(<q-args>)
 " !help! Z: cd to recent / frequent directories
@@ -765,9 +767,9 @@ map <Leader>csd :ToggleBG<CR>
 " !help! <leader t>: Map nerdtree to leader+t
 map <Leader>t :NERDTreeToggle<CR>
 " !help! <leader k>: Search current buffer for item under the current cursor
-map <leader>k :AG <cword> %<CR>
+map <leader>k :RG <cword> %<CR>
 " !help! <leader K>: Search the entire working directory for the item under the cursor
-map <leader>K :AG <cword><CR>
+map <leader>K :RG <cword><CR>
 " !help! <leader u>: Toggle undo tree and then focus the original vim pane again with leader-u
 map <leader>u :UndotreeToggle<cr><C-w>l
 " !help! <leader S>: Force a Synstastic check
