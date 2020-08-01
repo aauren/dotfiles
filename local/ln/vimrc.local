@@ -40,7 +40,12 @@ let g:ctrlp_working_path_mode = 'ra'
 
 " The following checks to make sure that the silver-searcher binary is available, if it is, use it for searching
 " everywhere, not just in Ctrp-P (that's what grepprg and grepformat do)
-if executable('ag')
+if executable('rg')
+    set grepprg=rg\ --vimgrep\ $*
+    set grepformat=%f:%l:%c:%m
+
+    let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
+elseif executable('ag')
     set grepprg=ag\ --vimgrep\ $*
     set grepformat=%f:%l:%c:%m
 
