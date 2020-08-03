@@ -9,6 +9,8 @@
 	dc = diff --cached
 	dt = difftool
 	dtc = difftool --cached
+	# colorize whitespace differences
+	dw = diff --ws-error-highlight=all
 	# diff between two versions
 	db = "!f() { git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative $1..$2; }; f"
 	# grep through commit history for a change
