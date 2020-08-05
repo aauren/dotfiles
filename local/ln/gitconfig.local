@@ -32,7 +32,13 @@
 	r2 = rebase -i HEAD~2
 	r1 = rebase -i HEAD~1
 	rb = "!f() { git rebase -i HEAD~$1; }; f"
-	rs = "!f() { git reset --hard HEAD~$1; }; f"
+	rs = "!f() { \
+		if [[ -n "${1}" ]]; then \
+			git reset --hard HEAD~$1; \
+		else \
+			git reset --hard; \
+		fi; \
+	}; f"
 	rh = reset --hard
 	rss = "!f() { git reset --soft HEAD~$1; }; f"
 	# Useful for resetting a local version of a user's branch to their changes (rebase and accept all of their changes)
