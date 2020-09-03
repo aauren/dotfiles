@@ -246,7 +246,10 @@ if [[ $(uname -a) == *"Darwin"* ]]; then
 	if [[ -d "/usr/local/opt/coreutils/libexec/gnubin" ]]; then
 		PATH="/usr/local/opt/coreutils/libexec/gnubin:${PATH}"
 	fi
-	if [[ -d "/usr/local/go/bin" ]]; then
+	if command -v brew &>/dev/null && brew --prefix golang &>/dev/null && [[ -d "$(brew --prefix golang)" ]]; then
+		export GOROOT="$(brew --prefix golang)/libexec"
+		PATH="$(brew --prefix golang)/bin:${PATH}"
+	elif [[ -d "/usr/local/go/bin" ]]; then
 		PATH="/usr/local/go/bin:${PATH}"
 	fi
 fi
