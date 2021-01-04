@@ -739,6 +739,9 @@ map <Esc>l :tabn<CR>
 map <Esc>j :bp<CR>
 " !help! <ALT-k>: Go to next buffer
 map <Esc>k :bn<CR>
+" This does the same as the above <Esc>j and <Esc>k, but it is needed for OSX which sends characters instead
+map ê :bp<CR>
+map ë :bn<CR>
 
 " !help! <leader p>: Toggle paste mode
 map <Leader>p :set paste!<CR>
