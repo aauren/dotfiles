@@ -285,7 +285,7 @@ fi
 
 # Helm completion setup {{{
 if type helm > /dev/null; then
-	source <(helm completion zsh)
+	source <(helm completion zsh 2>/dev/null)
 fi
 # }}}
 
