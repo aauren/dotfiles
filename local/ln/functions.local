@@ -455,6 +455,42 @@ kdnp() { k8sctl describe networkpolicy "${@}"; }
 # pod security policy
 kgpsp() { k8sctl get podsecuritypolicy "${@}"; }
 kdpsp() { k8sctl describe podsecuritypolicy "${@}"; }
+# cronjobs
+kgcj() { k8sctl get cronjob "${@}"; }
+kdcj() { k8sctl describe cronjob "${@}"; }
+# ingress
+kgi() { k8sctl get ingress "${@}"; }
+kdi() { k8sctl describe ingress "${@}"; }
+# storageclasses
+kgsc() { k8sctl get storageclasses "${@}"; }
+kdsc() { k8sctl describe storageclasses "${@}"; }
+# persistentvolumes
+kgpv() { k8sctl get persistentvolumes "${@}"; }
+kdpv() { k8sctl describe persistentvolumes "${@}"; }
+# persistentvolumesclaims
+kgpvc() { k8sctl get persistentvolumesclaims "${@}"; }
+kdpvc() { k8sctl describe persistentvolumesclaims "${@}"; }
+# prometheusrules
+kgpru() { k8sctl get prometheusrules "${@}"; }
+kdpru() { k8sctl describe prometheusrules "${@}"; }
+# cert-manager certificates
+kgce() { k8sctl get certificates "${@}"; }
+kdce() { k8sctl describe certificates "${@}"; }
+# cert-manager certificate requests
+kgcer() { k8sctl get certificaterequests "${@}"; }
+kdcer() { k8sctl describe certificaterequests "${@}"; }
+# cert-manager issuers
+kgcei() { k8sctl get issuers "${@}"; }
+kdcei() { k8sctl describe issuers "${@}"; }
+# cert-manager cluster issuers
+kgceci() { k8sctl get clusterissuers "${@}"; }
+kdceci() { k8sctl describe clusterissuers "${@}"; }
+# admissioncontroller mutatingwebhook
+kgmwh() { k8sctl get mutatingwebhookconfigurations "${@}"; }
+kdmwh() { k8sctl describe mutatingwebhookconfigurations "${@}"; }
+# admissioncontroller validatingwebhook
+kgvwh() { k8sctl get validatingwebhookconfigurations "${@}"; }
+kdvwh() { k8sctl describe validatingwebhookconfigurations "${@}"; }
 # }}}
 
 # Linux Networking Functions {{{
