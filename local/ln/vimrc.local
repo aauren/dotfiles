@@ -290,7 +290,7 @@ function! MyTogBG()
     silent execute "colorscheme"
   redir END
   let s:curr_background = substitute(s:curr_background, '\n', '', '')
-  let &background = ( &background == "dark"? "" : "dark" )
+" let &background = ( &background == "dark"? "light" : "dark" )
   if s:curr_background =~? ".*default.*"
     exe "colorscheme " . s:background
   else
