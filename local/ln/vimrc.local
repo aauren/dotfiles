@@ -290,7 +290,7 @@ function! MyTogBG()
     silent execute "colorscheme"
   redir END
   let s:curr_background = substitute(s:curr_background, '\n', '', '')
-" let &background = ( &background == "dark"? "light" : "dark" )
+  let &background = ( &background == "dark"? "light" : "dark" )
   if s:curr_background =~? ".*default.*"
     exe "colorscheme " . s:background
   else
@@ -326,6 +326,8 @@ function! ToggleCopyable()
   if exists(":GitGutterToggle")
     exe "GitGutterToggle"
   endif
+  " We need to re-link the GitGutter SignColumn to LineNr so it doesn't turn grey
+  highlight! link SignColumn LineNr
 endfunction
 
 " !help! MyGrepCommand: Automatically opening the quickfix pane (handles MiniBufExplorer)
