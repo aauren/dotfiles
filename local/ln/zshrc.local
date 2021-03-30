@@ -229,16 +229,16 @@ fi
 [[ -d "${HOME}/node_modules" && -d "${HOME}/node_modules/.bin" ]] && PATH="${HOME}/node_modules/.bin:${PATH}"
 
 # Add local bin file
-if [[ -e "${HOME}/.local/bin" ]]; then
-	PATH="${HOME}/.local/bin:${PATH}"
-fi
-
 if [[ -e "${HOME}/bin" ]]; then
 	PATH="${HOME}/bin:${PATH}"
 fi
 
 if [[ -e "${HOME}/desktop_bin" ]]; then
 	PATH="${HOME}/desktop_bin:${PATH}"
+fi
+
+if [[ -e "${HOME}/.local/bin" ]]; then
+	PATH="${HOME}/.local/bin:${PATH}"
 fi
 
 # If this is a Mac we'll add some more stuff
