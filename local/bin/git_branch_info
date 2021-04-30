@@ -6,6 +6,11 @@
 #  * -v: verbose - after it finishes listing the branches it will show you the file change differences
 
 format_git_branches () {
+	if [[ $(uname -a) == *"Darwin"* ]]; then
+		SED_EXE='gsed'
+	else
+		SED_EXE='sed'
+	fi
 	RED=$(tput setaf 1)
 	BLUE=$(tput setaf 4)
 	BOLD_WHITE=$(tput bold; tput setaf 7)
@@ -27,7 +32,7 @@ format_git_branches () {
 		files_changed="$(git log "${ref}" --not --remotes=*/master --stat --pretty="format:" | grep '|')"
 		branches+=("${ref}")
 		if grep -q "/" <<<"${ref}"; then
-			ref="$(sed -r 's;[a-zA-Z]+/(.*)$;\1;'<<<"${ref}")"
+			ref="$("${SED_EXE}" -r 's;[a-zA-Z]+/(.*)$;\1;'<<<"${ref}")"
 		fi
 		# We'll use a hybrid of the above command and the output of git branch --no-merge to check for changes
 		if [[ "${files_changed}" ]] || echo "${not_merged}" | grep -q -e "^[ ]*${ref}[ ]*$"; then
@@ -53,8 +58,8 @@ format_git_branches () {
 			while read -r file_lines; do
 				file_part1="${file_lines%|*}"
 				file_part2="${file_lines##*|}"
-				file_part1="$(sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' <<< "${file_part1}")"
-				file_part2="$(sed -r "s/(\\+*)(-*)/${GREEN}\\1${RESET}${RED}\\2${RESET}/g" <<< "${file_part2}")"
+				file_part1="$("${SED_EXE}" -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' <<< "${file_part1}")"
+				file_part2="$("${SED_EXE}" -r "s/(\\+*)(-*)/${GREEN}\\1${RESET}${RED}\\2${RESET}/g" <<< "${file_part2}")"
 				mystr="${mystr}$(printf "	%s%-60s%s -%s\\n " "${BOLD_WHITE}" "${file_part1}" "${RESET}" "${file_part2}")"
 			done <<< "${files_changed}"
 		fi
