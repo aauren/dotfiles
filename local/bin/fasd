@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/bash
 
 # Fasd (this file) can be sourced or executed by any POSIX compatible shell.
 
@@ -337,7 +337,7 @@ EOS
     # maintain the file
     local tempfile
     tempfile="$(mktemp "$_FASD_DATA".XXXXXX)" || return
-    [ ${UID} -eq 0 ] && chown "$_FASD_OWNER": "$tempfile"
+    [[ "${UID}" -eq 0 ]] && chown "$_FASD_OWNER": "$tempfile"
     $_FASD_AWK -v list="$paths" -v now="$(date +%s)" -v max="$_FASD_MAX" -F"|" '
       BEGIN {
         split(list, files, "|")
@@ -386,7 +386,7 @@ EOS
     # maintain the file
     local tempfile
     tempfile="$(mktemp "$_FASD_DATA".XXXXXX)" || return
-    [ ${UID} -eq 0 ] && chown "$_FASD_OWNER": "$tempfile"
+    [[ "${UID}" -eq 0 ]] && chown "$_FASD_OWNER": "$tempfile"
 
     sed "$sed_cmd" "$_FASD_DATA" 2>> "$_FASD_SINK" >| "$tempfile"
 
