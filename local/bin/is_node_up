@@ -36,6 +36,13 @@ parse_args ()
 
 parse_args "$@"
 
+# check for path of tsocks as some distributions have it in different places
+if [[ -e /usr/lib/x86_64-linux-gnu/libtsocks.so ]]; then
+	libtsocks_path=/usr/lib/x86_64-linux-gnu/libtsocks.so
+else
+	libtsocks_path=/lib64/libtsocks.so
+fi
+
 # Attempt to resolve the IP address of the host and use that instead of a hostname
 is_node_up_status=1
 while : ; do
@@ -57,7 +64,7 @@ done
 if [[ ! -z ${is_node_up_port} ]]; then
 	while : ; do
 		if [[ ${proxy_port_check} ]]; then
-			LD_PRELOAD="/lib64/libtsocks.so" "${HOME}/bin/nc" -vzw 5 "${is_node_up_host}" "${is_node_up_port}" && is_node_up_status=0 && break
+			LD_PRELOAD="${libtsocks_path}" "${HOME}/bin/nc" -vzw 5 "${is_node_up_host}" "${is_node_up_port}" && is_node_up_status=0 && break
 		else
 			"${HOME}/bin/nc" -vzw 5 "${is_node_up_host}" "${is_node_up_port}" && is_node_up_status=0 && break
 		fi
