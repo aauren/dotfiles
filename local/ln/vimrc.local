@@ -146,6 +146,10 @@ augroup filetypes
 
   " Treat .input files the same as JSON
   autocmd BufRead,BufNewFile *.input set filetype=json
+
+  " Treat .confd and .initd files the same as shell
+  autocmd BufRead,BufNewFile *.confd set filetype=sh
+  autocmd BufRead,BufNewFile *.initd set filetype=sh
 augroup END
 
 " }}}
