@@ -293,6 +293,11 @@ fi
 # load our own completion functions
 fpath=(~/.zsh/completion /usr/local/share/zsh/site-functions $fpath)
 
+# Write out completions for tldr to our current completion directory
+if type tldr > /dev/null; then
+	tldr --zsh-completion > "${fpath[1]}/_tldr"
+fi
+
 # Regenerate .zcompdump so that it contains the latest
 autoload -U compinit
 
