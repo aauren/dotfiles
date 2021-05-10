@@ -6,6 +6,7 @@
 	ca = commit --amend -v
 
 	# DIFF
+	df = diff --color-words
 	dc = diff --cached
 	dt = difftool
 	dtc = difftool --cached
