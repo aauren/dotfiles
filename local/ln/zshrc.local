@@ -288,7 +288,19 @@ if grep -q /usr/sbin <<<"${PATH}"; then
 fi
 # }}}
 
-# Helm completion setup {{{
+# Completion Setup {{{
+
+# load our own completion functions
+fpath=(~/.zsh/completion /usr/local/share/zsh/site-functions $fpath)
+
+# Regenerate .zcompdump so that it contains the latest
+autoload -U compinit
+
+# -u here tells compinit to not warn on directories not owned by current user
+compinit -u
+
+# Things that load their completion using source (which is discouraged) need to be loaded AFTER compinit or we get # errors
+# Load helm completions
 if type helm > /dev/null; then
 	source <(helm completion zsh 2>/dev/null)
 fi
