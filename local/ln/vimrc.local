@@ -7,6 +7,8 @@
 set textwidth=120
 " Allows you to open a new buffer when there are unwritten changes to the current buffer
 set hidden
+" Set search to always highlight
+set hlsearch
 
 set tags^=./.git/tags;
 
