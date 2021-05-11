@@ -157,6 +157,7 @@ elastic_fielddata() {
 # }}}
 
 # Kubernetes Query Functions {{{
+
 # kpp (kubernetes pick pod) - Allows you to pick a pod and a namespace dynamically from a list
 # Example: kpp
 kpp() {
@@ -491,6 +492,265 @@ kdmwh() { k8sctl describe mutatingwebhookconfigurations "${@}"; }
 # admissioncontroller validatingwebhook
 kgvwh() { k8sctl get validatingwebhookconfigurations "${@}"; }
 kdvwh() { k8sctl describe validatingwebhookconfigurations "${@}"; }
+
+### Don't forget to add your function ^^ to the array and case for completions in section below
+
+K8S_FUNCS=(kpp kgp kgdp kddp kgds kdds kgrs kdrs kgss kdss)
+K8S_FUNCS+=(kgpr kdpr kgs kds kgsm kdsm kgcr kdcr kgcrb kdcrb kgsa kdsa kgl)
+K8S_FUNCS+=(kgcm kdcm kge kde kgns kdns kgn kdn kgr kdr kgrb kdrb kgse kdse kgj kdj kgjd kgrq)
+K8S_FUNCS+=(kdrq kgpdb kdpdb kgnp kdnp kgpsp kdpsp kgcj kdcj kgi kdi kgsc kdsc kgpv kdpv kgpvc kdpvc kgpru kdpru kgce)
+K8S_FUNCS+=(kdce kgcer kdcer kgcei kdcei kgceci kdceci kgmwh kdmwh kgvwh kdvwh)
+
+# }}}
+
+# Kubernetes Command Completions {{{
+
+### These were mostly taken verbatim from the default kubectl completion functions (I also renamed them so they wouldn't have the possibility of conflicting)
+__k_override_flag_list=(--kubeconfig --cluster --user --context --namespace --server -n -s)
+__k_parse_get() {
+	local template
+	template="${2:-"{{ range .items  }}{{ .metadata.name }} {{ end }}"}"
+	local kubectl_out
+	if kubectl_out=$(__k_debug_out "kubectl get $(__k_override_flags) -o template --template=\"${template}\" \"$1\""); then
+		COMPREPLY+=($( __k_compgen -W "${kubectl_out[*]}" -- "$cur" ))
+		__k_parse_reply
+	fi
+}
+
+__k_compgen () {
+	local completions w
+	completions=($(compgen "$@"))  || return $?
+	while [[ "$1" = -* && "$1" != -- ]]
+	do
+		shift
+		shift
+	done
+	if [[ "$1" == -- ]]
+	then
+		shift
+	fi
+	for w in "${completions[@]}"
+	do
+		if [[ "${w}" = "$1"* ]]
+		then
+			echo "${w}"
+		fi
+	done
+}
+
+__k_debug_out() {
+	local cmd="$1"
+	__k_debug "${FUNCNAME[1]}: get completion by ${cmd}"
+	eval "${cmd} 2>/dev/null"
+}
+
+__k_debug() {
+	if [[ -n ${BASH_COMP_DEBUG_FILE} ]]; then
+		echo "$*" >> "${BASH_COMP_DEBUG_FILE}"
+	fi
+}
+
+__k_override_flags() {
+	local ${__k_override_flag_list[*]##*-} two_word_of of var
+	for w in "${words[@]}"; do
+		if [ -n "${two_word_of}" ]; then
+			eval "${two_word_of##*-}=\"${two_word_of}=\${w}\""
+			two_word_of=
+			continue
+		fi
+		for of in "${__k_override_flag_list[@]}"; do
+			case "${w}" in
+				${of}=*)
+					eval "${of##*-}=\"${w}\""
+					;;
+				${of})
+					two_word_of="${of}"
+					;;
+			esac
+		done
+	done
+	for var in "${__k_override_flag_list[@]##*-}"; do
+		if eval "test -n \"\$${var}\""; then
+			eval "echo -n \${${var}}' '"
+		fi
+	done
+}
+
+__k_parse_reply() {
+	compadd "${COMPREPLY[@]}"
+}
+
+__k_get_resource_namespace() {
+	__k_parse_get "namespace"
+}
+
+
+### This is where most of the work is done and this is 100% mine
+# The best place for info on this is the specs: overview and specs: action section of: http://zsh.sourceforge.net/Doc/Release/Completion-System.html#Completion-System
+# Also for a more simplified reference see: https://mads-hartmann.com/2017/08/06/writing-zsh-completion-scripts.html
+# For an even simpler reference see also: https://mrigank11.github.io/2018/03/zsh-auto-completion/
+__k_comp_entrypoint() {
+	# for some reason that I can't figure out, I cannot declare the "words" variable in any way here or the whole
+	# function will stop working (this is because words is used by zsh to send parts of the command, at some point I
+	# may need to stop using it)
+	local COMPREPLY opt_debug command_name command_type
+	local context state state_descr line
+	typeset -A opt_args
+	command_name="${words[1]}"
+
+	# this function call is what fills the above variables (except for COMPREPLY, words)
+	# As an example of how this fills in the above variables
+	# When called with kgp -n datapipeline -l blink foo<tab>:
+	# Variables look as follows: __k_comp_entrypoint executed - context: '' state: 'args' state_descr: 'arg' line: '-l blink foo' namespaces: '' args: '' opt_args: '-n->datapipeline;'
+	_arguments -C \
+		"-n:namespace:->namespaces" \
+		"--namespace:namespace:->namespaces" \
+		"*::arg:->args"
+
+	# The following will write to the BASH_COMP_DEBUG_FILE value if it is set, which is super helpful for debugging
+	opt_debug=""
+	for key val in "${(@kv)opt_args}"; do
+		opt_debug+="${key}->${val};"
+	done
+	__k_debug "__k_comp_entrypoint executed - context: '${context}' state: '${state}' state_descr: '${state_descr}' line: '${line}' namespaces: '${namespaces}' args: '${args}' opt_args: '${opt_debug}'"
+
+	# This handles getting the namespace fills whenever either -n or --namespaces is passed
+	if [[ "${state}" == "namespaces" ]]; then
+		__k_get_resource_namespace
+	fi
+
+	# Now we handle getting the arguments passed
+	if [[ "${state}" == "args" ]]; then
+		# First we need to parse out whether or not a namespace has been specified and add it to the words array so
+		# that __k_override_flags() can handle it
+		if [[ -n "${opt_args[-n]}" ]]; then
+			words+=("-n" "${opt_args[-n]}")
+		fi
+		if [[ -n "${opt_args[--namespace]}" ]]; then
+			words+=("--namespace" "${opt_args[--namespace]}")
+		fi
+
+		# If K8S_NS has been set via kpp or something like it, honor that too
+		__k_debug "Contents of K8S_NS: ${K8S_NS} Array length: ${#words[@]}"
+		if [[ ${#words[@]} -lt 2 && -n "${K8S_NS}" ]]; then
+			__k_debug "Entering"
+			words+=("-n" "${K8S_NS}")
+		fi
+
+		command_subset="${command_name[3,-1]}"
+		__k_debug "Command name: ${command_name} - Command substring ${command_subset}"
+		case ${command_subset} in
+			p|l)
+				command_type="pod"
+				;;
+			dp)
+				command_type="deployment"
+				;;
+			rs)
+				command_type="replicaset"
+				;;
+			ss)
+				command_type="statefulset"
+				;;
+			pr)
+				command_type="prometheus"
+				;;
+			s)
+				command_type="service"
+				;;
+			sm)
+				command_type="servicemonitors"
+				;;
+			cr)
+				command_type="clusterroles"
+				;;
+			crb)
+				command_type="clusterrolebindings"
+				;;
+			sa)
+				command_type="serviceaccounts"
+				;;
+			cm)
+				command_type="configmaps"
+				;;
+			e)
+				command_type="endpoints"
+				;;
+			ns)
+				command_type="namespaces"
+				;;
+			n)
+				command_type="nodes"
+				;;
+			r)
+				command_type="roles"
+				;;
+			rb)
+				command_type="rolebindings"
+				;;
+			se)
+				command_type="secrets"
+				;;
+			j)
+				command_type="jobs"
+				;;
+			rq)
+				command_type="resourcequotas"
+				;;
+			pdb)
+				command_type="poddisruptionbudgets.policy"
+				;;
+			np)
+				command_type="networkpolicy"
+				;;
+			psp)
+				command_type="podsecuritypolicy"
+				;;
+			cj)
+				command_type="cronjob"
+				;;
+			i)
+				command_type="ingress"
+				;;
+			sc)
+				command_type="storageclasses"
+				;;
+			pv)
+				command_type="persistentvolumes"
+				;;
+			pvc)
+				command_type="persistentvolumeclaims"
+				;;
+			pru)
+				command_type="prometheusrules"
+				;;
+			ce)
+				command_type="certificates"
+				;;
+			ce)
+				command_type="certificaterequests"
+				;;
+			cei)
+				command_type="issuers"
+				;;
+			ceci)
+				command_type="clusterissuers"
+				;;
+			mwh)
+				command_type="mutatingwebhookconfigurations"
+				;;
+			vwh)
+				command_type="validatingwebhookconfigurations"
+				;;
+			*)
+				return 0
+				;;
+		esac
+		__k_debug "Using command_type: ${command_type}"
+		__k_parse_get "${command_type}"
+	fi
+}
+
 # }}}
 
 # Linux Networking Functions {{{
