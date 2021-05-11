@@ -309,6 +309,7 @@ compinit -u
 if type helm > /dev/null; then
 	source <(helm completion zsh 2>/dev/null)
 fi
+compdef __k_comp_entrypoint "${K8S_FUNCS[@]}"
 # }}}
 
 # Add fasd directory jumper {{{
