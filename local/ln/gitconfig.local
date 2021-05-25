@@ -128,6 +128,7 @@
 	editor = vim
 [diff]
 	tool = vimdiff
+	renameLimit = 1000
 [difftool]
 	prompt = false
 [include]
