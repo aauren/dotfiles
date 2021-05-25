@@ -138,5 +138,7 @@
 	autoSetupMerge = always
 [pull]
 	rebase = true
+[checkout]
+	defaultRemote=origin
 
 # vim: set noet ts=2 sw=2
