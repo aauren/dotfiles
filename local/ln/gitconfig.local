@@ -16,6 +16,8 @@
 	db = "!f() { git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative $1..$2; }; f"
 	# grep through commit history for a change
 	gg = "!f() { for rev in $(git log -S"$1" --pretty=%h); do git --no-pager show $rev; read _; done; }; f"
+	# diff for only filenames that have changed between master and now
+	dffo = diff --name-only master HEAD
 
 	# LOG
 	l = log --pretty=colored
