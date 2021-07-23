@@ -259,32 +259,16 @@ k8s_get_service_logs() {
 
 	# if the user has already passed a k8s selector like "-l" then we'll use that instead
 	if ! contains_k8s_selector "${@}"; then
-		# shellcheck disable=SC1117
-		log_selector="$(kgs -o jsonpath="{range .items[*]}{.spec.selector}{'\n'}{end}")"
-		if [[ $(wc -l <<<"${log_selector}") -gt 1 ]]; then
-			echo "Unable to determine service programatically it's likely that two services exist in the namespace."
-			echo "Please specify a '-l' service selector and try again."
+		pod_selector="$(kgp -o jsonpath="{.metadata.labels.app\.kubernetes\.io/name}{'\n'}")"
+		if [[ -z "${pod_selector}" ]]; then
+			echo "Unable to determine the value of metadata.labels[app.kubernetes.io/name] for pod, either the pod"
+			echo "doesn't have this label, or you don't have a pod selected with kpp"
 			return 1
 		fi
-		log_selector_arr=("-l" "$(sed -r 's/map\[(.*)\]/\1/g' <<<"${log_selector}" | tr ':' '=' | tr ' ' ',')")
+		log_selector_arr=("-l" "app.kubernetes.io/name=${pod_selector}")
 	fi
 
-	IFS=" " read -r -A k8s_pods <<<"$(kubectl get pods $(k8s_set_ns_option "${@}") "${log_selector_arr[@]}" \
-		-o jsonpath='{range .items[*].metadata.name}{@}{" "}{end}' | awk '{$1=$1};1')"
-
-	if [[ -z "${k8s_pods[*]}" ]]; then
-		echo "No pods were found that match selector, please try again."
-		return 1
-	fi
-
-	for pod in "${k8s_pods[@]}"; do
-		output+=$(while read -r line; do \
-			printf "%s %s\\n" "${pod}" "${line}"; \
-			done < <(kubectl $(k8s_set_ns_option "${@}") logs "${pod}" --timestamps=true $(k8s_strip_selectors "${@}"));
-			echo "."
-		)
-	done
-	sort -k2 <<<${output} | sed 's/^\.//g'
+	kubectl logs $(k8s_set_ns_option "${@}") "${log_selector_arr[@]}" --timestamps=true --prefix=true $(k8s_strip_selectors "${@}")
 }
 
 # Generic kubectl abstraction that attempts to take care of practical defaults and previous selections
@@ -415,6 +399,8 @@ kgsad() { k8s_delete_from_namespace serviceaccount "${@}"; }
 kgl() { k8sctl logs "${@}"; }
 # logs by service
 kgls() { k8s_get_service_logs "${@}"; }
+# ALL logs by service
+kglsa() { k8s_get_service_logs "--tail=-1" "${@}"; }
 # configmaps
 kgcm() { k8sctl get configmaps "${@}"; }
 kdcm() { k8sctl describe configmaps "${@}"; }
