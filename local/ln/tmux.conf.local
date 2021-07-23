@@ -225,3 +225,15 @@ set -g pane-active-border-style "fg=colour12"
 #set -g pane-border-bg black
 #set -g pane-active-border-fg white
 #set -g pane-active-border-bg yellow
+
+### Plugins ###
+
+# Tmux Fingers plugin that allows you to easily select items out of the pane buffer
+set -g @plugin 'Morantron/tmux-fingers'
+set -g @fingers-hint-format "#[fg=colour124,bold]%s"
+set -g @fingers-hint-format-nocompact "#[fg=colour124,bold][%s]"
+set -g @fingers-compact-hints 0
+set -g @fingers-patterns-0 '~?/[^ ]+'
+
+# Run Plugin manager (must be left at the bottom of the file)
+run "~/.tmux/plugins/tpm/tpm"
