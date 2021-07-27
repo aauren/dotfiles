@@ -491,6 +491,11 @@ K8S_FUNCS+=(kdce kgcer kdcer kgcei kdcei kgceci kdceci kgmwh kdmwh kgvwh kdvwh)
 
 # Kubernetes Command Completions {{{
 
+### These were needed in order to be able to use the bash completion logic (compgen)
+# These come from /usr/share/zsh/functions/Completion/bashcompinit (or relevent path depending on your distro)
+autoload bashcompinit
+bashcompinit
+
 ### These were mostly taken verbatim from the default kubectl completion functions (I also renamed them so they wouldn't have the possibility of conflicting)
 __k_override_flag_list=(--kubeconfig --cluster --user --context --namespace --server -n -s)
 __k_parse_get() {
