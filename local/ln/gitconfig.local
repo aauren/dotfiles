@@ -121,6 +121,19 @@
 	# Stash save in patch mode
 	ssp = "!f() { git stash push --patch --keep-index "${@}"; }; f"
 
+	# WORKTREE
+	wt = worktree
+	wtl = worktree list
+	# Add a new worktree based upon the current repository (will overwrite any branch name)
+	wta = "!f() { \
+		pushd "$(git rev-parse --show-toplevel)" >/dev/null; \
+		feature_dir_name="$(basename "$(pwd)")-${1}"; \
+		git worktree add -B "${1}" "../${feature_dir_name}"; \
+		popd >/dev/null; \
+	}; f"
+	# Remove a worktree
+	wtr = "!git worktree list | peco | awk '{print $1}' | xargs -o git worktree remove"
+
 	# MISC
 	# Opens up your editor with all files that are part of your working directory
 	edit = !$EDITOR $(git status --short | awk '$1 ~ /^M|A|U/ {print $2}' )

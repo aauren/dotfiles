@@ -38,6 +38,11 @@ gitcm () {
 	((sleep 0.1 && tmux send-keys -t "$(tmux_info session_name):$(tmux_info window_name).$(tmux_info pane_index)" "$(echo "git cm \"$(git_make_commit_message): ")") &)
 }
 
+# Change to a different git worktree
+gwtc() {
+	cd "$(git worktree list | peco | awk '{print $1}')"
+}
+
 # Loads a bunch of color variables into ZSH so that you can reference them as a variable by their name
 load_colors () {
 	autoload colors
