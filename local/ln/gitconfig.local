@@ -54,6 +54,7 @@
 	# Useful for resetting a local version of a user's branch to their changes (rebase and accept all of their changes)
 	rt = rebase -s recursive -X theirs
 	unstg = reset HEAD
+	fixup = "!git log -n 50 --pretty=format:'%h %s' --no-merges | peco | cut -c -7 | xargs -o git commit --fixup"
 
 	# An alternative to git pull: git upfrom <remote> <branch-name>
 	upfrom = "!f() { git fetch $1 --prune; git merge --ff-only $1/$2 || git rebase --rebase-merges $1/$2; }; f"
