@@ -35,6 +35,13 @@
 	r2 = rebase -i HEAD~2
 	r1 = rebase -i HEAD~1
 	rb = "!f() { git rebase -i HEAD~$1; }; f"
+	rb = "!f() { \
+		if [[ -n "${1}" ]]; then \
+			git rebase -i HEAD~$1; \
+		else \
+			git rebase -i "$(git rev-parse --abbrev-ref --symbolic-full-name @{u})"; \
+		fi; \
+	}; f"
 	rs = "!f() { \
 		if [[ -n "${1}" ]]; then \
 			git reset --hard HEAD~$1; \
@@ -53,7 +60,7 @@
 
 	# Finds the upstream tracking branch, if it contains a remote, fetch the remote first, then attempt to merge, failing over into a rebase operation if that fails
 	up = "!f() { \
-		upstream_br="$(git rev-parse --abbrev-ref "$(git rev-parse --abbrev-ref HEAD)@{upstream}")"; \
+		upstream_br="$(git rev-parse --abbrev-ref --symbolic-full-name @{u})"; \
 		if [[ ${upstream_br} == *"/"* ]]; then \
 			echo "=== fetching ${upstream_br%%/*}..."; \
 			git fetch ${upstream_br%%/*} --prune; \
@@ -64,7 +71,7 @@
 
 	# Like the above, except that this one is DANGEROUS because it will rebase accepting all of their branch's changes in the event of a conflict
 	fup = "!f() { \
-		upstream_br="$(git rev-parse --abbrev-ref "$(git rev-parse --abbrev-ref HEAD)@{upstream}")"; \
+		upstream_br="$(git rev-parse --abbrev-ref --symbolic-full-name @{u})"; \
 		if [[ ${upstream_br} == *"/"* ]]; then \
 			echo "=== fetching ${upstream_br%%/*}..."; \
 			git fetch ${upstream_br%%/*} --prune; \
@@ -75,7 +82,7 @@
 
 	# Updates this branch and it's tracking branch (assuming that the tracking branch isn't a remote) using the "up" alias above
 	tup = "!f() { \
-		upstream_br="$(git rev-parse --abbrev-ref "$(git rev-parse --abbrev-ref HEAD)@{upstream}")"; \
+		upstream_br="$(git rev-parse --abbrev-ref --symbolic-full-name @{u})"; \
 		if [[ ! ${upstream_br} == *"/"* ]]; then \
 			echo "=== Updating from: ${upstream_br}"; \
 			git co "${upstream_br}"; \
