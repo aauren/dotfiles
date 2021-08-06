@@ -101,7 +101,14 @@ rel_info_prompt () {
 time_info_prompt () {
 	print -P ' (%{$fg_bold[blue]%}$(TZ="America/Chicago" date "+%D %T")%{$reset_color%})'
 }
-export PROMPT='$(dir_info_prompt)$(rel_info_prompt)$(time_info_prompt) $(git_super_status)
+kubectl_info_prompt () {
+	if command -v kubectl &> /dev/null; then
+		if [[ $(kubectl config get-contexts | wc -l) -gt 2 ]]; then
+			print -P ' (%B%F{22}$(kubectl config current-context)%{$reset_color%})'
+		fi
+	fi
+}
+export PROMPT='$(dir_info_prompt)$(kubectl_info_prompt)$(rel_info_prompt)$(time_info_prompt) $(git_super_status)
 [$[HISTCMD]]%(?.%{$fg[green]%}[0].%{$fg[red]%}[%?])%{$reset_color%}${vi_mode}%# '
 # }}}
 
