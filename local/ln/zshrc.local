@@ -99,7 +99,7 @@ rel_info_prompt () {
 	fi
 }
 time_info_prompt () {
-	print -P ' (%{$fg_bold[blue]%}$(TZ="America/Chicago" date "+%D %T")%{$reset_color%})'
+	print -P ' (%F{33}$(TZ="America/Chicago" date "+%D %T")%{$reset_color%})'
 }
 kubectl_info_prompt () {
 	if command -v kubectl &> /dev/null; then
