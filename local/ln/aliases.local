@@ -30,6 +30,7 @@ alias ssh='exec my_ssh'
 alias tree="tree -C -I '*pycache*|.git|test|doc'"
 alias v='fasd -sife vim' # Open vim with fasd file alias
 alias jctl='journalctl --since $(date "+%Y-%m-%d" -d "5 days ago")'
+alias ctx="kubectx | peco | xargs -o kubectx"
 
 # Get the current ipv4 address
 alias myip="ip addr | grep -E 'inet [^/]+/24'"
