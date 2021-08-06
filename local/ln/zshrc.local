@@ -91,6 +91,7 @@ function TRAPINT() {
 	return $(( 128 + $1 ))
 }
 
+# You can see what colors are available via: ~/scratch/colortest
 dir_info_prompt () {
 	print -P '${SSH_CONNECTION+"%{$fg_bold[green]%}%n@%M:"}%{$fg_bold[blue]%}%~%{$reset_color%}'
 }
