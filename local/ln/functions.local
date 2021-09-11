@@ -150,6 +150,16 @@ prompt_for_selection() {
 	echo "${option}"
 }
 
+# Helps the user change Kubernetes contexts using kubectx
+ctx() {
+	# If the user has given us a context to switch to, then switch to it, otherwise prompt the user from a list
+	if [[ -n "${1}" ]]; then
+		kubectx "${1}"
+	else
+		kubectx | peco | xargs -o kubectx
+	fi
+}
+
 # Elastic Search Functions {{{
 # Finds the field data usage for a given environment
 elastic_fielddata() {
