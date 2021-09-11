@@ -14,14 +14,29 @@
 	dw = diff --ws-error-highlight=all
 	# diff between two versions
 	db = "!f() { git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative $1..$2; }; f"
+	# Content based diff between this and the upstream, or otherwise specified branch
+	cd = "!f() { \
+		if [[ -n "${1}" ]]; then \
+			upstream="${1}"; \
+		else \
+			upstream="$(git rev-parse --abbrev-ref --symbolic-full-name @{u})"; \
+		fi; \
+		current_branch="$(git rev-parse --abbrev-ref HEAD)"; \
+		cherry_out="$(git cherry -v "${current_branch}" "${upstream}" | awk '/^\\+/ {print $2}')"; \
+		if [[ -n "${cherry_out}" ]]; then \
+			git l --no-walk --stdin <<<"${cherry_out}"; \
+		else \
+			echo "No Differences"; \
+		fi; \
+	}; f"
 	# grep through commit history for a change
 	gg = "!f() { for rev in $(git log -S"$1" --pretty=%h); do git --no-pager show $rev; read _; done; }; f"
 	# diff for only filenames that have changed between master and now
 	dffo = diff --name-only master HEAD
 
 	# LOG
-	l = log --pretty=colored
-	lg = log --color --graph --pretty=format:'%Cred%<(8)%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --decorate
+	l = log --color --pretty=format:'%Cred%<(8)%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --decorate
+	lg = l --graph
 
 	# REBASE/RESET
 	rc = rebase --continue
