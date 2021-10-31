@@ -263,9 +263,9 @@ if [[ $(uname -a) == *"Darwin"* ]]; then
 			fi
 		fi
 	fi
-	if [[ -z "${GOROOT}" && -d "/usr/local/go/bin" ]]; then
-		PATH="/usr/local/go/bin:${PATH}"
-	fi
+fi
+if [[ -z "${GOROOT}" && -d "/usr/local/go/bin" ]]; then
+	PATH="/usr/local/go/bin:${PATH}"
 fi
 
 # Clean up the path by removing duplicate entries
