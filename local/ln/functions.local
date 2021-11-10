@@ -478,9 +478,9 @@ kdsc() { k8sctl describe storageclasses "${@}"; }
 # persistentvolumes
 kgpv() { k8sctl get persistentvolumes "${@}"; }
 kdpv() { k8sctl describe persistentvolumes "${@}"; }
-# persistentvolumesclaims
-kgpvc() { k8sctl get persistentvolumesclaims "${@}"; }
-kdpvc() { k8sctl describe persistentvolumesclaims "${@}"; }
+# persistentvolumeclaims
+kgpvc() { k8sctl get persistentvolumeclaims "${@}"; }
+kdpvc() { k8sctl describe persistentvolumeclaims "${@}"; }
 # prometheusrules
 kgpru() { k8sctl get prometheusrules "${@}"; }
 kdpru() { k8sctl describe prometheusrules "${@}"; }
