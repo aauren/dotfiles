@@ -289,6 +289,15 @@ k8s_get_service_logs() {
 # Generic kubectl abstraction that attempts to take care of practical defaults and previous selections
 k8sctl() {
 	local action="${1}" object="${2}"
+	local -a new_params
+	for param in "${@}"; do
+		if [[ "${param}" == "--edit" ]]; then
+			action="edit"
+		else
+			new_params+=( "${param}" )
+		fi
+	done
+	set -- "${new_params[@]}"
 	shift
 
 	if [[ "${action}" == "logs" ]]; then
