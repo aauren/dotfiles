@@ -81,10 +81,22 @@ uptil () {
 }
 
 # Find a file with a pattern in name
-ff() { find . -type f -iname '*'$*'*' -ls ; }
+ff() {
+	if command -v bfs &> /dev/null; then
+		bfs . -type f -iname '*'$*'*' -ls
+	else
+		find . -type f -iname '*'$*'*' -ls
+	fi
+}
 
 # Find a file with pattern $1 in name and Execute $2 on it
-fe() { find . -type f -iname '*'$1'*' -exec "${2:-file}" {} \;  ; }
+fe() {
+	if command -v bfs &> /dev/null; then
+		bfs . -type f -iname '*'$1'*' -exec "${2:-file}" {} \;
+	else
+		find . -type f -iname '*'$1'*' -exec "${2:-file}" {} \;
+	fi
+}
 
 # Ping the specified host and include the date in the output
 pingd() { ping $1 | while read -r pong; do echo "$(date): $pong"; done }
