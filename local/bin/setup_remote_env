@@ -1,7 +1,10 @@
 #!/bin/bash -e
 
+# In case the user sends us SIG_INT, we attempt to return_output to its previous state before exiting
+trap return_output INT
+
 #### Constants ####
-SSH_OPTS="-AT -o LogLevel=Error -o BatchMode=yes -o ConnectTimeout=5"
+SSH_OPTS="-AT -o BatchMode=yes -o ConnectTimeout=5"
 RSYNC_OPTS="-rptX --size-only --ignore-times --no-links"
 EXCLUDE_GIT_DIR="--cvs-exclude"
 # The jedi-vim plugin is huge and is mostly unnecessary on remote systems
@@ -40,10 +43,54 @@ else
 	SED_OPTS="-r"
 fi
 
-#### Initialize Input ####
-ssh_conn_str="${1}"
+OPTIND=1
+app_name="$(basename "${0}")"
+app_signature="${app_name} [OPTION] IP_ADDRESS|DNS_NAME"
+usage="usage: ${app_signature}
+A script used to sync important home directories to remote servers.
+This sets up a basic environment for productivity.
+
+Options:
+  -h,-?\t\tdisplay this help text and exit
+  -v\t\trun with verbose logging to show what's happening"
 
 #### Function Declarations ####
+parse_args ()
+{
+	while getopts "h?v" opt; do
+		case "${opt}" in
+			h|\?) echo -e "${usage}"; exit 0;;
+			v) verbose=true; set -x;;
+		esac
+	done
+
+	shift $((OPTIND-1))
+	if [[ -z ${1} ]]; then
+		echo "You must specify an IP address or host to connect to: ${app_signature}" >> /dev/stderr
+		echo "HINT: use -h for more usage information" >> /dev/stderr
+		exit 1
+	fi
+	ssh_conn_str="${1}"
+}
+
+block_output() {
+	if [[ -z "${verbose}" ]]; then
+		# If verbose mode isn't specified, then we redirect stdout and stderr to /dev/null so that we don't see the results
+		# of the following commands
+		exec 6>&1 1>/dev/null # save a reference to stdin and then redirect it to /dev/null
+		exec 7>&2 2>/dev/null # save a reference to stdout and then redirect it to /dev/null
+		output_redirected=true
+	fi
+}
+
+return_output() {
+	if [[ -n "${output_redirected}" ]]; then
+		# If output has been redirected, then we return stdout and stderr so that the go back to the way they were
+		exec 1>&6 6>&- # restore reference to stdin and then remove the file handle
+		exec 2>&7 7>&- # restore reference to stdin and then remove the file handle
+	fi
+}
+
 update_git ()
 {
 	echo "Updating git..."
@@ -73,24 +120,18 @@ update_home ()
 }
 
 #### Main Program Flow ####
-echo "Syncing dotfiles..."
-rsync ${RSYNC_OPTS} --delete ${EXCLUDE_GIT_DIR} --rsync-path="mkdir -p ${VUNDLE_LOC} && rsync " ${EXCLUDE_JEDI_VIM} "${LIT_VUNDLE_LOC}" "${ssh_conn_str}:${VUNDLE_LOC}" &>/dev/null &
-rsync ${RSYNC_OPTS} ${EXCLUDE_GIT_DIR} "${LIT_VIMAUTO_LOC}" "${ssh_conn_str}:${VIMAUTO_LOC}" &>/dev/null &
-rsync ${RSYNC_OPTS} ${EXCLUDE_GIT_DIR} "${LITERAL_DOT_LOC}" "${ssh_conn_str}:${DOTFILE_LOCATION}" &>/dev/null
-rsync ${RSYNC_OPTS} ${EXCLUDE_GIT_DIR} "${LIT_BIN_LOC}" "${ssh_conn_str}:${BIN_LOC}" &>/dev/null
-update_home
+parse_args "$@"
 
-# This was the old flow. Keeping it for now in case I ever want to go back
-#if \ssh ${SSH_OPTS} ${ssh_conn_str} "[[ -d ${DOTFILE_LOCATION} ]]"; then
-#	echo "Dotfiles exist, updating git..."
-#	update_git
-#	update_home
-#else
-#	echo "Dotfiles missing, syncing..."
-#	rsync ${RSYNC_OPTS} "${LITERAL_DOT_LOC}" "${ssh_conn_str}:${DOTFILE_LOCATION}" &>/dev/null
-#	\ssh ${SSH_OPTS} ${ssh_conn_str} "mkdir -p ${VUNDLE_LOC}" 2>/dev/null
-#	rsync ${RSYNC_OPTS} "${LIT_VUNDLE_LOC}" "${ssh_conn_str}:${VUNDLE_LOC}" &>/dev/null
-#	update_home
-#	update_git
-#	update_home
-#fi
+# if verbose hasn't been set then set LogLevel to error
+if [[ -z "${verbose}" ]]; then
+	SSH_OPTS+=" -o LogLevel=Error"
+fi
+
+echo "Syncing dotfiles..."
+block_output
+rsync ${RSYNC_OPTS} --delete ${EXCLUDE_GIT_DIR} --rsync-path="mkdir -p ${VUNDLE_LOC} && rsync " ${EXCLUDE_JEDI_VIM} "${LIT_VUNDLE_LOC}" "${ssh_conn_str}:${VUNDLE_LOC}"
+rsync ${RSYNC_OPTS} ${EXCLUDE_GIT_DIR} "${LIT_VIMAUTO_LOC}" "${ssh_conn_str}:${VIMAUTO_LOC}"
+rsync ${RSYNC_OPTS} ${EXCLUDE_GIT_DIR} "${LITERAL_DOT_LOC}" "${ssh_conn_str}:${DOTFILE_LOCATION}"
+rsync ${RSYNC_OPTS} ${EXCLUDE_GIT_DIR} "${LIT_BIN_LOC}" "${ssh_conn_str}:${BIN_LOC}"
+return_output
+update_home

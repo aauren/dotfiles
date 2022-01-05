@@ -24,18 +24,20 @@ attempting to reconnect to the host.
 Options:
   -h,-?\t\tdisplay this help text and exit
   -A\t\tforward the SSH agent
-  -e\t\tdon't setup environment on remote machine
   -c\t\trun a command upon SSH'ing
+  -e\t\tdon't setup environment on remote machine
+  -v\t\trun with verbose logging to show what's happening
   -z\t\trun ZSH upon SSH'ing"
 
 parse_args ()
 {
-	while getopts "h?eAzc:" opt; do
+	while getopts "h?eAzvc:" opt; do
 		case "${opt}" in
 			A) additional_ssh_opts+=( "-A" );;
 			c) mycmd="${OPTARG}";;
 			e) nosetup=true;;
 			h|\?) echo -e "${usage}"; exit 0;;
+			v) verbose=true; set -x; additional_ssh_opts+=( "-vvv" );;
 			z) zsh=true;;
 		esac
 	done
@@ -96,7 +98,11 @@ main ()
 
 		if [[ -z ${nosetup} && ("${HOST}" != *@* || ${HOST%@*} != "root") ]]; then
 			echo "Setting Up Remove Env..."
-			setup_remote_env "${HOST}" "${unaliased_ssh_host}" "${my_ssh_port}"
+			if [[ -n "${verbose}" ]]; then
+				setup_remote_env -v "${HOST}"
+			else
+				setup_remote_env "${HOST}"
+			fi
 		fi
 	fi
 	# Command here will run SSH as the literally SSH and not loop back into this wrapper script
