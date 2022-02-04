@@ -51,15 +51,16 @@ silver-search() {
 
 # ripgrep
 ripgrep() {
+	echo "If this doesn't work, you may have to run the instructions here: https://github.com/BurntSushi/ripgrep#building"
 	rg="$(mktemp -d ripgrep.XXXXXXXXX)"
 	git clone "https://github.com/BurntSushi/ripgrep" "${rg}"
 	pushd "${rg}" &>/dev/null
 	sed -i '/^\[profile.release]$/a opt-level = "z"' Cargo.toml
 	sed -i '/^\[profile.release]$/a lto = true' Cargo.toml
 	sed -i '/^\[profile.release]$/a codegen-units = 1' Cargo.toml
-	PCRE2_SYS_STATIC=1 cargo build --release --features 'pcre2'
-	strip target/release/rg
-	cp target/release/rg "${DOTFILEDIR}/local/bin/rg"
+	PCRE2_SYS_STATIC=1 cargo build --release --target x86_64-unknown-linux-musl --features 'pcre2'
+	strip target/x86_64-unknown-linux-musl/release/rg
+	cp target/x86_64-unknown-linux-musl/release/rg "${DOTFILEDIR}/local/bin/rg"
 	popd &>/dev/null
 	rm -rf "${rg}"
 }
