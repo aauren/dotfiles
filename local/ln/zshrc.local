@@ -18,6 +18,10 @@ setopt share_history
 HISTSIZE=32768
 SAVEHIST=32768
 
+# Always use less with -FR mode to ensure that applications like git don't use -FRX which won't open less in an
+# alternate screen. When it is opened in the primary screen it breaks tmux pgup functionality.
+export LESS="-FR"
+
 # Include TTY for GPG
 export GPG_TTY="$(tty)"
 
