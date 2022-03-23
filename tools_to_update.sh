@@ -5,6 +5,7 @@ DESKTOPBIN="${HOME}/desktop_bin"
 
 # zsh-git-prompt
 zsh-git-prompt() {
+	local git_prompt_dir
 	git_prompt_dir="$(mktemp -d git_prompt.XXXXXXXXX)"
 	git clone "https://github.com/starcraftman/zsh-git-prompt.git" "${git_prompt_dir}"
 	cp "${git_prompt_dir}/zshrc.sh" "${DOTFILEDIR}/local/lib/git_prompt/zshrc.sh"
@@ -40,6 +41,7 @@ gron() {
 
 # the_silver_searcher
 silver-search() {
+	local silver_search
 	silver_search="$(mktemp -d silver_search.XXXXXXXXX)"
 	git clone "https://github.com/ggreer/the_silver_searcher.git" "${silver_search}"
 	pushd "${silver_search}" &>/dev/null
@@ -51,6 +53,7 @@ silver-search() {
 
 # ripgrep
 ripgrep() {
+	local rg
 	echo "If this doesn't work, you may have to run the instructions here: https://github.com/BurntSushi/ripgrep#building"
 	rg="$(mktemp -d ripgrep.XXXXXXXXX)"
 	git clone "https://github.com/BurntSushi/ripgrep" "${rg}"
@@ -67,6 +70,7 @@ ripgrep() {
 
 # bfs (breadth first search)
 bfs() {
+	local bfs
 	bfs="$(mktemp -d bfs.XXXXXXXXX)"
 	git clone "https://github.com/tavianator/bfs.git" "${bfs}"
 	pushd "${bfs}" &>/dev/null
@@ -78,8 +82,9 @@ bfs() {
 
 # dive (I seem to have a lot of problems building this project from src)
 dive() {
+	local dive
 	prompt_for_release "https://github.com/wagoodman/dive/releases"
-	dive_release="0.9.2"
+	#dive_release="0.9.2"
 	dive="$(mktemp -d dive.XXXXXXXXX)"
 	pushd "${dive}" &>/dev/null
 	wget "https://github.com/wagoodman/dive/releases/download/v${release}/dive_${release}_linux_amd64.tar.gz"
@@ -97,6 +102,7 @@ reg() {
 
 # Lab
 lab() {
+	local lab
 	lab="$(mktemp -d lab.XXXXXXXXX)"
 	git clone "https://github.com/zaquestion/lab.git" "${lab}"
 	pushd "${lab}" &>/dev/null
