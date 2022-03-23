@@ -57,7 +57,7 @@ while : ; do
 	fi
 	echo "${is_node_up_host} does not appear to be up"
 	[[ ${nonblocking} ]] && break
-	sleep 15
+	sleep 5
 done
 
 # Since we can really only do this check if there is a port available
@@ -70,7 +70,7 @@ if [[ ! -z ${is_node_up_port} ]]; then
 		fi
 		echo "${is_node_up_host} does not appear to be listening to port ${is_node_up_port}"
 		[[ ${nonblocking} ]] && is_node_up_status=1 && break
-		sleep 15
+		sleep 5
 	done
 fi
 
