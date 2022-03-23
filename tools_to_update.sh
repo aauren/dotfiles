@@ -115,9 +115,19 @@ lab() {
 # Helm & Tiller
 helm() {
 	prompt_for_release "https://github.com/helm/helm/releases"
-	helm_release="3.2.4"
 	wget -O "${HOME}/Downloads/helm.tar.gz" "https://get.helm.sh/helm-v${release}-linux-amd64.tar.gz"
 	tar -xC "${DESKTOPBIN}" -f ~/Downloads/helm.tar.gz --strip-components=1 linux-amd64/helm
+}
+
+kubectl() {
+	local kube
+	kube="$(mktemp -d kubectl.XXXXXXXXX)"
+	pushd "${kube}" &>/dev/null
+	curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+	chmod 755 kubectl
+	cp kubectl "${DESKTOPBIN}/kubectl"
+	popd &>/dev/null
+	rm -rf "${kube}"
 }
 
 # kubectx
@@ -152,7 +162,7 @@ list() {
 
 main() {
 	case "${1}" in
-		zsh-git-prompt|peco|gron|silver-search|ripgrep|bfs|dive|reg|lab|helm|kubectx|list|all)
+		zsh-git-prompt|peco|gron|silver-search|ripgrep|bfs|dive|reg|lab|helm|kubectx|kubectl|list|all)
 			${1}
 			;;
 		*)
