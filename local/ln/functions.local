@@ -341,6 +341,11 @@ k8sctl() {
 		fi
 		return
 	fi
+	if [[ "${action}" == "exec" ]]; then
+		local nosort=0
+		kubectl $(k8s_set_ns_option "${@}") exec $(get_k8s_pod_based_on_input "${@}") -ti "${@}"
+		return
+	fi
 	shift
 	case "${object}" in
 		pods)
@@ -368,6 +373,10 @@ k8s_delete_pod_from_namespace() {
 	fi
 }
 
+# Execs into a pod from a given namespace based upon selection
+k8s_exec_pod_from_namespace() {
+	k8sctl exec "${K8S_POD}" "${@}"
+}
 
 # Deletes everything from a given namespace after prompting
 k8s_delete_from_namespace() {
@@ -410,6 +419,7 @@ kglc() {
 		jq -r '.status | .initContainerStatuses, .containerStatuses | select(. != null) | .[].name';
 }
 kgpd() { k8s_delete_pod_from_namespace "${@}"; }
+kgpe() { k8s_exec_pod_from_namespace "${@}"; }
 # deployments
 kgdp() { k8sctl get deployments "${@}"; }
 kddp() { k8sctl describe deployments "${@}"; }
