@@ -70,6 +70,7 @@ local vi_insert_marker="[%{$fg[cyan]%}I%{$reset_color%}]"
 local vi_unknown_marker="[%{$fg[red]%}U%{$reset_color%}]"
 local vi_mode="$vi_insert_marker"
 ZSH_GIT_PROMPT_SHOW_UPSTREAM=2
+ZSH_GIT_PROMPT_PYBIN=python3
 vi_mode_indicator () {
 case ${KEYMAP} in
 	(vicmd)      echo $vi_normal_marker ;;
