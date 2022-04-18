@@ -209,6 +209,66 @@ go-find-deps-parent() {
 	go mod graph | awk -v packages="${*}" "${awk_script}"
 }
 
+# Parse go mod graph and create a reverse dependency graph for a specific module showing how that module comes into your
+# project.
+go-reverse-dep-search() {
+	if [[ ! -e go.mod ]]; then
+		echo "Please go to root of a go module project that has a go.mod file in it, then run again"
+		return 2
+	fi
+	local local_module="$(awk '/module/ {print $2}' go.mod)"
+	local dep="${1}"
+	local find_me="${dep}"
+	local depth="${2:-0}"
+	local found founds
+
+	if [[ "${depth}" -eq 0 ]]; then
+		printf -- "Looking up dependency tree for:\n"
+		printf -- "%s\n" "${dep}"
+	fi
+
+	while true; do
+		founds="$(go-find-deps-parent "${find_me}" | awk '{print $1}')"
+		if [[ -z "${founds}" ]]; then
+			printf "Something went wrong, couldn't find a reference for %s\n" "${find_me}"
+			return 1
+		fi
+
+		local lines=1
+		while IFS= read -r line; do
+			if [[ lines -eq 1 ]]; then
+				found="${line}"
+				((lines++))
+				continue
+			fi
+			# If we found more than 1 line, then we need to kick of another version of our function to find the root
+			# of that dep
+			if [[ "${depth}" -gt 0 ]]; then
+				printf " %.0s" {1..${depth}}
+			fi
+			printf "|-->%s\n" "${line}"
+			go-recursively-find-dep-source "${line}" "$((depth + 4))"
+			((lines++))
+		done <<<"${founds}"
+
+		if [[ "${depth}" -gt 0 ]]; then
+			printf " %.0s" {1..${depth}}
+		fi
+		printf "|-->%s\n" "${found}"
+
+		# If the dep that pulls in our module is the project itself, we can quit
+		if [[ "${found}" == "${local_module}" ]]; then
+			return 0
+		fi
+
+		# Change the found to be the new find_me
+		find_me="${found}"
+
+		# Increment the depth of the module graph
+		((depth+=4))
+	done
+}
+
 # Elastic Search Functions {{{
 # Finds the field data usage for a given environment
 elastic_fielddata() {
