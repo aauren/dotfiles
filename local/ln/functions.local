@@ -190,6 +190,25 @@ ctx() {
 	fi
 }
 
+# Parse go mod graph to find a dependencies parent, return full line from the mod graph when found. Multiple parameters
+# can be passed to find the parent of multiple dependencies.
+go-find-deps-parent() {
+	if [[ ! -e go.mod ]]; then
+		echo "Please go to root of a go module project that has a go.mod file in it, then run again"
+		return 2
+	fi
+	local awk_script='
+	BEGIN {
+		pkgs_num=split(packages, pkgs_arr)
+	}
+	{
+		for (i=1;i<=pkgs_num;++i)
+			if ($2 ~ pkgs_arr[i]) print $0
+	}
+	'
+	go mod graph | awk -v packages="${*}" "${awk_script}"
+}
+
 # Elastic Search Functions {{{
 # Finds the field data usage for a given environment
 elastic_fielddata() {
