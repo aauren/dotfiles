@@ -127,6 +127,8 @@
 	# STASH
 	# Stash list
 	sl = "!f() { git stash list | cat; }; f"
+	# Staqsh show with diff
+	ssh = "!f() { if [[ -z $1 ]]; then git stash show -p; else git stash show -p "${@}"; fi; }; f"
 	# Stash pop
 	sp = "!f() { if [[ -z $1 ]]; then git stash pop; else git stash pop $(git stash list | grep -m 1 $1 | cut -d':' -f1); fi; }; f"
 	# Stash apply
