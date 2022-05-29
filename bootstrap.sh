@@ -37,5 +37,8 @@ ln -s ~/.vim/plugged/vim-plug/plug.vim ~/.vim/autoload
 # Install plugins this appears not to work because when the script is executing its not in an interactive shell
 #yes | vim +PlugInstall +qall
 
+# Ensure that /bin/sh is linked to bash instead of dash for git functions
+sudo ln -sf /usr/bin/bash /bin/sh
+
 # Go back to where we were
 popd &>/dev/null
