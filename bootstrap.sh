@@ -14,7 +14,7 @@ DOTFILE_LOC=/workspaces/.codespaces/.persistedshare/dotfiles/
 export RCRC="${DOTFILE_LOC}/rcrc"
 
 # Install RCM which is used for setting up links to binaries
-sudo apt install rcm tmux
+sudo apt-get install -y rcm tmux
 
 # Change to home directory
 pushd "${HOME}" &>/dev/null
