@@ -19,12 +19,14 @@ sudo apt-get install -y rcm tmux
 # Change to home directory
 pushd "${HOME}" &>/dev/null
 
+# Create dotfiles symlink and bin directory for create_syms and rcup script
+ln -sf "${DOTFILE_LOC}" ./dotfiles
+mkdir bin
+
 # Run rcup to initialize
 rcup -fvvx local
 
-# Create dotfiles symlink and bin directory for create_syms script
-ln -sf "${DOTFILE_LOC}" ./dotfiles
-mkdir bin
+# Call custom create_syms script
 "${DOTFILE_LOC}/local/bin/create_syms"
 
 # Install vim plug
