@@ -235,6 +235,7 @@ set -g pane-active-border-style "fg=colour12"
 set -g @tpm_plugins '              \
   fcsonline/tmux-thumbs            \
   jaclu/tmux-power-zoom            \
+  tmux-plugins/tmux-resurrect      \
 '
 
 # Tmux Thumbs plugin that allows you to easily select items out of the pane buffer
