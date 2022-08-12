@@ -570,6 +570,24 @@ function! V(...)
   endif
 endfunction
 
+" !help! Marks: display all marks and prompts you for a mark to go to
+function! Marks()
+    marks
+    echo('Mark: ')
+
+    " getchar() - prompts user for a single character and returns the chars
+    " ascii representation
+    " nr2char() - converts ASCII `NUMBER TO CHAR'
+
+    let s:mark = nr2char(getchar())
+    " remove the `press any key prompt'
+    redraw
+
+    " build a string which uses the `normal' command plus the var holding the
+    " mark - then eval it.
+    execute "normal! '" . s:mark
+endfunction
+
 " !help! ]]]
 " }}}
 
@@ -708,6 +726,9 @@ map! <C-K> <End>
 map <C-n> :lprev<CR>
 " !help! <CTRL-m>:Go to the next error location
 map <C-m> :lnext<CR>
+
+" !help! ': Calls custom Marks() function which allows user to see a list of marks before choosing a mark to go to
+nnoremap ' :call Marks()<CR>
 
 " Set tab merge alias to vertically split current tab and the tab to the right (or barring that, to the left)
 " To put them back to tabs afterward, type CTRL+w, SHIFT+t
