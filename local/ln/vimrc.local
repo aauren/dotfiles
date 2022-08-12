@@ -235,6 +235,12 @@ let g:ale_sign_warning = "⚠"
 " Open the ALE loclist window when there are errors
 let g:ale_open_list = 1
 
+" Autoclose loclist window when the buffer is closed
+augroup CloseLoclistWindowGroup
+  autocmd!
+  autocmd QuitPre * if empty(&buftype) | lclose | endif
+augroup END
+
 " }}}
 
 " Use multiple presses of v to expand and ctrl-v to shrink regions {{{
@@ -318,8 +324,8 @@ function! ToggleCopyable()
   set list!
   set number!
   call MyTogTW()
-  if exists(":SyntasticToggleMode")
-    exe "SyntasticToggleMode"
+  if exists(":ALEToggle")
+    exe "ALEToggle"
   endif
   if exists(":GitGutterToggle")
     exe "GitGutterToggle"
@@ -805,7 +811,7 @@ map <leader>K :RG <cword><CR>
 " !help! <leader u>: Toggle undo tree and then focus the original vim pane again with leader-u
 map <leader>u :UndotreeToggle<cr><C-w>l
 " !help! <leader S>: Force a Synstastic check
-map <leader>S :SyntasticCheck<CR>
+map <leader>S :ALELint<CR>
 " !help! <leader j>: Re-format a JSON document, this allows you to write compactly, but read "prettily"
 map <leader>j :%!python -m json.tool<CR>
 " !help! <leader X>: Re-format an XML document in a way that is easy to read but may not be syntatically the same
