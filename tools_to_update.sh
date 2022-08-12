@@ -15,14 +15,14 @@ zsh-git-prompt() {
 
 # peco
 peco() {
-	pushd "${GOPATH}/src/github.com/peco/peco" &>/dev/null
+	pushd "${GOPATH}/src/github.com/peco/peco" &>/dev/null || return
 	git pull
 	#make build
 	GO111MODULE=on go build -ldflags="-s -w" cmd/peco/peco.go
 	~/go-workspace/bin/goupx peco
 	cp peco "${DOTFILEDIR}/local/bin/peco"
 	setfattr -n user.pax.flags -v m "${DOTFILEDIR}/local/bin/peco"
-	popd &>/dev/null
+	popd &>/dev/null || return
 }
 
 # Technically fasd too, but it hasn't been updated in forever
@@ -31,12 +31,12 @@ peco() {
 # Gron
 gron() {
 	go get github.com/tomnomnom/gron
-	pushd "${GOPATH}/src/github.com/tomnomnom/gron" &>/dev/null
+	pushd "${GOPATH}/src/github.com/tomnomnom/gron" &>/dev/null || return
 	go build -ldflags="-s -w"
 	~/go-workspace/bin/goupx gron
 	cp gron "${DOTFILEDIR}/local/bin/gron"
 	setfattr -n user.pax.flags -v m "${DOTFILEDIR}/local/bin/gron"
-	popd &>/dev/null
+	popd &>/dev/null || return
 }
 
 # the_silver_searcher
@@ -44,10 +44,10 @@ silver-search() {
 	local silver_search
 	silver_search="$(mktemp -d silver_search.XXXXXXXXX)"
 	git clone "https://github.com/ggreer/the_silver_searcher.git" "${silver_search}"
-	pushd "${silver_search}" &>/dev/null
+	pushd "${silver_search}" &>/dev/null || return
 	./build.sh
 	cp ag "${DOTFILEDIR}/local/bin/ag"
-	popd &>/dev/null
+	popd &>/dev/null || return
 	rm -rf "${silver_search}"
 }
 
@@ -57,14 +57,14 @@ ripgrep() {
 	echo "If this doesn't work, you may have to run the instructions here: https://github.com/BurntSushi/ripgrep#building"
 	rg="$(mktemp -d ripgrep.XXXXXXXXX)"
 	git clone "https://github.com/BurntSushi/ripgrep" "${rg}"
-	pushd "${rg}" &>/dev/null
+	pushd "${rg}" &>/dev/null || return
 	sed -i '/^\[profile.release]$/a opt-level = "z"' Cargo.toml
 	sed -i '/^\[profile.release]$/a lto = true' Cargo.toml
 	sed -i '/^\[profile.release]$/a codegen-units = 1' Cargo.toml
 	PCRE2_SYS_STATIC=1 cargo build --release --target x86_64-unknown-linux-musl --features 'pcre2'
 	strip target/x86_64-unknown-linux-musl/release/rg
 	cp target/x86_64-unknown-linux-musl/release/rg "${DOTFILEDIR}/local/bin/rg"
-	popd &>/dev/null
+	popd &>/dev/null || return
 	rm -rf "${rg}"
 }
 
@@ -73,10 +73,10 @@ bfs() {
 	local bfs
 	bfs="$(mktemp -d bfs.XXXXXXXXX)"
 	git clone "https://github.com/tavianator/bfs.git" "${bfs}"
-	pushd "${bfs}" &>/dev/null
+	pushd "${bfs}" &>/dev/null || return
 	make
 	cp bfs "${DOTFILEDIR}/local/bin/bfs"
-	popd &>/dev/null
+	popd &>/dev/null || return
 	rm -rf "${bfs}"
 }
 
@@ -86,11 +86,11 @@ dive() {
 	prompt_for_release "https://github.com/wagoodman/dive/releases"
 	#dive_release="0.9.2"
 	dive="$(mktemp -d dive.XXXXXXXXX)"
-	pushd "${dive}" &>/dev/null
+	pushd "${dive}" &>/dev/null || return
 	wget "https://github.com/wagoodman/dive/releases/download/v${release}/dive_${release}_linux_amd64.tar.gz"
 	tar xf "dive_${release}_linux_amd64.tar.gz"
 	cp dive "${DESKTOPBIN}/dive"
-	popd &>/dev/null
+	popd &>/dev/null || return
 	rm -rf "${dive}"
 }
 
@@ -105,10 +105,10 @@ lab() {
 	local lab
 	lab="$(mktemp -d lab.XXXXXXXXX)"
 	git clone "https://github.com/zaquestion/lab.git" "${lab}"
-	pushd "${lab}" &>/dev/null
+	pushd "${lab}" &>/dev/null || return
 	make
 	cp lab "${DESKTOPBIN}/lab"
-	popd &>/dev/null
+	popd &>/dev/null || return
 	rm -rf "${lab}"
 }
 
@@ -122,11 +122,11 @@ helm() {
 kubectl() {
 	local kube
 	kube="$(mktemp -d kubectl.XXXXXXXXX)"
-	pushd "${kube}" &>/dev/null
+	pushd "${kube}" &>/dev/null || return
 	curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 	chmod 755 kubectl
 	cp kubectl "${DESKTOPBIN}/kubectl"
-	popd &>/dev/null
+	popd &>/dev/null || return
 	rm -rf "${kube}"
 }
 
