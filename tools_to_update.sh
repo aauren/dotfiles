@@ -149,6 +149,17 @@ aws_cli() {
 	rm -rf "${aws_cli}"
 }
 
+hadolint() {
+	# Requires: haskell-platform and haskell-stack in order to function
+	local hadolint
+	hadolint="$(mktemp -d hadolint.XXXXXXXXX)"
+	git clone "https://github.com/hadolint/hadolint" "${hadolint}"
+	pushd "${hadolint}" &>/dev/null || return
+	stack install
+	popd &>/dev/null || return
+	rm -rf "${hadolint}"
+}
+
 prompt_for_release() {
 	printf "Need to find which release to use, go to %s and then return here and enter the version number.\n" "${1}"
 	printf "If your version has a 'v' in it, omit the 'v'\n"
@@ -166,15 +177,16 @@ all() {
 	helm
 	kubectx
 	aws_cli
+	hadolint
 }
 
 list() {
-	echo "zsh-git-prompt, peco, gron, silver-serach, ripgrep, bfs, dive, reg, lab, helm, kubectx, aws_cli"
+	echo "zsh-git-prompt, peco, gron, silver-serach, ripgrep, bfs, dive, reg, lab, helm, kubectx, aws_cli, hadolint"
 }
 
 main() {
 	case "${1}" in
-		zsh-git-prompt|peco|gron|silver-search|ripgrep|bfs|dive|reg|lab|helm|kubectx|kubectl|aws_cli|list|all)
+		zsh-git-prompt|peco|gron|silver-search|ripgrep|bfs|dive|reg|lab|helm|kubectx|kubectl|aws_cli|hadolint|list|all)
 			${1}
 			;;
 		*)
