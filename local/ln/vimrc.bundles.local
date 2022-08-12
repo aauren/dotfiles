@@ -56,3 +56,6 @@ Plug 'mbbill/undotree'
 " JSON plugin that allows me to keep indentLine plugin as well as not conceal quotation marks in JSON
 " It also has support for enhanced syntax highlighting
 "Plug 'elzr/vim-json'
+
+" Asynchronous Lint Engine (ALE) allows for linting while you type
+Plug 'dense-analysis/ale'
