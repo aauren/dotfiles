@@ -225,23 +225,15 @@ let g:pymode_lint_ignore="E501,E265"
 
 " }}}
 
-" Syntastic specific configurations {{{
+" ALE specific configuration {{{
 
-" Don't run syntastic check on open
-let g:syntastic_check_on_open = 0
-" Don't run syntastic check when we're just going to close the window anyway
-let g:syntastic_check_on_wq        = 0
-" Aggregate errors from multiple checkers instead of stopping
-let g:syntastic_aggregate_errors   = 1
-" Automatically open the location list when there are errors
-let g:syntastic_auto_loc_list = 1
-" Have syntastic user better symbols for marking errors and warnings
-let g:syntastic_error_symbol = "✗"
-let g:syntastic_warning_symbol = "⚠"
-" Specific message format for styntastic
-let g:syntastic_python_pylint_post_args = '--msg-template="{path}:{line}:{column}:{C}: {msg_id}[{symbol}] {msg}"'
-" Enable ruby-lint for ruby files
-let g:syntastic_ruby_checkers = ['mri', 'rubylint', 'rubocop']
+" Enable Airline symbols
+let g:airline#extensions#ale#enabled = 1
+" Have ALE use better symbols for marking errors and warnings
+let g:ale_sign_error = "✗"
+let g:ale_sign_warning = "⚠"
+" Open the ALE loclist window when there are errors
+let g:ale_open_list = 1
 
 " }}}
 
@@ -738,6 +730,14 @@ let g:jedi#completions_command = "<C-Space>"
 let g:jedi#rename_command = "<C-j>r"
 " !help! ]]]
 
+" Set ALE shortcuts
+" !help! ALE Linter Mappings [[[
+" !help! <CTRL-k> k: Go to previous error
+nmap <silent> <C-k>k <Plug>(ale_previous_wrap)
+" !help! <CTRL-k> j: Go to next error
+nmap <silent> <C-k>j <Plug>(ale_previous_wrap)
+" !help! ]]]
+
 " Remap next and previous tab to Ctrl-PgDn and Ctrl-PgUp
 " !help! <ALT-h>: Go to previous tab
 map <Esc>h :tabp<CR>
@@ -771,7 +771,7 @@ map <Leader>li :set list!<CR>
 map <Leader>n :set number!<CR>
 " !help! <leader r>: Toggle relative line numbering
 map <Leader>r :set relativenumber!<CR>
-" !help! <leader e>: Shows syntastic errors location window in a way that won't affect MiniBufExplorer
+" !help! <leader e>: Shows linting errors location window in a way that won't affect MiniBufExplorer
 map <Leader>e :call MyErrorsCommand()<CR>
 " !help! <leader csd>: Reset the color scheme to the default (in cases with unconfigured terminals)
 map <Leader>csd :ToggleBG<CR>
