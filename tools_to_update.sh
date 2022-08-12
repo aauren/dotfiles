@@ -138,6 +138,17 @@ kubectx() {
 	tar -xC "${DESKTOPBIN}" -f ~/Downloads/kubectx.tar.gz kubectx
 }
 
+aws_cli() {
+	local aws_cli
+	aws_cli="$(mktemp -d aws_cli.XXXXXXXXX)"
+	pushd "${aws_cli}" &>/dev/null || return
+	curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+	unzip awscliv2.zip
+	./aws/install -i "${HOME}/.aws-cli" -b "${DESKTOPBIN}"
+	popd &>/dev/null || return
+	rm -rf "${aws_cli}"
+}
+
 prompt_for_release() {
 	printf "Need to find which release to use, go to %s and then return here and enter the version number.\n" "${1}"
 	printf "If your version has a 'v' in it, omit the 'v'\n"
@@ -154,15 +165,16 @@ all() {
 	dive
 	helm
 	kubectx
+	aws_cli
 }
 
 list() {
-	echo "zsh-git-prompt, peco, gron, silver-serach, ripgrep, bfs, dive, reg, lab, helm, kubectx"
+	echo "zsh-git-prompt, peco, gron, silver-serach, ripgrep, bfs, dive, reg, lab, helm, kubectx, aws_cli"
 }
 
 main() {
 	case "${1}" in
-		zsh-git-prompt|peco|gron|silver-search|ripgrep|bfs|dive|reg|lab|helm|kubectx|kubectl|list|all)
+		zsh-git-prompt|peco|gron|silver-search|ripgrep|bfs|dive|reg|lab|helm|kubectx|kubectl|aws_cli|list|all)
 			${1}
 			;;
 		*)
