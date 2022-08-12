@@ -152,6 +152,9 @@ augroup filetypes
   " Treat .confd and .initd files the same as shell
   autocmd BufRead,BufNewFile *.confd set filetype=sh
   autocmd BufRead,BufNewFile *.initd set filetype=sh
+
+  " Treat .tf files as terraform
+  autocmd BufRead,BufNewFile *.tf set filetype=terraform
 augroup END
 
 " }}}
