@@ -766,6 +766,8 @@ let g:jedi#rename_command = "<C-j>r"
 nmap <silent> <C-k>k <Plug>(ale_previous_wrap)
 " !help! <CTRL-k> j: Go to next error
 nmap <silent> <C-k>j <Plug>(ale_previous_wrap)
+" !help! <leader a>: Disable ALE
+map <leader>a :ALEToggle<CR>
 " !help! ]]]
 
 " Remap next and previous tab to Ctrl-PgDn and Ctrl-PgUp
