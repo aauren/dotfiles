@@ -160,6 +160,12 @@ hadolint() {
 	rm -rf "${hadolint}"
 }
 
+rancher() {
+	prompt_for_release "https://github.com/rancher/cli/releases"
+	wget -O "${HOME}/Downloads/rancher.tar.gz" "https://github.com/rancher/cli/releases/download/v${release}/rancher-linux-amd64-v${release}.tar.xz"
+	tar -xC "${DESKTOPBIN}" --strip-components=2 -f ~/Downloads/rancher.tar.gz "./rancher-v${release}/rancher"
+}
+
 prompt_for_release() {
 	printf "Need to find which release to use, go to %s and then return here and enter the version number.\n" "${1}"
 	printf "If your version has a 'v' in it, omit the 'v'\n"
@@ -178,15 +184,18 @@ all() {
 	kubectx
 	aws_cli
 	hadolint
+	rancher
 }
 
 list() {
-	echo "zsh-git-prompt, peco, gron, silver-serach, ripgrep, bfs, dive, reg, lab, helm, kubectx, aws_cli, hadolint"
+	echo "zsh-git-prompt, peco, gron, silver-serach, ripgrep, bfs, dive, reg, lab, helm, kubectx, aws_cli, hadolint,"
+	echo "rancher"
 }
 
 main() {
 	case "${1}" in
-		zsh-git-prompt|peco|gron|silver-search|ripgrep|bfs|dive|reg|lab|helm|kubectx|kubectl|aws_cli|hadolint|list|all)
+		zsh-git-prompt|peco|gron|silver-search|ripgrep|bfs|dive|reg|lab|helm|kubectx|kubectl|aws_cli|hadolint|\
+			rancher|list|all)
 			${1}
 			;;
 		*)
