@@ -242,6 +242,10 @@ let g:ale_open_list = 1
 augroup CloseLoclistWindowGroup
   autocmd!
   autocmd QuitPre * if empty(&buftype) | lclose | endif
+  " Ignore certain errors in ebuilds
+  autocmd BufEnter *.ebuild let b:ale_sh_shellcheck_exclusions = 'SC2034'
+  " Don't auto-open the list on ebuilds so that ALE is less invasive
+  autocmd BufEnter *.ebuild let b:ale_open_list = 0
 augroup END
 
 " }}}
