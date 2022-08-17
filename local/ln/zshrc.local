@@ -220,15 +220,24 @@ if [[ -e "${HOME}/.functions.local" ]]; then
 fi
 # }}}
 
-# Path Additions and Cleanup {{{
+# Path Additions, Language Setup, and Cleanup {{{
 # Include additional paths for cheat
 export CHEATPATH="$CHEATPATH:/home/auren/.cheat.local"
 
+# Golang {{{
 # Add GOPATH env variable
 export GOPATH=${HOME}/go-workspace
-# Add node bin directory
+
+# Add bin directory from GOPATH to the PATH for executables
 [[ -d "${GOPATH}" && -d "${GOPATH}/bin" ]] && PATH="${GOPATH}/bin:${PATH}"
 
+# If GOROOT doesn't exist, but /usr/local/go/bin does, then put that in the path
+if [[ -z "${GOROOT}" && -d "/usr/local/go/bin" ]]; then
+	PATH="/usr/local/go/bin:${PATH}"
+fi
+# }}}
+
+# Ruby {{{
 # Add ruby gem bin directory
 if [[ -d "${HOME}/.gem/ruby" ]]; then
 	for ruby_ver in "${HOME}/.gem/ruby/"*; do
@@ -238,28 +247,22 @@ fi
 if [[ -d "${HOME}/.rbenv/bin" ]]; then
 	PATH="$HOME/.rbenv/bin:$PATH"
 fi
+# }}}
 
+# Node {{{
 # Add node bin directory
 [[ -d "${HOME}/node_modules" && -d "${HOME}/node_modules/.bin" ]] && PATH="${HOME}/node_modules/.bin:${PATH}"
 
+# }}}
+
+# Rust {{{
 # Add Rust bin directory
 if [[ -d "${HOME}/.cargo/bin" ]]; then
 	PATH="${HOME}/.cargo/bin:${PATH}"
 fi
+# }}}
 
-# Add local bin file
-if [[ -e "${HOME}/bin" ]]; then
-	PATH="${HOME}/bin:${PATH}"
-fi
-
-if [[ -e "${HOME}/desktop_bin" ]]; then
-	PATH="${HOME}/desktop_bin:${PATH}"
-fi
-
-if [[ -e "${HOME}/.local/bin" ]]; then
-	PATH="${HOME}/.local/bin:${PATH}"
-fi
-
+# Brew {{{
 # If this is a Mac we'll add some more stuff
 if [[ $(uname -a) == *"Darwin"* ]]; then
 	if [[ -d "/usr/local/opt/coreutils/libexec/gnubin" ]]; then
@@ -274,8 +277,19 @@ if [[ $(uname -a) == *"Darwin"* ]]; then
 		fi
 	fi
 fi
-if [[ -z "${GOROOT}" && -d "/usr/local/go/bin" ]]; then
-	PATH="/usr/local/go/bin:${PATH}"
+# }}}
+
+# Add local bin file
+if [[ -e "${HOME}/bin" ]]; then
+	PATH="${HOME}/bin:${PATH}"
+fi
+
+if [[ -e "${HOME}/desktop_bin" ]]; then
+	PATH="${HOME}/desktop_bin:${PATH}"
+fi
+
+if [[ -e "${HOME}/.local/bin" ]]; then
+	PATH="${HOME}/.local/bin:${PATH}"
 fi
 
 # Clean up the path by removing duplicate entries
