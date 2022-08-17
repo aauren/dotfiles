@@ -233,6 +233,10 @@ let g:ale_sign_warning = "⚠"
 " Open the ALE loclist window when there are errors
 let g:ale_open_list = 1
 
+" Python options see: https://github.com/dense-analysis/ale/blob/master/doc/ale-python.txt for more options
+" Set flake8 to set line length to 120 characters
+let g:ale_python_flake8_options = '--max-line-length 120'
+
 " Buffer customizations for ALE
 augroup ALELintingGroup
   autocmd!
