@@ -155,6 +155,10 @@ augroup filetypes
 
   " Treat .tf files as terraform
   autocmd BufRead,BufNewFile *.tf set filetype=terraform
+
+  " Manually set the filetype to gitcommit when buffer is called COMMIT_EDITMSG so that in case the diff contains a
+  " modline it won't do something crazy with the syntax recognition
+  autocmd BufEnter COMMIT_EDITMSG set filetype=gitcommit
 augroup END
 
 " }}}
@@ -229,16 +233,19 @@ let g:ale_sign_warning = "⚠"
 " Open the ALE loclist window when there are errors
 let g:ale_open_list = 1
 
-" Autoclose loclist window when the buffer is closed
-augroup CloseLoclistWindowGroup
+" Buffer customizations for ALE
+augroup ALELintingGroup
   autocmd!
-  autocmd QuitPre * if empty(&buftype) | lclose | endif
   " Ignore certain errors in ebuilds
   autocmd BufEnter *.ebuild let b:ale_sh_shellcheck_exclusions = 'SC2034'
   " Don't auto-open the list on ebuilds so that ALE is less invasive
   autocmd BufEnter *.ebuild let b:ale_open_list = 0
-  " Don't run ALE for git commit messages
-  autocmd BufEnter COMMIT_EDITMSG set filetype=gitcommit
+augroup END
+
+" Autoclose loclist window when the buffer is closed
+augroup CloseLoclistWindowGroup
+  autocmd!
+  autocmd QuitPre * if empty(&buftype) | lclose | endif
 augroup END
 
 " }}}
