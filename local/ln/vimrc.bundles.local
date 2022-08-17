@@ -1,13 +1,16 @@
 " Vim solarized color scheme
 Plug 'altercation/vim-colors-solarized'
+
 " Refuses to execute malicious code that may be included in modelines
 Plug 'ciaranm/securemodelines'
+
 " Tries to automatically detect indent settings
 Plug 'tpope/vim-sleuth'
 
 " Allows you to move from tabs to vsplits and back (ctrl-m to bring them back: ctrl-w, T) (I don't really use tabs
 " anymore)
 "Plug 'vim-scripts/Tabmerge'
+"
 " Allows you to expand and shrink regions during select
 Plug 'terryma/vim-expand-region'
 " Gives the ability to expand complex xml tags (hint: ctrl-y+,) (Commenting out for now because I stopped using HTML /
@@ -16,33 +19,43 @@ Plug 'terryma/vim-expand-region'
 
 " Useful for tracking down plugins that are messing with you
 "Plug 'dahu/bisectly'
+
 " Buffer exploration utility (puts buffer names at the top) disabled in favor of airline
 "Plug 'weynhamz/vim-plugin-minibufexpl'
 " Shows +/- along the left side of VIM screen
 Plug 'airblade/vim-gitgutter'
-" Allows for syntax completion and debugging of VIM scripts
+
+" Allows for syntax completion and debugging of VIM scripts (I don't do much vim scripting)
 "Plug 'c9s/vim-dev-plugin'
+
 " Awesome python autocompletion for VIM
 Plug 'davidhalter/jedi-vim'
 " Airline plugin puts bars at the top and bottom
 Plug 'bling/vim-airline'
+
 " Airline themes
 Plug 'vim-airline/vim-airline-themes'
+
 " NerdTree allows you to browse the file system from within VIM
 Plug 'scrooloose/nerdtree'
+
 " QFEnter allows you to go to locations indicated in either QuickFix windows or Location Lists
 Plug 'yssl/QFEnter'
 
 " Obsession plugin allows easier tracking of vim sessions, just run it once in any session you think you might want to
 " keep and from then on out, it will track it in .vim/sessions
 Plug 'tpope/vim-obsession'
-" Better Python code checking (than out of date pymode) - Commented out because syntastic already takes care of this
+
+" Better Python code checking (than out of date pymode) - Commented out because ALE already takes care of this
 "Plug 'nvie/vim-flake8'
+
 " A way to see all functions for a specific file (taglist)
 Plug 'majutsushi/tagbar'
+
 " Plugin for generating nodejs tags (after install you have to enter directory and run npm install see:
 " http://stackoverflow.com/questions/4777366/recommended-vim-plugins-for-javascript-coding/5893600#5893600
 "Plug 'ternjs/tern_for_vim'
+
 " Plugin for using search as a quick jump without adding the search to your search history and poluting your highlights
 " or next/previous search. Instead of hitting <CR> at the end of the search expression, press <ATL-CR>
 " The three plugins below it are dependencies and allow for enhanced searching when you map up to it's functions
