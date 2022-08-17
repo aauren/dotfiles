@@ -3,7 +3,8 @@ Plug 'altercation/vim-colors-solarized'
 " Refuses to execute malicious code that may be included in modelines
 Plug 'ciaranm/securemodelines'
 " Tries to automatically detect indent settings
-Plug 'ciaranm/detectindent'
+Plug 'tpope/vim-sleuth'
+
 " Allows you to move from tabs to vsplits and back (ctrl-m to bring them back: ctrl-w, T) (I don't really use tabs
 " anymore)
 "Plug 'vim-scripts/Tabmerge'

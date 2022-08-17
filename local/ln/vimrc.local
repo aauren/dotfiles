@@ -196,15 +196,6 @@ augroup whitespace
   autocmd InsertLeave * call matchadd("ExtraWhitespace", '\s\+$', 10, 104)
   " IDs 100 and 101 are created below in section: My functions (toggle solarized background, etc)
   autocmd InsertLeave * call matchdelete(103)
-
-  " Uses the detectindent plugin to try to figure out what indent this file should use if a modeline is not available
-  if exists(":DetectIndent")
-    " When you can't detect how many spaces make up an indent, prefer 4
-    let g:detectindent_preferred_indent    = 4
-    " When you can't detect spaces vs. tabs, prefer tabs
-    let g:detectindent_preferred_expandtab = 0
-    autocmd BufReadPost * :DetectIndent
-  endif
 augroup END
 
 " Makes it so that you never scroll into the quickfix buffer when using buffernext/bufferprevious commands
