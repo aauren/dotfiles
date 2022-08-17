@@ -263,6 +263,11 @@ let g:ale_sign_error = "✗"
 let g:ale_sign_warning = "⚠"
 " Open the ALE loclist window when there are errors
 let g:ale_open_list = 1
+" Don't lint when the buffer opens to reduce spame when we're just viewing files
+let g:ale_lint_on_enter = 0
+
+" Use the following link for a lot of language specific information:
+" https://github.com/dense-analysis/ale/tree/master/doc
 
 " Python options see: https://github.com/dense-analysis/ale/blob/master/doc/ale-python.txt for more options
 " Set flake8 to set line length to 120 characters
