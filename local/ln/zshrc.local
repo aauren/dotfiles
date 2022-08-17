@@ -253,6 +253,14 @@ fi
 # Add node bin directory
 [[ -d "${HOME}/node_modules" && -d "${HOME}/node_modules/.bin" ]] && PATH="${HOME}/node_modules/.bin:${PATH}"
 
+# Add and source nvm (node version manager) if it exists
+if [[ -d "${HOME}/thirdparty-git/nvm" ]]; then
+	export NVM_DIR="${HOME}/thirdparty-git/nvm"
+	if [[ -e "${NVM_DIR/nvm.sh}" ]]; then
+		source "${NVM_DIR}/nvm.sh"
+		source "${NVM_DIR}/bash_completion" # this works for bash and zsh
+	fi
+fi
 # }}}
 
 # Rust {{{
