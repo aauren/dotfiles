@@ -10,8 +10,10 @@ Plug 'tpope/vim-sleuth'
 "Plug 'vim-scripts/Tabmerge'
 " Allows you to expand and shrink regions during select
 Plug 'terryma/vim-expand-region'
-" Gives the ability to expand complex xml tags (hint: ctrl-y+,)
-Plug 'mattn/emmet-vim'
+" Gives the ability to expand complex xml tags (hint: ctrl-y+,) (Commenting out for now because I stopped using HTML /
+" CSS / etc)
+"Plug 'mattn/emmet-vim'
+
 " Useful for tracking down plugins that are messing with you
 "Plug 'dahu/bisectly'
 " Buffer exploration utility (puts buffer names at the top) disabled in favor of airline
