@@ -26,22 +26,34 @@ com! -nargs=+  -bar Bundle call VundleToPlug("Bundle", <args>)
 
 call plug#begin('~/.vim/bundle')
 
+" Standard ones that came with my original dotfiles repo
 " Define bundles via Github repos
 "Plug 'christoomey/vim-run-interactive'
 "Plug 'kchmck/vim-coffee-script'
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'pbrisbin/vim-mkdir'
 "Plug 'vim-syntastic/syntastic'
 "Plug 'slim-template/vim-slim'
 "Plug 'thoughtbot/vim-rspec'
 "Plug 'tpope/vim-bundler'
 "Plug 'tpope/vim-endwise'
-Plug 'tpope/vim-eunuch'
-Plug 'tpope/vim-fugitive'
 "Plug 'tpope/vim-rails'
+" Removed this in favor of actual LSP support
+"Plug 'vim-ruby/vim-ruby'
+
+" The Plugins that I chose to keep
+" The standard CTRL-P plugin that everyone needs in order to find stuff
+Plug 'ctrlpvim/ctrlp.vim'
+" Automagically make a directory when the file referenced in :e is missing parent directories
+Plug 'pbrisbin/vim-mkdir'
+" Wrapper around standard Unix commands
+" :Move allows you to rename a file and update the current buffer automatically
+" :Remove allows you to close the buffer and delete the file in one go
+Plug 'tpope/vim-eunuch'
+" Gives a whole suite of :Git commands
+Plug 'tpope/vim-fugitive'
+" Allows using the '.' operator to do intelligent things with plugins that support it (most of tpope's other plugins)
 Plug 'tpope/vim-repeat'
+" Allows you to change surrounding characters from inside. For instance cs"' will change quotes to single quotes
 Plug 'tpope/vim-surround'
-Plug 'vim-ruby/vim-ruby'
 
 if filereadable(expand("~/.vimrc.bundles.local"))
   source ~/.vimrc.bundles.local
