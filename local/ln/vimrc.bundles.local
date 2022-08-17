@@ -74,3 +74,7 @@ Plug 'dense-analysis/ale'
 " Conquer of Completion - a completion fraemwork that uses LSP servers
 " requires vim >= 8.1.1719 or neovim >= 0.4.0
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+""""""""""""""" CoC Plugins """"""""""""""""""""""
+" Python / vim-jedi LSP and CoC integration (requires npm and npm install --global yarn)
+Plug 'pappasam/coc-jedi', { 'do': 'yarn install --frozen-lockfile && yarn build', 'branch': 'main' }
