@@ -670,8 +670,8 @@ vmap <silent> <expr> p <sid>Repl()
 vnoremap <silent> y y`]
 " !help! p: Jump to the end of the text you just pasted
 vnoremap <silent> p p`]
-" !help! <Leader-d>: Delete item to the blackhole register (meaning don't overwrite the current buffer)
-vnoremap <Leader>d "_d
+" !help! <leader-d>: Delete item to the blackhole register (meaning don't overwrite the current buffer)
+vnoremap <leader>d "_d
 " For more info on the below see: http://vim.wikia.com/wiki/Copy_or_change_search_hit
 " !help! Creates a simple search text object identified as "s" so that you can manipulate search hits (do things like yank, change, etc)
 vnoremap <silent> s //e<C-r>=&selection=='exclusive'?'+1':''<CR><CR>
@@ -681,30 +681,30 @@ vnoremap <silent> s //e<C-r>=&selection=='exclusive'?'+1':''<CR><CR>
 " !help! Normal Bindings [[[
 " !help! p: Jump to the end of the text you just pasted
 nnoremap <silent> p p`]
-" !help! <Leader-dd>: Delete line to the blackhole register (meaning don't overwrite the current buffer)
-nnoremap <Leader>dd "_dd
-" !help! <Leader-d>: Delete item to the blackhole register (meaning don't overwrite the current buffer)
-nnoremap <Leader>d "_d
-" !help! <Leader-x>: Delete character to the blackhole register (meaning don't overwrite the current buffer)
-nnoremap <Leader>x "_x
+" !help! <leader-dd>: Delete line to the blackhole register (meaning don't overwrite the current buffer)
+nnoremap <leader>dd "_dd
+" !help! <leader-d>: Delete item to the blackhole register (meaning don't overwrite the current buffer)
+nnoremap <leader>d "_d
+" !help! <leader-x>: Delete character to the blackhole register (meaning don't overwrite the current buffer)
+nnoremap <leader>x "_x
 " !help! <leader b>: Open/close buffer list and prompt for selection
-nnoremap <Leader>b :ls<CR>:b<Space>
+nnoremap <leader>b :ls<CR>:b<Space>
 " !help! gb: Open/close buffer list and prompt for selection
 nnoremap gb :ls<CR>:b<Space>
 " !help! <CTRL-b>: Open ctrlp in tag mode for all files under the current working directory
 nnoremap <C-b> :CtrlPTag<CR>
 " !help! <ALT-p>: Open ctrlp in using a new root
 nnoremap <Esc>p :CtrlPCurWD<CR>
-" !help! <Leader-s>: Toggle showing/hiding leading spaces
-nnoremap <Leader>s :ToggleLeadingSpaces<CR>
-" !help! <Leader-B>: Generate ctags in .git directory if it exists
-nnoremap <Leader>B :CreateCtags<CR>
+" !help! <leader-s>: Toggle showing/hiding leading spaces
+nnoremap <leader>s :ToggleLeadingSpaces<CR>
+" !help! <leader-B>: Generate ctags in .git directory if it exists
+nnoremap <leader>B :CreateCtags<CR>
 " Set tab merge alias to vertically split current tab and the tab to the right (or barring that, to the left)
 " To put them back to tabs afterward, type CTRL+w, SHIFT+t
 " !help! <CTRL-t>: Open tag list side bar
 nnoremap <C-t> :TagbarToggle<CR>
-" !help! <Leader-g>: Pre-forms Z change of path command
-nnoremap <Leader>g :Z 
+" !help! <leader-g>: Pre-forms Z change of path command
+nnoremap <leader>g :Z 
 
 " !help! ]]]
 
@@ -792,31 +792,31 @@ map ê :bp<CR>
 map ë :bn<CR>
 
 " !help! <leader p>: Toggle paste mode
-map <Leader>p :set paste!<CR>
+map <leader>p :set paste!<CR>
 " !help! <leader po>: Paste a partial yank on the line below
 map <leader>po :pu<CR>
 " !help! <leader pO>: Paste a partial yank on the line above
 map <leader>pO :pu!<CR>
-" !help! <leader y>: Leader mapping to allow for copying from vim
-map <Leader>y :ToggleCopyable<CR>
+" !help! <leader y>: leader mapping to allow for copying from vim
+map <leader>y :ToggleCopyable<CR>
 " !help! <leader w>: Toggle text width on and off
-map <Leader>w :ToggleTextWidth<CR>
+map <leader>w :ToggleTextWidth<CR>
 " !help! <leader l>: Open/Close the location list window (for things like pylint)
 map <silent> <leader>l :call ToggleList("Location List", 'l')<CR>
 " !help! <leader q>: Open/Close the quickfix window
 map <silent> <leader>q :call ToggleList("Quickfix List", 'c')<CR>
 " !help! <leader li>: Toggle showing certain whitespace characters
-map <Leader>li :set list!<CR>
+map <leader>li :set list!<CR>
 " !help! <leader n>: Toggle show number
-map <Leader>n :set number!<CR>
+map <leader>n :set number!<CR>
 " !help! <leader r>: Toggle relative line numbering
-map <Leader>r :set relativenumber!<CR>
+map <leader>r :set relativenumber!<CR>
 " !help! <leader e>: Shows linting errors location window in a way that won't affect MiniBufExplorer
-map <Leader>e :call MyErrorsCommand()<CR>
+map <leader>e :call MyErrorsCommand()<CR>
 " !help! <leader csd>: Reset the color scheme to the default (in cases with unconfigured terminals)
-map <Leader>csd :ToggleBG<CR>
+map <leader>csd :ToggleBG<CR>
 " !help! <leader t>: Map nerdtree to leader+t
-map <Leader>t :NERDTreeToggle<CR>
+map <leader>t :NERDTreeToggle<CR>
 " !help! <leader k>: Search current buffer for item under the current cursor
 map <leader>k :RG <cword> %<CR>
 " !help! <leader K>: Search the entire working directory for the item under the cursor
