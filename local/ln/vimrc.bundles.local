@@ -78,3 +78,5 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 """"""""""""""" CoC Plugins """"""""""""""""""""""
 " Python / vim-jedi LSP and CoC integration (requires npm and npm install --global yarn)
 Plug 'pappasam/coc-jedi', { 'do': 'yarn install --frozen-lockfile && yarn build', 'branch': 'main' }
+" Clang for C/C++/Objective C
+Plug 'clangd/coc-clangd', { 'do': 'yarn install --frozen-lockfile && yarn build', 'branch': 'master' }
