@@ -266,6 +266,10 @@ let g:ale_open_list = 1
 " Don't lint when the buffer opens to reduce spame when we're just viewing files
 let g:ale_lint_on_enter = 0
 
+" Enable various linters that are otherwise disabled. See:
+" https://github.com/dense-analysis/ale/blob/master/supported-tools.md
+let g:ale_linters = {'go': ['golangci-lint','gopls','govet','golint']}
+
 " Use the following link for a lot of language specific information:
 " https://github.com/dense-analysis/ale/tree/master/doc
 
