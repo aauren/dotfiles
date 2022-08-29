@@ -810,8 +810,8 @@ nnoremap ' :call Marks()<CR>
 " To put them back to tabs afterward, type CTRL+w, SHIFT+t
 " removing in favor of taglist, leaving this here for now for history: map <C-t> <esc>:Tabmerge right<CR>
 
+" CoC Bindings {{{
 " !help! CoC (Conquer of Completion) Autocomplete and GoTo Mappings [[[
-
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
@@ -836,25 +836,34 @@ endif
 
 " Use `[g` and `]g` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
+" !help! [g: Go to previous diagnostic
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
+" !help! g[: Go to next diagnostic
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
 " GoTo code navigation
+" !help! gd: Go to definition
 nmap <silent> gd <Plug>(coc-definition)
+" !help! gy: Go to type definition
 nmap <silent> gy <Plug>(coc-type-definition)
+" !help! gi: Go to implementation
 nmap <silent> gi <Plug>(coc-implementation)
+" !help! gr: Go to references
 nmap <silent> gr <Plug>(coc-references)
 
 " Show documentation in preview window
+" !help! gp: Show documentation in preview window
 nmap <silent> gp :call ShowDocumentation()<CR>
 
 " Format selected text using CoC
 " Add the mapping for visual select mode
+" !help! <leader f>: format selected text (in visual & normal mode)
 xmap <leader>f <Plug>(coc-format-selected)
 " Add the map for normal mode
 nmap <leader>f <Plug>(coc-format-selected)
 
 " !help! ]]]
+" }}}
 
 " Set ALE shortcuts
 " !help! ALE Linter Mappings [[[
