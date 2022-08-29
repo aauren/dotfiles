@@ -654,11 +654,14 @@ function! ShowDocumentation()
   endif
 endfunction
 
-" !help! CheckBackspace: Needed for CoC checks if the last character was whitespace or j to exit the completion prompt
+" !help! CheckBackspace: Needed for CoC checks what the previous character is to see if this should be a regular tab
+" character, or if it should be a completion command. If the previous character was a space, it triggers non-completion
+" and puts a tab instead.
 " See: https://github.com/neoclide/coc.nvim
 function! CheckBackspace() abort
+  " Get the index of the previous character - col('.') gets the byte index of the column of the current cursor position
   let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s|j'
+  return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
 " !help! ]]]
