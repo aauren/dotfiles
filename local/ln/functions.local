@@ -182,12 +182,24 @@ prompt_for_selection() {
 
 # Helps the user change Kubernetes contexts using kubectx
 ctx() {
-	# If the user has given us a context to switch to, then switch to it, otherwise prompt the user from a list
-	if [[ -n "${1}" ]]; then
-		kubectx "${1}"
-	else
-		kubectx | peco | xargs -o kubectx
+	my_ctx="${1}"
+	if [[ -z "${my_ctx}" ]]; then
+		my_ctx="$(kubectx | peco)"
 	fi
+	if [[ -z "${my_ctx}" ]]; then
+		return 1
+	fi
+	kubectx "${my_ctx}"
+	case "${my_ctx}" in
+		ait*)
+			source "${HOME}/desktop_bin/disable-proxy"
+			return 0;;
+		uat*)
+			source "${HOME}/desktop_bin/disable-proxy"
+			return 0;;
+		*)
+			source "${HOME}/desktop_bin/enable-proxy-tiny";;
+	esac
 }
 
 # Parse go mod graph to find a dependencies parent, return full line from the mod graph when found. Multiple parameters
@@ -743,6 +755,7 @@ __k_comp_entrypoint() {
 
 	# The following will write to the BASH_COMP_DEBUG_FILE value if it is set, which is super helpful for debugging
 	opt_debug=""
+	# shellcheck disable=all
 	for key val in "${(@kv)opt_args}"; do
 		opt_debug+="${key}->${val};"
 	done
