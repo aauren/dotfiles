@@ -8,7 +8,7 @@ SSH_OPTS="-AT -o BatchMode=yes -o ConnectTimeout=5"
 RSYNC_OPTS="-rptX --size-only --ignore-times --no-links"
 EXCLUDE_GIT_DIR="--cvs-exclude"
 # The jedi-vim plugin is huge and is mostly unnecessary on remote systems
-EXCLUDE_JEDI_VIM="--exclude jedi-vim"
+EXCLUDE_JEDI_VIM="--exclude jedi-vim --exclude coc* --exclude terraform-ls --exclude ale"
 
 # Dotfile location
 DOTFILE_LOCATION='${HOME}/dotfiles/'
