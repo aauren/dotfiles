@@ -862,7 +862,7 @@ nmap <silent> gp :call ShowDocumentation()<CR>
 " !help! <leader f>: format selected text (in visual & normal mode)
 xmap <leader>f <Plug>(coc-format-selected)
 " Add the map for normal mode
-nmap <leader>f <Plug>(coc-format-selected)
+nmap <leader>f <Plug>(coc-format)
 
 " !help! ]]]
 " }}}
