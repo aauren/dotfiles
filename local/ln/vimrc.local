@@ -877,6 +877,12 @@ nmap <silent> <C-k>j <Plug>(ale_next_wrap)
 map <leader>a :ALEToggle<CR>
 " !help! ]]]
 
+" GitGutter Mappings
+" !help! GitGutter Mappings [[[
+" !help! ]c Go to next git hunk change
+" !help! [c Go to previous git hunk change
+" !help! ]]]
+
 " Remap next and previous tab to Ctrl-PgDn and Ctrl-PgUp
 " !help! <ALT-h>: Go to previous tab
 map <Esc>h :tabp<CR>
