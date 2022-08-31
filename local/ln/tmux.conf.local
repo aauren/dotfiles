@@ -70,7 +70,7 @@ bind C-d command-prompt -p "Delay:" "run-shell -b \"~/bin/tmux_delay #{session_n
 bind C-n run-shell -b "~/bin/tmux_output_pane_number #{session_name} #{window_name} #{?pane_synchronized,yes,no}"
 
 # Create a tmux window based on machine a name with automation scripts
-bind C-w command-prompt -p "Window:" "run-shell -b \"${HOME}/desktop_bin/create_tmux #{session_name} %% >/dev/null\""
+bind C-w command-prompt -p "Window:" "run-shell -b \"${HOME}/desktop_bin/create-tmux #{session_name} %% >/dev/null\""
 
 # Root bindings
 # Zoom window when insert key is pressed (bind to root table so that you don't have to press the tmux modifier)
