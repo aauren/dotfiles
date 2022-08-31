@@ -82,3 +82,5 @@ Plug 'pappasam/coc-jedi', { 'do': 'yarn install --frozen-lockfile && yarn build'
 Plug 'clangd/coc-clangd', { 'do': 'yarn install --frozen-lockfile && yarn build', 'branch': 'master' }
 " Golang (requires go install golang.org/x/tools/gopls@latest on new go versions)
 Plug 'josa42/coc-go', { 'do': 'yarn install --frozen-lockfile && yarn build', 'branch': 'master' }
+" Rust
+Plug 'fannheyward/coc-rust-analyzer', { 'do': 'yarn install --frozen-lockfile && yarn build', 'branch': 'master' }
