@@ -76,6 +76,8 @@ Plug 'dense-analysis/ale'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 """"""""""""""" CoC Plugins """"""""""""""""""""""
+" All of these items require a working version of NodeJS and Yarn. The best way to install this is with NVM:
+" https://github.com/nvm-sh/nvm
 " Python / vim-jedi LSP and CoC integration (requires npm and npm install --global yarn)
 Plug 'pappasam/coc-jedi', { 'do': 'yarn install --frozen-lockfile && yarn build', 'branch': 'main' }
 " Clang for C/C++/Objective C
