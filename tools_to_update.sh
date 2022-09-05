@@ -228,7 +228,7 @@ prompt_for_release() {
 
 all() {
 	echo "+++++++ Before continuing make sure to install the following: +++++++"
-	echo "+++++++ apt-get install -y libonig-dev golang-go musl-dev musl-tools attr upx libacl1-dev libattr1-dev libcap-dev skopeo +++++++"
+	echo "+++++++ apt-get install -y libonig-dev golang-go musl-dev musl-tools attr upx libacl1-dev libattr1-dev libcap-dev skopeo dconf-editor +++++++"
 	read
 	zsh-git-prompt
 	peco
