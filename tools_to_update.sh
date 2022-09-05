@@ -5,6 +5,7 @@ DESKTOPBIN="${HOME}/desktop_bin"
 
 # zsh-git-prompt
 zsh-git-prompt() {
+	echo "+++++++ Installing / Updating zsh-git-prompt +++++++"
 	local git_prompt_dir
 	git_prompt_dir="$(mktemp -d git_prompt.XXXXXXXXX)"
 	git clone "https://github.com/starcraftman/zsh-git-prompt.git" "${git_prompt_dir}"
@@ -15,6 +16,7 @@ zsh-git-prompt() {
 
 # peco
 peco() {
+	echo "+++++++ Installing / Updating peco +++++++"
 	pushd "${GOPATH}/src/github.com/peco/peco" &>/dev/null || return
 	git pull
 	#make build
@@ -30,6 +32,7 @@ peco() {
 
 # Gron
 gron() {
+	echo "+++++++ Installing / Updating gron +++++++"
 	go get github.com/tomnomnom/gron
 	pushd "${GOPATH}/src/github.com/tomnomnom/gron" &>/dev/null || return
 	go build -ldflags="-s -w"
@@ -41,6 +44,7 @@ gron() {
 
 # the_silver_searcher
 silver-search() {
+	echo "+++++++ Installing / Updating silver-searcher +++++++"
 	local silver_search
 	silver_search="$(mktemp -d silver_search.XXXXXXXXX)"
 	git clone "https://github.com/ggreer/the_silver_searcher.git" "${silver_search}"
@@ -53,6 +57,7 @@ silver-search() {
 
 # ripgrep
 ripgrep() {
+	echo "+++++++ Installing / Updating ripgrep +++++++"
 	local rg
 	echo "If this doesn't work, you may have to run the instructions here: https://github.com/BurntSushi/ripgrep#building"
 	rg="$(mktemp -d ripgrep.XXXXXXXXX)"
@@ -70,18 +75,20 @@ ripgrep() {
 
 # bfs (breadth first search)
 bfs() {
+	echo "+++++++ Installing / Updating bfs +++++++"
 	local bfs
 	bfs="$(mktemp -d bfs.XXXXXXXXX)"
 	git clone "https://github.com/tavianator/bfs.git" "${bfs}"
 	pushd "${bfs}" &>/dev/null || return
 	make
-	cp bfs "${DOTFILEDIR}/local/bin/bfs"
+	cp bin/bfs "${DOTFILEDIR}/local/bin/bfs"
 	popd &>/dev/null || return
 	rm -rf "${bfs}"
 }
 
 # dive (I seem to have a lot of problems building this project from src)
 dive() {
+	echo "+++++++ Installing / Updating dive +++++++"
 	local dive
 	prompt_for_release "https://github.com/wagoodman/dive/releases"
 	#dive_release="0.9.2"
@@ -96,12 +103,14 @@ dive() {
 
 # Reg
 reg() {
+	echo "+++++++ Installing / Updating reg +++++++"
 	go get -v github.com/genuinetools/reg
 	cp "${GOPATH}/bin/reg" "${DESKTOPBIN}/reg"
 }
 
 # Lab
 lab() {
+	echo "+++++++ Installing / Updating lab +++++++"
 	local lab
 	lab="$(mktemp -d lab.XXXXXXXXX)"
 	git clone "https://github.com/zaquestion/lab.git" "${lab}"
@@ -114,12 +123,14 @@ lab() {
 
 # Helm & Tiller
 helm() {
+	echo "+++++++ Installing / Updating helm +++++++"
 	prompt_for_release "https://github.com/helm/helm/releases"
 	wget -O "${HOME}/Downloads/helm.tar.gz" "https://get.helm.sh/helm-v${release}-linux-amd64.tar.gz"
 	tar -xC "${DESKTOPBIN}" -f ~/Downloads/helm.tar.gz --strip-components=1 linux-amd64/helm
 }
 
 kubectl() {
+	echo "+++++++ Installing / Updating kubectl +++++++"
 	local kube
 	kube="$(mktemp -d kubectl.XXXXXXXXX)"
 	pushd "${kube}" &>/dev/null || return
@@ -132,6 +143,7 @@ kubectl() {
 
 # kubectx
 kubectx() {
+	echo "+++++++ Installing / Updating kubectx +++++++"
 	prompt_for_release "https://github.com/ahmetb/kubectx/releases"
 	#kubectx_release="0.9.4"
 	wget -O "${HOME}/Downloads/kubectx.tar.gz" "https://github.com/ahmetb/kubectx/releases/download/v${release}/kubectx_v${release}_linux_x86_64.tar.gz"
@@ -139,6 +151,7 @@ kubectx() {
 }
 
 aws_cli() {
+	echo "+++++++ Installing / Updating aws_cli +++++++"
 	local aws_cli
 	aws_cli="$(mktemp -d aws_cli.XXXXXXXXX)"
 	pushd "${aws_cli}" &>/dev/null || return
@@ -150,6 +163,7 @@ aws_cli() {
 }
 
 hadolint() {
+	echo "+++++++ Installing / Updating hadolint +++++++"
 	# Requires: haskell-platform and haskell-stack in order to function
 	local hadolint
 	hadolint="$(mktemp -d hadolint.XXXXXXXXX)"
@@ -161,6 +175,7 @@ hadolint() {
 }
 
 rancher() {
+	echo "+++++++ Installing / Updating rancher +++++++"
 	prompt_for_release "https://github.com/rancher/cli/releases"
 	wget -O "${HOME}/Downloads/rancher.tar.gz" "https://github.com/rancher/cli/releases/download/v${release}/rancher-linux-amd64-v${release}.tar.xz"
 	tar -xC "${DESKTOPBIN}" --strip-components=2 -f ~/Downloads/rancher.tar.gz "./rancher-v${release}/rancher"
@@ -174,6 +189,9 @@ prompt_for_release() {
 }
 
 all() {
+	echo "+++++++ Before continuing make sure to install the following: +++++++"
+	echo "+++++++ apt-get install -y libonig-dev golang-go musl-dev musl-tools attr upx libacl1-dev libattr1-dev libcap-dev skopeo +++++++"
+	read
 	zsh-git-prompt
 	peco
 	gron
