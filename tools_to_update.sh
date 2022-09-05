@@ -14,9 +14,24 @@ zsh-git-prompt() {
 	rm -rf "${git_prompt_dir}"
 }
 
+go_tools() {
+	if [[ -n "${go_tools_installed}" ]]; then
+		return 0
+	fi
+	go install github.com/pwaller/goupx@latest
+	go_tools_installed=1
+}
+
 # peco
 peco() {
 	echo "+++++++ Installing / Updating peco +++++++"
+	go_tools
+	if [[ ! -d "${GOPATH}/src/github.com/peco/peco" ]]; then
+		mkdir -p "${GOPATH}/src/github.com/peco"
+		pushd "${GOPATH}/src/github.com/peco" &>/dev/null
+		git clone "https://github.com/peco/peco"
+		popd &>/dev/null
+	fi
 	pushd "${GOPATH}/src/github.com/peco/peco" &>/dev/null || return
 	git pull
 	#make build
@@ -33,8 +48,15 @@ peco() {
 # Gron
 gron() {
 	echo "+++++++ Installing / Updating gron +++++++"
-	go get github.com/tomnomnom/gron
+	go_tools
+	if [[ ! -d "${GOPATH}/src/github.com/tomnomnom/gron" ]]; then
+		mkdir -p "${GOPATH}/src/github.com/tomnomnom"
+		pushd "${GOPATH}/src/github.com/tomnomnom" &>/dev/null
+		git clone "https://github.com/tomnomnom/gron"
+		popd &>/dev/null
+	fi
 	pushd "${GOPATH}/src/github.com/tomnomnom/gron" &>/dev/null || return
+	git pull
 	go build -ldflags="-s -w"
 	~/go-workspace/bin/goupx gron
 	cp gron "${DOTFILEDIR}/local/bin/gron"
@@ -211,6 +233,7 @@ list() {
 }
 
 main() {
+	local go_tools_installed
 	case "${1}" in
 		zsh-git-prompt|peco|gron|silver-search|ripgrep|bfs|dive|reg|lab|helm|kubectx|kubectl|aws_cli|hadolint|\
 			rancher|list|all)
