@@ -77,8 +77,24 @@ silver-search() {
 	rm -rf "${silver_search}"
 }
 
+# Rust
+rust() {
+	if [[ -n "${rust_installed}" ]]; then
+		return 0
+	fi
+	echo "+++++++ Installing / Updating rust +++++++"
+	if ! command -v rustup &>/dev/null; then
+		curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+	fi
+	rustup target add x86_64-unknown-linux-musl
+	rustup update
+	rust_installed=1
+}
+
 # ripgrep
 ripgrep() {
+	rust
+	source "$HOME/.cargo/env"
 	echo "+++++++ Installing / Updating ripgrep +++++++"
 	local rg
 	echo "If this doesn't work, you may have to run the instructions here: https://github.com/BurntSushi/ripgrep#building"
@@ -233,7 +249,7 @@ list() {
 }
 
 main() {
-	local go_tools_installed
+	local rust_installed go_tools_installed
 	case "${1}" in
 		zsh-git-prompt|peco|gron|silver-search|ripgrep|bfs|dive|reg|lab|helm|kubectx|kubectl|aws_cli|hadolint|\
 			rancher|list|all)
