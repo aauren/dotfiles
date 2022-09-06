@@ -292,6 +292,26 @@ elastic_fielddata() {
 }
 # }}}
 
+# Docker / Container Functions {{{
+container-list-tags() {
+	if ! command -v skopeo &>/dev/null; then
+		echo "skopeo is not installed, please install skopeo first"
+		return 1
+	fi
+
+	if [[ $# -lt 1 ]]; then
+		echo "This command finds all the tags for the given container URL and returns them sorted"
+		echo "You must specify a container URL in order for this function to work"
+		echo "For example:"
+		echo "\tcontainer-list-tags mongo"
+		echo "\tcontainer-list-tags cgei-docker-release-virtual.artifactory.sie.sony.com/cgei-unstable/rack-manager"
+		return 2
+	fi
+
+	skopeo inspect "docker://${1}" | jq -r '.RepoTags[]' | sort -V
+}
+# }}}
+
 # Kubernetes Query Functions {{{
 
 # kpp (kubernetes pick pod) - Allows you to pick a pod and a namespace dynamically from a list
