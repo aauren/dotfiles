@@ -865,6 +865,10 @@ xmap <leader>f <Plug>(coc-format-selected)
 " !help! <leader f>: format the file (in normal mode)
 nmap <leader>f <Plug>(coc-format)
 
+" Process a symbol rename
+" !help! <leader rn>: rename the symbol under the cursor
+nmap <leader>rn <Plug>(coc-rename)
+
 " !help! ]]]
 " }}}
 
