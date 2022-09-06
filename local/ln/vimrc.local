@@ -859,9 +859,10 @@ nmap <silent> gp :call ShowDocumentation()<CR>
 
 " Format selected text using CoC
 " Add the mapping for visual select mode
-" !help! <leader f>: format selected text (in visual & normal mode)
+" !help! <leader f>: format selected text (in visual mode)
 xmap <leader>f <Plug>(coc-format-selected)
 " Add the map for normal mode
+" !help! <leader f>: format the file (in normal mode)
 nmap <leader>f <Plug>(coc-format)
 
 " !help! ]]]
