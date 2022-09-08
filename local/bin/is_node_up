@@ -61,12 +61,17 @@ while : ; do
 done
 
 # Since we can really only do this check if there is a port available
-if [[ ! -z ${is_node_up_port} ]]; then
+if [[ -n ${is_node_up_port} ]]; then
 	while : ; do
 		if [[ ${proxy_port_check} ]]; then
-			LD_PRELOAD="${libtsocks_path}" "${HOME}/bin/nc" -vzw 5 "${is_node_up_host}" "${is_node_up_port}" && is_node_up_status=0 && break
+			#LD_PRELOAD="${libtsocks_path}" "${HOME}/bin/nc" -vzw 5 "${is_node_up_host}" "${is_node_up_port}" && is_node_up_status=0 && break
+			LD_PRELOAD="${libtsocks_path}" \
+				socat /dev/null "TCP:${is_node_up_host}:${is_node_up_port},connect-timeout=5" && \
+				is_node_up_status=0 && break
 		else
-			"${HOME}/bin/nc" -vzw 5 "${is_node_up_host}" "${is_node_up_port}" && is_node_up_status=0 && break
+			#"${HOME}/bin/nc" -vzw 5 "${is_node_up_host}" "${is_node_up_port}" && is_node_up_status=0 && break
+			socat /dev/null "TCP:${is_node_up_host}:${is_node_up_port},connect-timeout=5" && \
+				is_node_up_status=0 && break
 		fi
 		echo "${is_node_up_host} does not appear to be listening to port ${is_node_up_port}"
 		[[ ${nonblocking} ]] && is_node_up_status=1 && break
@@ -75,3 +80,5 @@ if [[ ! -z ${is_node_up_port} ]]; then
 fi
 
 exit ${is_node_up_status}
+
+# vim: set noet ts=4 sw=4 syntax=sh ft=sh
