@@ -221,6 +221,21 @@ rancher() {
 	tar -xC "${DESKTOPBIN}" --strip-components=2 -f ~/Downloads/rancher.tar.gz "./rancher-v${release}/rancher"
 }
 
+socat() {
+	echo "+++++++ Installing / Updating socat +++++++"
+	local socat_dir
+	socat_dir="$(mktemp -d socat.XXXXXXXXX)"
+	git clone "git://repo.or.cz/socat.git" "${socat_dir}"
+	pushd "${socat_dir}" &>/dev/null || return
+	autoconf
+	./configure
+	sed -i 's/^LDFLAGS = $/LDFLAGS = -static/' Makefile
+	make
+	cp socat "${LOCALBIN}/socat"
+	popd &>/dev/null || return
+	rm -rf "${socat_dir}"
+}
+
 prompt_for_release() {
 	printf "Need to find which release to use, go to %s and then return here and enter the version number.\n" "${1}"
 	printf "If your version has a 'v' in it, omit the 'v'\n"
@@ -243,18 +258,19 @@ all() {
 	aws_cli
 	hadolint
 	rancher
+	socat
 }
 
 list() {
 	echo "zsh-git-prompt, peco, gron, silver-serach, ripgrep, bfs, dive, reg, lab, helm, kubectx, aws_cli, hadolint,"
-	echo "rancher"
+	echo "rancher, socat"
 }
 
 main() {
 	local rust_installed go_tools_installed
 	case "${1}" in
 		zsh-git-prompt|peco|gron|silver-search|ripgrep|bfs|dive|reg|lab|helm|kubectx|kubectl|aws_cli|hadolint|\
-			rancher|list|all)
+			rancher|socat|list|all)
 			${1}
 			;;
 		*)
