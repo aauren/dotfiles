@@ -2,6 +2,7 @@
 
 DOTFILEDIR="${HOME}/dotfiles"
 DESKTOPBIN="${HOME}/desktop_bin"
+LOCALBIN="${DOTFILEDIR}/local/bin"
 
 # zsh-git-prompt
 zsh-git-prompt() {
@@ -28,17 +29,17 @@ peco() {
 	go_tools
 	if [[ ! -d "${GOPATH}/src/github.com/peco/peco" ]]; then
 		mkdir -p "${GOPATH}/src/github.com/peco"
-		pushd "${GOPATH}/src/github.com/peco" &>/dev/null
+		pushd "${GOPATH}/src/github.com/peco" &>/dev/null || return
 		git clone "https://github.com/peco/peco"
-		popd &>/dev/null
+		popd &>/dev/null || return
 	fi
 	pushd "${GOPATH}/src/github.com/peco/peco" &>/dev/null || return
 	git pull
 	#make build
 	GO111MODULE=on go build -ldflags="-s -w" cmd/peco/peco.go
 	~/go-workspace/bin/goupx peco
-	cp peco "${DOTFILEDIR}/local/bin/peco"
-	setfattr -n user.pax.flags -v m "${DOTFILEDIR}/local/bin/peco"
+	cp peco "${LOCALBIN}/peco"
+	setfattr -n user.pax.flags -v m "${LOCALBIN}/peco"
 	popd &>/dev/null || return
 }
 
@@ -51,16 +52,16 @@ gron() {
 	go_tools
 	if [[ ! -d "${GOPATH}/src/github.com/tomnomnom/gron" ]]; then
 		mkdir -p "${GOPATH}/src/github.com/tomnomnom"
-		pushd "${GOPATH}/src/github.com/tomnomnom" &>/dev/null
+		pushd "${GOPATH}/src/github.com/tomnomnom" &>/dev/null || return
 		git clone "https://github.com/tomnomnom/gron"
-		popd &>/dev/null
+		popd &>/dev/null || return
 	fi
 	pushd "${GOPATH}/src/github.com/tomnomnom/gron" &>/dev/null || return
 	git pull
 	go build -ldflags="-s -w"
 	~/go-workspace/bin/goupx gron
-	cp gron "${DOTFILEDIR}/local/bin/gron"
-	setfattr -n user.pax.flags -v m "${DOTFILEDIR}/local/bin/gron"
+	cp gron "${LOCALBIN}/gron"
+	setfattr -n user.pax.flags -v m "${LOCALBIN}/gron"
 	popd &>/dev/null || return
 }
 
@@ -72,7 +73,7 @@ silver-search() {
 	git clone "https://github.com/ggreer/the_silver_searcher.git" "${silver_search}"
 	pushd "${silver_search}" &>/dev/null || return
 	./build.sh
-	cp ag "${DOTFILEDIR}/local/bin/ag"
+	cp ag "${LOCALBIN}/ag"
 	popd &>/dev/null || return
 	rm -rf "${silver_search}"
 }
@@ -94,6 +95,7 @@ rust() {
 # ripgrep
 ripgrep() {
 	rust
+	# shellcheck disable=SC1091
 	source "$HOME/.cargo/env"
 	echo "+++++++ Installing / Updating ripgrep +++++++"
 	local rg
@@ -106,7 +108,7 @@ ripgrep() {
 	sed -i '/^\[profile.release]$/a codegen-units = 1' Cargo.toml
 	PCRE2_SYS_STATIC=1 cargo build --release --target x86_64-unknown-linux-musl --features 'pcre2'
 	strip target/x86_64-unknown-linux-musl/release/rg
-	cp target/x86_64-unknown-linux-musl/release/rg "${DOTFILEDIR}/local/bin/rg"
+	cp target/x86_64-unknown-linux-musl/release/rg "${LOCALBIN}/rg"
 	popd &>/dev/null || return
 	rm -rf "${rg}"
 }
@@ -119,7 +121,7 @@ bfs() {
 	git clone "https://github.com/tavianator/bfs.git" "${bfs}"
 	pushd "${bfs}" &>/dev/null || return
 	make
-	cp bin/bfs "${DOTFILEDIR}/local/bin/bfs"
+	cp bin/bfs "${LOCALBIN}/bfs"
 	popd &>/dev/null || return
 	rm -rf "${bfs}"
 }
@@ -229,7 +231,7 @@ prompt_for_release() {
 all() {
 	echo "+++++++ Before continuing make sure to install the following: +++++++"
 	echo "+++++++ apt-get install -y libonig-dev golang-go musl-dev musl-tools attr upx libacl1-dev libattr1-dev libcap-dev skopeo dconf-editor +++++++"
-	read
+	read -r
 	zsh-git-prompt
 	peco
 	gron
