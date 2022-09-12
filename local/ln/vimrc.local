@@ -68,9 +68,12 @@ endif
 
 " Plugin Configurations - Various items for NerdTree, scratch buffers, airline, etc {{{
 
-" Settings for NerdTree so that it autocloses if it's the last window opened
+" Settings for NerdTree
 augroup nerdtree
+  " Ensure NerdTree autocloses if it's the last window open
   autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+  " Highlight currently open buffer in NERDTree if NERDTree is open
+  autocmd BufEnter * call SyncTree()
 augroup END
 
 " If the any of the scratch buffers (opened in the functions below) is the last window open, then close it and exit vim
@@ -666,6 +669,27 @@ function! CheckBackspace() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
+" Check if NERDTree is open or active
+function! IsNERDTreeOpen()
+  return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
+endfunction
+
+" Call NERDTreeFind iff NERDTree is active, current window contains a modifiable
+" file, and we're not in vimdiff
+function! SyncTree()
+  if &modifiable && IsNERDTreeOpen() && strlen(expand('%')) > 0 && !&diff
+    NERDTreeFind
+    wincmd p
+  endif
+endfunction
+
+" Because of the above function, we need to modify NERDTreeToggle just a bit
+function! ToggleNerdTree()
+  set eventignore=BufEnter
+  NERDTreeToggle
+  set eventignore=
+endfunction
+
 " !help! ]]]
 " }}}
 
@@ -926,7 +950,7 @@ map <leader>e :call MyErrorsCommand()<CR>
 " !help! <leader csd>: Reset the color scheme to the default (in cases with unconfigured terminals)
 map <leader>csd :ToggleBG<CR>
 " !help! <leader t>: Map nerdtree to leader+t
-map <leader>t :NERDTreeToggle<CR>
+map <leader>t :call ToggleNerdTree()<CR>
 " !help! <leader k>: Search current buffer for item under the current cursor
 map <leader>k :RG <cword> %<CR>
 " !help! <leader K>: Search the entire working directory for the item under the cursor
