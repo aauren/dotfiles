@@ -780,7 +780,7 @@ nnoremap <leader>b :ls<CR>:b<Space>
 " !help! gb: Open/close buffer list and prompt for selection
 nnoremap gb :ls<CR>:b<Space>
 " !help! <CTRL-b>: Open ctrlp in tag mode for all files under the current working directory
-nnoremap <C-b> :CtrlPTag<CR>
+nnoremap <C-b> :CtrlPMRU<CR>
 " !help! <ALT-p>: Open ctrlp in using a new root
 nnoremap <Esc>p :CtrlPCurWD<CR>
 " !help! <leader-s>: Toggle showing/hiding leading spaces
