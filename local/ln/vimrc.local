@@ -205,14 +205,14 @@ augroup whitespace
   " matchadd parameters: matchadd(<highlight_name>, <pattern>, <priority_greater_num_means_more_prio>, <id>)
   autocmd InsertEnter * silent! call matchadd("ExtraWhitespace", '\s\+\%#\@<!$', 10, 103)
   " IDs 100 and 101 are created below in section: My functions (toggle solarized background, etc)
-  autocmd insertEnter * call matchdelete(104)
+  autocmd insertEnter * silent! call matchdelete(104)
 
   " This always shows whitespace at the end of the line, we use this pattern when we leave insert mode. When we leave
   " insert we'll load this one and delete the match above. No silent is needed as everything is already setup the way it
   " should (unlike above where it might be the first insert of the session) so no errors are thrown.
-  autocmd InsertLeave * call matchadd("ExtraWhitespace", '\s\+$', 10, 104)
+  autocmd InsertLeave * silent! call matchadd("ExtraWhitespace", '\s\+$', 10, 104)
   " IDs 100 and 101 are created below in section: My functions (toggle solarized background, etc)
-  autocmd InsertLeave * call matchdelete(103)
+  autocmd InsertLeave * silent! call matchdelete(103)
 augroup END
 
 " Makes it so that you never scroll into the quickfix buffer when using buffernext/bufferprevious commands
