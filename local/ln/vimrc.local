@@ -19,6 +19,21 @@ set updatetime=300
 " directory is automatically un-indexed
 set tags^=./.git/tags;
 
+" Set the default preview popup window size to a little bigger than its default so that the contents are more readable
+set previewheight=30
+
+" General autocommands that don't have to do with filetypes
+augroup general
+  " A work around for the fact that the above setting isn't actually respected by VIM, when you enter a buffer it checks
+  " to see if the buffer is a preview window and if so, it expands it to the setting above.
+  autocmd BufEnter ?* call PreviewHeightWorkAround()
+augroup END
+
+" If set, would cause preview-popup to be used instead of preview-window. Preview-popups are a new feature of VIM 8.2
+" that creates a special window that can be stacked on a z-axis. However, it cannot be interracted with which carries
+" with it a bunch of limitations.
+"set previewpopup=height:40,width:100
+
 " Change color scheme to dark solarized if bundles is available {{{
 if filereadable(expand("~/.vimrc.bundles"))
   " On remote systems that run tmux not setting the background seems to cause issues with the margins
@@ -146,6 +161,7 @@ let g:tagbar_type_go = {
 " }}}
 
 " File type based autocmd's (e.g. python width 120, tab expansion for python, sh, etc, upconf and json settings {{{
+
 augroup filetypes
   " Setting a different indentation for Python so that we get more than 80 characters in a column
   autocmd Filetype python set textwidth=120
@@ -694,6 +710,13 @@ function! ToggleNerdTree()
   NERDTreeToggle
   set eventignore=
 endfunction
+
+" Because the previewheight settings isn't actually respected by VIM
+function! PreviewHeightWorkAround()
+  if &previewwindow
+    exec 'setlocal winheight='.&previewheight
+  endif
+endfun
 
 " !help! ]]]
 " }}}
