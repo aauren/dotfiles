@@ -658,7 +658,7 @@ endfunction
 " !help! Showdocumentation: display CoC documentation in a preview window
 function! ShowDocumentation()
   if CocAction('hasProvider', 'hover')
-    call CocActionAsync('doHover')
+    call CocActionAsync('doHover', 'preview')
   else
     call feedkeys('K', 'in')
   endif
