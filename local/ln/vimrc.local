@@ -15,6 +15,8 @@ set hlsearch
 " Having longer uptimetime for CoC (default is 4000 ms = 4 seconds) leads to noticable delays and poor experienc
 set updatetime=300
 
+" This tells VIM where to look for generated ctags, in this case the .git directory is used because everything in that
+" directory is automatically un-indexed
 set tags^=./.git/tags;
 
 " Change color scheme to dark solarized if bundles is available {{{
