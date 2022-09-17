@@ -239,11 +239,11 @@ socat() {
 	local socat_dir
 	socat_dir="$(mktemp -d socat.XXXXXXXXX)"
 	git clone "git://repo.or.cz/socat.git" "${socat_dir}"
+	cp build/socat/build_static_socat.sh "${socat_dir}"
+	cp build/socat/Dockerfile "${socat_dir}"
 	pushd "${socat_dir}" &>/dev/null || return
-	autoconf
-	./configure
-	sed -i 's/^LDFLAGS = $/LDFLAGS = -static/' Makefile
-	make
+	docker build -t socat_builder:latest .
+	docker run -ti --rm -v $(pwd):/output socat_builder:latest
 	cp socat "${LOCALBIN}/socat"
 	popd &>/dev/null || return
 	rm -rf "${socat_dir}"
