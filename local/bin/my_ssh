@@ -70,7 +70,7 @@ main ()
 
 
 	# Check to see if an SSH port is explicitely defined in ssh config files
-	my_ssh_port="$(parse_ssh_config | grep -E "^  ${hostname}," |cut -d',' -f 3)"
+	my_ssh_port="$(parse_ssh_config | grep -E "^[ ]+${hostname}," |cut -d',' -f 3)"
 	unaliased_ssh_host="$(resolve_host_from_ssh_config "${hostname}")"
 	local -a host_opts
 	export my_ssh_port unaliased_ssh_host
