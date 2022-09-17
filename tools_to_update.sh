@@ -202,7 +202,20 @@ aws_cli() {
 	rm -rf "${aws_cli}"
 }
 
+haskell_stack() {
+	if [[ -n "${haskell_stack}" ]]; then
+		return 0
+	fi
+	echo "+++++++ Installing / Updating haskell stack +++++++"
+	if ! command -v stack &>/dev/null; then
+		curl -sSL https://get.haskellstack.org/ | sh
+	fi
+	stack upgrade
+	haskell_stack=1
+}
+
 hadolint() {
+	haskell_stack
 	echo "+++++++ Installing / Updating hadolint +++++++"
 	# Requires: haskell-platform and haskell-stack in order to function
 	local hadolint
@@ -245,7 +258,8 @@ prompt_for_release() {
 
 all() {
 	echo "+++++++ Before continuing make sure to install the following: +++++++"
-	echo "+++++++ apt-get install -y libonig-dev golang-go musl-dev musl-tools attr upx libacl1-dev libattr1-dev libcap-dev skopeo dconf-editor +++++++"
+	printf "+++++++ apt-get install -y libonig-dev golang-go musl-dev musl-tools attr upx libacl1-dev libattr1-dev"
+	printf "libcap-dev skopeo dconf-editor yamllint +++++++\n"
 	read -r
 	zsh-git-prompt
 	peco
@@ -267,7 +281,7 @@ list() {
 }
 
 main() {
-	local rust_installed go_tools_installed
+	local rust_installed go_tools_installed haskell_stack
 	case "${1}" in
 		zsh-git-prompt|peco|gron|silver-search|ripgrep|bfs|dive|reg|lab|helm|kubectx|kubectl|aws_cli|hadolint|\
 			rancher|socat|list|all)
