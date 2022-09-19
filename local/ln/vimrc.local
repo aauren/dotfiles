@@ -672,11 +672,22 @@ function! Marks()
 endfunction
 
 " !help! Showdocumentation: display CoC documentation in a preview window
-function! ShowDocumentation()
-  if CocAction('hasProvider', 'hover')
-    call CocActionAsync('doHover', 'preview')
+function! ShowDocumentation(...)
+  " A one should be passed as the first argument to this function if you want to show doc results in a preview pane no
+  " matter what
+  if a:0 == 1
+    let l:previewPane = 1
   else
-    call feedkeys('K', 'in')
+    let l:previewPane = 0
+  endif
+  if CocAction('hasProvider', 'hover')
+    let l:docArr = join(CocAction('getHover'))
+    echo 'words in doc: ' . len(l:docArr)
+    if len(l:docArr) > 2000 || l:previewPane == 1
+      call CocActionAsync('doHover', 'preview')
+    else
+      call CocActionAsync('doHover')
+    endif
   endif
 endfunction
 
@@ -905,9 +916,12 @@ nmap <silent> gi <Plug>(coc-implementation)
 " !help! gr: Go to references
 nmap <silent> gr <Plug>(coc-references)
 
-" Show documentation in preview window
-" !help! gp: Show documentation in preview window
+" Show documentation in correct window depending on length
+" !help! gp: Show documentation in length sensitive window
 nmap <silent> gp :call ShowDocumentation()<CR>
+" Show documentation in preview window
+" !help! gP: Show documentation in preview window
+nmap <silent> gP :call ShowDocumentation(1)<CR>
 
 " Format selected text using CoC
 " Add the mapping for visual select mode
