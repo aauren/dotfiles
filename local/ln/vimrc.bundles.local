@@ -78,6 +78,9 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Terraform highlighting
 Plug 'hashivim/vim-terraform'
 
+" Symbol / Tag viewer with LSp integration via CoC
+Plug 'liuchengxu/vista.vim'
+
 """"""""""""""" CoC Plugins """"""""""""""""""""""
 " All of these items require a working version of NodeJS and Yarn. The best way to install this is with NVM:
 " https://github.com/nvm-sh/nvm

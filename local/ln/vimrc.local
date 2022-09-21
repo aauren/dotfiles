@@ -90,7 +90,7 @@ endif
 
 " Settings for NerdTree
 augroup nerdtree
-  " Ensure NerdTree autocloses if it's the last window open
+  " Ensure NerdTree autocloses if it's the last window open and exit vim
   autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
   " Highlight currently open buffer in NERDTree if NERDTree is open
   autocmd BufEnter * call SyncTree()
@@ -123,6 +123,23 @@ highlight! link SignColumn LineNr
 " Settings for jedi-vim
 " Don't start auto-completing on . (if you still need auto-completion use Ctrl-Space)
 let g:jedi#popup_on_dot = 0
+
+" Settings for Vista (LSP / CoC Symbol Outliner)
+" Change default executive from ctags to coc (LSP) backed implementation
+let g:vista_default_executive = 'coc'
+" Disable the use of fancy symbols for the tag tree since we don't have them or need them
+let g:vista#renderer#enable_icon = 0
+" Set the vista to the topleft instead of the bottom right
+let g:vista_sidebar_position = 'vertical topleft'
+" Set the vista width to give a bit more space
+let g:vista_sidebar_width = 50
+" Close the vista window after a jump
+let g:vista_close_on_jump=1
+augroup vista
+  " Auto-close visa outline if it is the last buffer open and vim is exiting
+  autocmd bufenter * if (winnr("$") == 1 && exists("b:current_syntax")) && b:current_syntax == 'vista' | q | endif
+augroup END
+
 
 " }}}
 
@@ -985,6 +1002,8 @@ map <leader>z :bd<CR>
 map <leader>Z :close<CR>
 " !help! <leader T>: Begin tracking the current vim session with the obsession plugin
 map <leader>T :Obsess ~/.vim/session/%:t<CR>
+" !help! <leader o>: Show vista symbol outline for the given file
+map <leader>o :Vista!!<CR>
 " !help! ]]]
 
 " !help! QuickFix Window Bindings [[[
