@@ -995,8 +995,11 @@ map <leader>vs :call VSplitCurrentBuffer()<CR>
 map <leader>hs :call SplitCurrentBuffer()<CR>
 " !help! <leader vc>: Open my vim customizations to a vertical split
 map <leader>vc :call ShowVimCustomizations()<CR>
+" Because we can sometimes have buffers like nerdtree or outline, we want to close the current buffer without
+" auto-focusing those other windows and causing them to take up all of our screen, for something that is just supposed
+" to sit on the left. So this changes to the previous buffer, and then closes the last opened buffer.
 " !help! <leader z>: Close current buffer
-map <leader>z :bd<CR>
+map <leader>z :bp<CR>:bd #<CR>
 " !help! <leader Z>: Close current window (use instead of :q)
 map <leader>Z :close<CR>
 " !help! <leader T>: Begin tracking the current vim session with the obsession plugin
