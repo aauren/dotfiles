@@ -937,10 +937,10 @@ map <leader>a :ALEToggle<CR>
 " !help! ]]]
 
 " Remap next and previous tab to Ctrl-PgDn and Ctrl-PgUp
-" !help! <ALT-h>: Go to previous tab
-map <Esc>h :tabp<CR>
-" !help! <ALT-l>: Go to next tab
-map <Esc>l :tabn<CR>
+" !help! <ALT-h>: Go to previous window
+map <Esc>h <C-w>W
+" !help! <ALT-l>: Go to next window
+map <Esc>l <C-w>w
 " !help! <ALT-j>: Go to previous buffer
 map <Esc>j :bp<CR>
 " !help! <ALT-k>: Go to next buffer
