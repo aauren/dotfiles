@@ -804,12 +804,11 @@ nnoremap <C-b> :CtrlPMRU<CR>
 nnoremap <Esc>p :CtrlPCurWD<CR>
 " !help! <leader-s>: Toggle showing/hiding leading spaces
 nnoremap <leader>s :ToggleLeadingSpaces<CR>
-" !help! <leader-B>: Generate ctags in .git directory if it exists
-nnoremap <leader>B :CreateCtags<CR>
+" We no longer use ctags
+"nnoremap <leader>B :CreateCtags<CR>
 " Set tab merge alias to vertically split current tab and the tab to the right (or barring that, to the left)
 " To put them back to tabs afterward, type CTRL+w, SHIFT+t
-" !help! <CTRL-t>: Open tag list side bar
-nnoremap <C-t> :TagbarToggle<CR>
+"nnoremap <C-t> :TagbarToggle<CR>
 " !help! <leader-g>: Pre-forms Z change of path command
 nnoremap <leader>g :Z 
 
