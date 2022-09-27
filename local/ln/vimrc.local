@@ -119,6 +119,10 @@ let g:airline_section_z = airline#section#create(['%{ObsessionStatus(''[TRK SESS
 " Gitgutter settings
 " Set SignColumn highight group to same as LineNr so that it doesn't turn grey
 highlight! link SignColumn LineNr
+" if git doesn't exist on the system, set gitgutter_enabled to 0 so that we don't try to load it and get an error
+if !executable("git")
+  let g:gitgutter_enabled=0
+endif
 
 " Settings for jedi-vim
 " Don't start auto-completing on . (if you still need auto-completion use Ctrl-Space)
