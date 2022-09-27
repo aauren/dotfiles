@@ -24,7 +24,7 @@ endfunction
 com! -nargs=+  -bar Plugin call VundleToPlug("Plugin", <args>)
 com! -nargs=+  -bar Bundle call VundleToPlug("Bundle", <args>)
 
-call plug#begin('~/.vim/bundle')
+silent! call plug#begin('~/.vim/bundle')
 
 " Standard ones that came with my original dotfiles repo
 " Define bundles via Github repos
