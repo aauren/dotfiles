@@ -712,6 +712,29 @@ function! PreviewHeightWorkAround()
   endif
 endfun
 
+" This is needed for where we remap our tab key, to ensure that CoC exists before we try to call the functions. We use
+" :CocInfo as a litmus test of whether or not CoC is installed on this system.
+function! CocTabExpand()
+  if exists(":CocInfo")
+    coc#pum#visible() ? coc#pum#next(1):
+    \ CheckBackspace() ? return "\<Tab>" :
+    \ coc#refresh()
+  else
+    return "\<Tab>"
+  endif
+endfunction
+
+" This is needed for where we remap our return key, to ensure that CoC exists before we try to call the functions. We
+" use :CocInfo as a litmus test of whether or not CoC is installed on this system.
+function! CocCRExpand() abort
+  if exists(":CocInfo")
+    return coc#pum#visible() ? coc#pum#confirm(): "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+  else
+    return "\<CR>"
+  endif
+endfunction
+
+
 " !help! ]]]
 " }}}
 
@@ -862,16 +885,12 @@ nnoremap ' :call Marks()<CR>
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ coc#pum#visible() ? coc#pum#next(1):
-      \ CheckBackspace() ? "\<Tab>" :
-      \ coc#refresh()
+inoremap <silent><expr> <TAB> CocTabExpand()
 inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
 " Make <CR> to accept selected completion item or notify coc.nvim to format
 " <C-g>u breaks current undo, please make your own choice.
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+inoremap <silent><expr> <CR> CocCRExpand()
 
 " Use <c-space> to trigger completion.
 if has('nvim')
