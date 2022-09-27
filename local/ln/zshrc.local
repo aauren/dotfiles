@@ -351,6 +351,10 @@ if type helm > /dev/null; then
 	source <(helm completion zsh 2>/dev/null)
 fi
 compdef __k_comp_entrypoint "${K8S_FUNCS[@]}"
+
+if type aws_completer > /dev/null; then
+	complete -C "$(type aws_completer | awk '{print $3}')" aws
+fi
 # }}}
 
 # Add fasd directory jumper {{{
