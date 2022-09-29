@@ -720,8 +720,8 @@ endfun
 " :CocInfo as a litmus test of whether or not CoC is installed on this system.
 function! CocTabExpand()
   if exists(":CocInfo")
-    coc#pum#visible() ? coc#pum#next(1):
-    \ CheckBackspace() ? return "\<Tab>" :
+    return coc#pum#visible() ? coc#pum#next(1):
+    \ CheckBackspace() ? "\<Tab>" :
     \ coc#refresh()
   else
     return "\<Tab>"
