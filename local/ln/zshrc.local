@@ -296,6 +296,10 @@ if [[ -e "${HOME}/desktop_bin" ]]; then
 	PATH="${HOME}/desktop_bin:${PATH}"
 fi
 
+if [[ -e "${HOME}/binMan" ]]; then
+	PATH="${HOME}/binMan:${PATH}"
+fi
+
 if [[ -e "${HOME}/.local/bin" ]]; then
 	PATH="${HOME}/.local/bin:${PATH}"
 fi

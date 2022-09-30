@@ -15,6 +15,7 @@ zsh-git-prompt() {
 	rm -rf "${git_prompt_dir}"
 }
 
+# Tools needed for reducing go binary sizes
 go_tools() {
 	if [[ -n "${go_tools_installed}" ]]; then
 		return 0
@@ -126,7 +127,7 @@ bfs() {
 	rm -rf "${bfs}"
 }
 
-# dive (I seem to have a lot of problems building this project from src)
+# dive - now pulled with binman
 dive() {
 	echo "+++++++ Installing / Updating dive +++++++"
 	local dive
@@ -141,7 +142,7 @@ dive() {
 	rm -rf "${dive}"
 }
 
-# Reg
+# Reg - Not really updated any longer
 reg() {
 	echo "+++++++ Installing / Updating reg +++++++"
 	go get -v github.com/genuinetools/reg
@@ -161,7 +162,7 @@ lab() {
 	rm -rf "${lab}"
 }
 
-# Helm & Tiller
+# Helm & Tiller - now pulled with binman
 helm() {
 	echo "+++++++ Installing / Updating helm +++++++"
 	prompt_for_release "https://github.com/helm/helm/releases"
@@ -169,6 +170,7 @@ helm() {
 	tar -xC "${DESKTOPBIN}" -f ~/Downloads/helm.tar.gz --strip-components=1 linux-amd64/helm
 }
 
+# kubectl - now pulled with binman
 kubectl() {
 	echo "+++++++ Installing / Updating kubectl +++++++"
 	local kube
@@ -181,7 +183,7 @@ kubectl() {
 	rm -rf "${kube}"
 }
 
-# kubectx
+# kubectx - now pulled with binman
 kubectx() {
 	echo "+++++++ Installing / Updating kubectx +++++++"
 	prompt_for_release "https://github.com/ahmetb/kubectx/releases"
@@ -190,6 +192,7 @@ kubectx() {
 	tar -xC "${DESKTOPBIN}" -f ~/Downloads/kubectx.tar.gz kubectx
 }
 
+# aws - Adds the AWS CLI
 aws_cli() {
 	echo "+++++++ Installing / Updating aws_cli +++++++"
 	local aws_cli
@@ -202,6 +205,7 @@ aws_cli() {
 	rm -rf "${aws_cli}"
 }
 
+# Installs haskall stack for installing other haskall programs
 haskell_stack() {
 	if [[ -n "${haskell_stack}" ]]; then
 		return 0
@@ -214,6 +218,7 @@ haskell_stack() {
 	haskell_stack=1
 }
 
+# hadolint - now pulled with binman
 hadolint() {
 	haskell_stack
 	echo "+++++++ Installing / Updating hadolint +++++++"
@@ -227,6 +232,7 @@ hadolint() {
 	rm -rf "${hadolint}"
 }
 
+# rancher
 rancher() {
 	echo "+++++++ Installing / Updating rancher +++++++"
 	prompt_for_release "https://github.com/rancher/cli/releases"
@@ -234,6 +240,7 @@ rancher() {
 	tar -xC "${DESKTOPBIN}" --strip-components=2 -f ~/Downloads/rancher.tar.gz "./rancher-v${release}/rancher"
 }
 
+# socat - builds a statically linked socat binary
 socat() {
 	echo "+++++++ Installing / Updating socat +++++++"
 	local socat_dir
@@ -243,7 +250,7 @@ socat() {
 	cp build/socat/Dockerfile "${socat_dir}"
 	pushd "${socat_dir}" &>/dev/null || return
 	docker build -t socat_builder:latest .
-	docker run -ti --rm -v $(pwd):/output socat_builder:latest
+	docker run -ti --rm -v "$(pwd):/output" socat_builder:latest
 	cp socat "${LOCALBIN}/socat"
 	popd &>/dev/null || return
 	rm -rf "${socat_dir}"
@@ -267,11 +274,7 @@ all() {
 	gron
 	ripgrep
 	bfs
-	dive
-	helm
-	kubectx
 	aws_cli
-	hadolint
 	rancher
 	socat
 }
