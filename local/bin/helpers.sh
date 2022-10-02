@@ -42,7 +42,7 @@ is_ip_address() {
 parse_ssh_config() {
 	awk '
 	BEGIN { IGNORECASE = 1; output = "" }
-	$1 == "Host" {
+	tolower($1) == "host" {
 		if ( alias != "" ) {
 			output = output alias hostname port "\n"
 		}
@@ -50,9 +50,9 @@ parse_ssh_config() {
 		alias = $0
 		hostname = port = ""
 	}
-	$1 == "ProxyJump" { hostname = ",PROXYJUMP" }
-	$1 == "HostName" { hostname = "," $2 }
-	$1 == "Port" { port = "," $2 }
+	tolower($1) == "proxyump" { hostname = ",PROXYJUMP" }
+	tolower($1) == "hostname" { hostname = "," $2 }
+	tolower($1) == "port" { port = "," $2 }
 	END {
 		print output alias hostname port
 	}
