@@ -72,6 +72,9 @@ bind C-n run-shell -b "~/bin/tmux_output_pane_number #{session_name} #{window_na
 # Create a tmux window based on machine a name with automation scripts
 bind C-w command-prompt -p "Window:" "run-shell -b \"${HOME}/desktop_bin/create-tmux #{session_name} %% >/dev/null\""
 
+# Create a tmux window based on machine a name with automation scripts
+bind C-e command-prompt -p "AWS Host Type:" "run-shell -b \"${HOME}/desktop_bin/tmux-ec2-window-create #{session_name} %% >/dev/null\""
+
 # Root bindings
 # Zoom window when insert key is pressed (bind to root table so that you don't have to press the tmux modifier)
 bind -n IC resize-pane -Z
@@ -100,7 +103,7 @@ bind-key -T root C-F2 if-shell -F "#{pane_input_off}" "selectp -e" "selectp -d"
 bind r source-file ~/.tmux.conf \; display "Reloaded!"
 
 # Send command to all panes
-bind C-e command-prompt -p "session?,message?" "run-shell \"tmux list-windows -t %1 \| cut -d: -f1\|xargs -I\{\} tmux send-keys -t %1:\{\} %2\""
+#bind C-e command-prompt -p "session?,message?" "run-shell \"tmux list-windows -t %1 \| cut -d: -f1\|xargs -I\{\} tmux send-keys -t %1:\{\} %2\""
 
 # Double pressing Prefix+a will send CTRL+a to application below Tmux
 #bind -r C-a send-prefix
