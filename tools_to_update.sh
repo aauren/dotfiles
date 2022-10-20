@@ -59,7 +59,7 @@ gron() {
 	fi
 	pushd "${GOPATH}/src/github.com/tomnomnom/gron" &>/dev/null || return
 	git pull
-	go build -ldflags="-s -w"
+	CGO_ENABLED=0 go build -ldflags="-s -w"
 	~/go-workspace/bin/goupx gron
 	cp gron "${LOCALBIN}/gron"
 	setfattr -n user.pax.flags -v m "${LOCALBIN}/gron"
