@@ -36,12 +36,14 @@ parse_args ()
 
 parse_args "$@"
 
+# The below can no longer be used because we statically compile socat with musl so we cannot substitute this library.
+# Instead we now use the SOCKS4 parameter of socat itself.
 # check for path of tsocks as some distributions have it in different places
-if [[ -e /usr/lib/x86_64-linux-gnu/libtsocks.so ]]; then
-	libtsocks_path=/usr/lib/x86_64-linux-gnu/libtsocks.so
-else
-	libtsocks_path=/lib64/libtsocks.so
-fi
+#if [[ -e /usr/lib/x86_64-linux-gnu/libtsocks.so ]]; then
+#	libtsocks_path=/usr/lib/x86_64-linux-gnu/libtsocks.so
+#else
+#	libtsocks_path=/lib64/libtsocks.so
+#fi
 
 # Attempt to resolve the IP address of the host and use that instead of a hostname
 is_node_up_status=1
@@ -65,8 +67,7 @@ if [[ -n ${is_node_up_port} ]]; then
 	while : ; do
 		if [[ ${proxy_port_check} ]]; then
 			#LD_PRELOAD="${libtsocks_path}" "${HOME}/bin/nc" -vzw 5 "${is_node_up_host}" "${is_node_up_port}" && is_node_up_status=0 && break
-			LD_PRELOAD="${libtsocks_path}" \
-				socat /dev/null "TCP:${is_node_up_host}:${is_node_up_port},connect-timeout=5" && \
+			socat /dev/null "SOCKS4:localhost:${is_node_up_host}:${is_node_up_port},connect-timeout=5,socksport=9097" && \
 				is_node_up_status=0 && break
 		else
 			#"${HOME}/bin/nc" -vzw 5 "${is_node_up_host}" "${is_node_up_port}" && is_node_up_status=0 && break
