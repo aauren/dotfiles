@@ -5,7 +5,9 @@ Plug 'altercation/vim-colors-solarized'
 Plug 'ciaranm/securemodelines'
 
 " Tries to automatically detect indent settings
-Plug 'tpope/vim-sleuth'
+" This really didn't work well, it kept double-setting indents, shell was 8 spaces on tab and yaml was set to 4 spaces
+" and it didn't seem to respect modeline or settings in vimrc.
+"Plug 'tpope/vim-sleuth'
 
 " Allows you to move from tabs to vsplits and back (ctrl-m to bring them back: ctrl-w, T) (I don't really use tabs
 " anymore)
