@@ -359,6 +359,13 @@ compdef __k_comp_entrypoint "${K8S_FUNCS[@]}"
 if type aws_completer > /dev/null; then
 	complete -C "$(type aws_completer | awk '{print $3}')" aws
 fi
+
+if type kind >/dev/null; then
+	kind completion zsh > "${fpath[1]}/_kind"
+fi
+
+# Needs to be run last
+autoload -U compinit && compinit
 # }}}
 
 # Add fasd directory jumper {{{
