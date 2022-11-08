@@ -354,7 +354,6 @@ compinit -u
 if type helm > /dev/null; then
 	source <(helm completion zsh 2>/dev/null)
 fi
-compdef __k_comp_entrypoint "${K8S_FUNCS[@]}"
 
 if type aws_completer > /dev/null; then
 	complete -C "$(type aws_completer | awk '{print $3}')" aws
@@ -364,8 +363,12 @@ if type kind >/dev/null; then
 	kind completion zsh > "${fpath[1]}/_kind"
 fi
 
-# Needs to be run last
+# One final load to load in things like kind completion above
 autoload -U compinit && compinit
+
+# This seems to need to be run last
+# Adds in compdef entrypoints for custom k8s k* functions as defined in .functions.local
+compdef __k_comp_entrypoint "${K8S_FUNCS[@]}"
 # }}}
 
 # Add fasd directory jumper {{{
