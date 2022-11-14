@@ -364,7 +364,7 @@ if type kind >/dev/null; then
 fi
 
 # One final load to load in things like kind completion above
-autoload -U compinit && compinit
+autoload -U compinit && compinit -u
 
 # This seems to need to be run last
 # Adds in compdef entrypoints for custom k8s k* functions as defined in .functions.local
