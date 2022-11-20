@@ -157,7 +157,9 @@
 	# Opens up your editor with all files that are part of your working directory
 	edit = !$EDITOR $(git status --short | awk '$1 ~ /^M|A|U/ {print $2}' )
 	# Opens up your editor with all of the files that were modified as part of a specified commit
-	edc = "!f() { git diff-tree -p -r $1 >/tmp/gitdiff.patch; $EDITOR $(git diff-tree --no-commit-id --name-only -r $1) /tmp/gitdiff.patch; rm /tmp/gitdiff.patch; }; f"
+	edcm = "!f() { git diff-tree -p -r $1 >/tmp/gitdiff.patch; $EDITOR $(git diff-tree --no-commit-id --name-only -r $1) /tmp/gitdiff.patch; rm /tmp/gitdiff.patch; }; f"
+	# Opens up your editor with files that contain conflicts
+	edc = !$EDITOR -c 'silent! /=======' $(git diff --name-only | uniq)
 	sh = show HEAD
 	cp = cherry-pick
 	pr = !"pr() { git fetch origin pull/$1/head:prs/$1; git co prs/$1; }; pr"
