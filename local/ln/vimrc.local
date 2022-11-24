@@ -115,6 +115,10 @@ let g:airline_theme="papercolor"
 " Show vim-obsession session tracking status in airline (when tracking display [TRK SESS] in lower right)
 " In order to restore, use either vim -S or :source
 let g:airline_section_z = airline#section#create(['%{ObsessionStatus(''[TRK SESS]'', '''')}', 'windowswap', '%3p%% ', 'linenr', ':%3v '])
+" Needed so that we can see the current function (from the vista plugin) in airline on the bottom-right of the screen
+augroup myairline
+  autocmd VimEnter * call timer_start(2000, { tid -> execute('if exists(":Vista") | call vista#RunForNearestMethodOrFunction() | endif')})
+augroup END
 
 " Gitgutter settings
 " Set SignColumn highight group to same as LineNr so that it doesn't turn grey
