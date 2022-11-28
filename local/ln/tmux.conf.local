@@ -76,7 +76,7 @@ bind C-w command-prompt -p "Window:" "run-shell -b \"${HOME}/desktop_bin/create-
 bind C-e command-prompt -p "AWS Host Type:" "run-shell -b \"${HOME}/desktop_bin/tmux-ec2-window-create #{session_name} %% >/dev/null\""
 
 # Create a tmux window based on machine a name with automation scripts
-bind E command-prompt -p "AWS Host Name:" "run-shell -b \"${HOME}/desktop_bin/tmux-ec2-window-create "" %% >/dev/null\""
+bind E command-prompt -p "AWS Host Name:" "run-shell -b \"${HOME}/desktop_bin/tmux-ec2-window-create '' %% >/dev/null\""
 
 # Root bindings
 # Zoom window when insert key is pressed (bind to root table so that you don't have to press the tmux modifier)
