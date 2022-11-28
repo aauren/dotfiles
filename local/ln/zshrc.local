@@ -343,10 +343,20 @@ if type tldr > /dev/null; then
 	tldr --zsh-completion | sed 's/\[\[//' > "${fpath[1]}/_tldr"
 fi
 
-# Regenerate .zcompdump so that it contains the latest
-autoload -U compinit
+if type kind >/dev/null; then
+	kind completion zsh > "${fpath[1]}/_kind"
+fi
 
-# -u here tells compinit to not warn on directories not owned by current user
+# Mark bashcompinit and compinit as functions and override any similarly named commands that exist in PATH
+autoload bashcompinit
+autoload -Uz compinit
+
+# All modifications to FPATH need to be done BEFORE the following two commands. Specifically compinit seems to walk all
+# directories in FPATH and create the completion for them.
+
+# Provides compatibility with the bash compinit functions (like compgen & complete)
+bashcompinit
+# Provides zsh completion functions (-u here tells compinit to not warn on directories not owned by current user)
 compinit -u
 
 # Things that load their completion using source (which is discouraged) need to be loaded AFTER compinit or we get # errors
@@ -358,13 +368,6 @@ fi
 if type aws_completer > /dev/null; then
 	complete -C "$(type aws_completer | awk '{print $3}')" aws
 fi
-
-if type kind >/dev/null; then
-	kind completion zsh > "${fpath[1]}/_kind"
-fi
-
-# One final load to load in things like kind completion above
-autoload -U compinit && compinit -u
 
 # This seems to need to be run last
 # Adds in compdef entrypoints for custom k8s k* functions as defined in .functions.local
