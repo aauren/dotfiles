@@ -281,6 +281,27 @@ go-reverse-dep-search() {
 	done
 }
 
+# Create a correctly formulate lab mr create for pushURL based repos
+labmr() {
+	if ! git config --get --null --local remote.upstream.url &>/dev/null; then
+		echo 'an "upstream" remote must exist in order to correctly identify the target MR project'
+		return 1
+	fi
+
+	# ensure that upstream is current
+	git fetch upstream
+
+	# determine source and destinations
+	local source_branch
+	local dest_branch
+	source_branch="$(git symbolic-ref --short HEAD)"
+	dest_branch="$(git rev-parse --abbrev-ref --symbolic-full-name '@{u}')"
+
+	# print what we're doing to give the user some insight
+	printf "Merging origin:%s to upstream:%s\n\n" "${source_branch}" "${dest_branch}"
+	lab mr create upstream "${dest_branch}" --source "origin:${source_branch}"
+}
+
 # Elastic Search Functions {{{
 # Finds the field data usage for a given environment
 elastic_fielddata() {
