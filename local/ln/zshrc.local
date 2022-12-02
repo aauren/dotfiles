@@ -365,6 +365,10 @@ if type helm > /dev/null; then
 	source <(helm completion zsh 2>/dev/null)
 fi
 
+if type lab >/dev/null; then
+	source <(lab completion zsh)
+fi
+
 if type aws_completer > /dev/null; then
 	complete -C "$(type aws_completer | awk '{print $3}')" aws
 fi
