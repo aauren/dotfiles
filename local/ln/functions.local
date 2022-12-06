@@ -302,6 +302,53 @@ labmr() {
 	lab mr create upstream "${dest_branch}" --source "origin:${source_branch}"
 }
 
+# Easily change AWS profiles
+awsp() {
+	# All transient variables described here
+	local profile aws_output
+	# parse parameter inputs
+	profile="${1:-}"
+
+	# Extra validation of parameters
+	if [[ -z "${profile}" ]]; then
+		profile=$(aws configure list-profiles | grep -Ev '^default$' | peco)
+	fi
+
+	# Find a host to do some work
+	export AWS_DEFAULT_PROFILE="${profile}"
+	export AWS_PROFILE="${profile}"
+
+	if ! aws_output=$(aws sts get-caller-identity 2>&1); then
+		if ! grep -q ExpiredToken <<<"${aws_output}"; then
+			printf -- "Ran into the following error while checking authentication: %s\n" "${aws_output}"
+			return 1
+		fi
+		if ! type z_aws_auth >/dev/null; then
+			printf "AWS authentication has expired, please re-auth\n"
+			return 0
+		fi
+		printf "Detected that AWS authentication has expired, prompting for re-authentication...\n"
+		z_aws_auth
+	fi
+}
+
+# Easily change AWS regions
+awsr() {
+	# All transient variables described here
+	local region aws_output
+	# parse parameter inputs
+	region="${1:-}"
+
+	# Extra validation of parameters
+	if [[ -z "${profile}" ]]; then
+		region=$(aws ec2 describe-regions --region us-west-2 | jq -r '.Regions[].RegionName' | peco)
+	fi
+
+	# Find a host to do some work
+	printf "Setting region to: %s\n" "${region}"
+	aws configure set region "${region}"
+}
+
 # Elastic Search Functions {{{
 # Finds the field data usage for a given environment
 elastic_fielddata() {
