@@ -97,25 +97,46 @@ function TRAPINT() {
 }
 
 # You can see what colors are available via: ~/scratch/colortest
-dir_info_prompt () {
+dir_info_prompt() {
 	print -P '${SSH_CONNECTION+"%{$fg_bold[green]%}%n@%M:"}%{$fg_bold[blue]%}%~%{$reset_color%}'
 }
-rel_info_prompt () {
+rel_info_prompt() {
 	if [[ -e /etc/gaikai-release && ( -n "${SSH_CLIENT}" || -n "${SSH_TTY}" ) ]]; then
 		print -P ' (%{$fg_bold[magenta]%}$(cat /etc/gaikai-release)%{$reset_color%})'
 	fi
 }
-time_info_prompt () {
+time_info_prompt() {
 	print -P ' (%F{33}$(TZ="America/Chicago" date "+%D %T")%{$reset_color%})'
 }
-kubectl_info_prompt () {
+kubectl_info_prompt() {
 	if command -v kubectl &> /dev/null; then
 		if [[ $(kubectl config get-contexts 2>/dev/null | wc -l) -gt 2 ]]; then
 			print -P ' (%B%F{22}$(kubectl config current-context)%{$reset_color%})'
 		fi
 	fi
 }
-export PROMPT='$(dir_info_prompt)$(kubectl_info_prompt)$(rel_info_prompt)$(time_info_prompt) $(git_super_status)
+aws_info_prompt() {
+	local tmp_aws_p tmp_aws_r
+	if [[ -z "${AWS_DEFAULT_PROFILE}" && -z "${AWS_PROFILE}" ]]; then
+		return 0
+	fi
+	tmp_aws_p="${AWS_PROFILE:-${AWS_DEFAULT_PROFILE}}"
+	if [[ -e "${HOME}/.aws/config" ]]; then
+		tmp_aws_r="$(awk -v tmp_aws_p="profile ${tmp_aws_p}" \
+			'$0 ~ tmp_aws_p {do {if (getline == 0) exit 1; if ($0 ~ /^\[/) exit 1} while($1 != "region"); print $3; exit 0}' \
+			~/.aws/config)"
+	fi
+	if [[ "${tmp_aws_p}" == *-zz-* ]]; then
+		tmp_aws_p="$(cut -d'-' -f 4,5,7- <<<"${tmp_aws_p}")"
+	fi
+	printf ' (%s%s%s' "$(tput setaf 124)" "${tmp_aws_p}" "%{$reset_color%}"
+	if [[ -n "${tmp_aws_r}" ]]; then
+		printf ' - %s%s%s)' "$(tput setaf 027)" "${tmp_aws_r}" "%{$reset_color%}"
+	else
+		printf ')'
+	fi
+}
+export PROMPT='$(dir_info_prompt)$(kubectl_info_prompt)$(aws_info_prompt)$(rel_info_prompt)$(time_info_prompt) $(git_super_status)
 [$[HISTCMD]]%(?.%{$fg[green]%}[0].%{$fg[red]%}[%?])%{$reset_color%}${vi_mode}%# '
 # }}}
 
