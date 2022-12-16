@@ -94,6 +94,10 @@ main ()
 		if [[ -e "${HOME}/.ssh/no_setup_hosts" ]] && grep -q -f "${HOME}/.ssh/no_setup_hosts" <<<"${unaliased_ssh_host}"; then
 			echo "Detected No Remote Env Setup Host (~/.ssh/no_setup_hosts)..."
 			nosetup=true
+			if [[ -n "${zsh}" ]]; then
+				echo "Was originally told to exec zsh after start, but skipping that because this is a no_setup_host";
+				unset zsh
+			fi
 		fi
 
 		if [[ -z ${nosetup} && ("${HOST}" != *@* || ${HOST%@*} != "root") ]]; then
