@@ -117,7 +117,7 @@ let g:airline_theme="papercolor"
 let g:airline_section_z = airline#section#create(['%{ObsessionStatus(''[TRK SESS]'', '''')}', 'windowswap', '%3p%% ', 'linenr', ':%3v '])
 " Needed so that we can see the current function (from the vista plugin) in airline on the bottom-right of the screen
 augroup myairline
-  autocmd VimEnter * call timer_start(2000, { tid -> execute('if exists(":Vista") | call vista#RunForNearestMethodOrFunction() | endif')})
+  autocmd VimEnter * call timer_start(2000, { tid -> execute('if exists(":Vista") && get(g:, "coc_start_at_startup", 1) | call vista#RunForNearestMethodOrFunction() | endif')})
 augroup END
 
 " Gitgutter settings
