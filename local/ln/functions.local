@@ -341,7 +341,7 @@ awsr() {
 
 	# Extra validation of parameters
 	if [[ -z "${profile}" ]]; then
-		region=$(aws ec2 describe-regions --region us-west-2 | jq -r '.Regions[].RegionName' | peco)
+		region=$(aws ec2 describe-regions --region us-west-2 --output json | jq -r '.Regions[].RegionName' | peco)
 	fi
 
 	# Find a host to do some work
