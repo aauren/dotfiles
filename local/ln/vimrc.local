@@ -193,6 +193,8 @@ highlight WhiteSpaceBol guifg=darkgrey ctermfg=darkgrey
 " These two numbers are the same term color that my solarized terminal uses and can be used to effectively hide
 " characters by setting the foreground and background to the same as my terminal
 highlight WhiteSpaceMol ctermfg=8 ctermbg=8
+" Setup tab indents to be a milder form of grey
+highlight SpecialKey ctermfg=14 ctermbg=8
 
 " Used in the ToggleLeadingSpace function below, used to indicate that when we open files we don't want them to show
 " leading spaces initially
