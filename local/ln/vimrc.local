@@ -195,6 +195,9 @@ highlight WhiteSpaceBol guifg=darkgrey ctermfg=darkgrey
 highlight WhiteSpaceMol ctermfg=8 ctermbg=8
 " Setup tab indents to be a milder form of grey
 highlight SpecialKey ctermfg=14 ctermbg=8
+" Set the highlighting for CoC's popup windows
+highlight CocFloating ctermfg=32 cterm=bold
+highlight CocErrorFloat ctermfg=red cterm=bold
 
 " Used in the ToggleLeadingSpace function below, used to indicate that when we open files we don't want them to show
 " leading spaces initially
