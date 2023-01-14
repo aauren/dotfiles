@@ -382,6 +382,10 @@ compinit -u
 
 # Things that load their completion using source (which is discouraged) need to be loaded AFTER compinit or we get # errors
 # Load helm completions
+if type kubectl > /dev/null; then
+	source <(kubectl completion zsh)
+fi
+
 if type helm > /dev/null; then
 	source <(helm completion zsh 2>/dev/null)
 fi
