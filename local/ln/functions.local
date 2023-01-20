@@ -329,6 +329,7 @@ awsp() {
 		fi
 		printf "Detected that AWS authentication has expired, prompting for re-authentication...\n"
 		z_aws_auth
+		awsp
 	fi
 }
 
