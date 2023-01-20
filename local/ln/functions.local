@@ -194,7 +194,7 @@ ctx() {
 		ait*)
 			source "${HOME}/desktop_bin/disable-proxy"
 			return 0;;
-		uat*)
+		uat1)
 			source "${HOME}/desktop_bin/disable-proxy"
 			return 0;;
 		*)
