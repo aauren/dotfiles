@@ -25,6 +25,13 @@ git_make_commit_message () {
 			return 0
 		fi
 		return 0
+	elif [[ "${repo_name}" == "argocd-monorepo" ]]; then
+		message="$(git diff --name-only --cached <<<"${changed_files}" | sed -r 's;^([^/]+)/[^/]+/([^/]+).*;\1/\2;' | sort -u)"
+		if [[ $(wc -l <<<"${message}") -eq 1 ]]; then
+			printf "%s" "${message}"
+			return 0
+		fi
+		return 0
 	fi
 	# If you don't match anything else, do this
 	grep -o '[^/]*$' <<<"${changed_files}"| sed ':a;N;$!ba;s/\n/ \& /g'
