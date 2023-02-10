@@ -896,6 +896,9 @@ __k_comp_entrypoint() {
 			dp)
 				command_type="deployment"
 				;;
+			ds)
+				command_type="daemonset"
+				;;
 			rs)
 				command_type="replicaset"
 				;;
