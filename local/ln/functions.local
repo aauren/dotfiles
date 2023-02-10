@@ -733,6 +733,9 @@ kdmwh() { k8sctl describe mutatingwebhookconfigurations "${@}"; }
 # admissioncontroller validatingwebhook
 kgvwh() { k8sctl get validatingwebhookconfigurations "${@}"; }
 kdvwh() { k8sctl describe validatingwebhookconfigurations "${@}"; }
+# Argo application
+kga() { k8sctl get application "${@}"; }
+kda() { k8sctl describe application "${@}"; }
 
 ### Don't forget to add your function ^^ to the array and case for completions in section below
 
@@ -740,7 +743,7 @@ K8S_FUNCS=(kpp kgp kgdp kddp kgds kdds kgrs kdrs kgss kdss)
 K8S_FUNCS+=(kgpr kdpr kgs kds kgsm kdsm kgcr kdcr kgcrb kdcrb kgsa kdsa kgl)
 K8S_FUNCS+=(kgcm kdcm kge kde kgns kdns kgn kdn kgr kdr kgrb kdrb kgse kdse kgj kdj kgjd kgrq)
 K8S_FUNCS+=(kdrq kgpdb kdpdb kgnp kdnp kgpsp kdpsp kgcj kdcj kgi kdi kgsc kdsc kgpv kdpv kgpvc kdpvc kgpru kdpru kgce)
-K8S_FUNCS+=(kdce kgcer kdcer kgcei kdcei kgceci kdceci kgmwh kdmwh kgvwh kdvwh)
+K8S_FUNCS+=(kdce kgcer kdcer kgcei kdcei kgceci kdceci kgmwh kdmwh kgvwh kdvwh kga kda)
 
 # }}}
 
@@ -988,6 +991,9 @@ __k_comp_entrypoint() {
 				;;
 			vwh)
 				command_type="validatingwebhookconfigurations"
+				;;
+			a)
+				command_type="application"
 				;;
 			*)
 				return 0
