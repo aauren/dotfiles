@@ -299,14 +299,18 @@ labmr() {
 	git fetch upstream
 
 	# determine source and destinations
-	local source_branch
-	local dest_branch
+	local source_branch dest_branch title tmp_file
 	source_branch="$(git symbolic-ref --short HEAD)"
 	dest_branch="$(git rev-parse --abbrev-ref --symbolic-full-name '@{u}')"
+	# Replace hyphens and underscores with spaces, then uppercase first letter of each word, then uppercase UAT / AIT
+	#tmp_file="$(mktemp /tmp/mr_template_XXXXXXXXXX)"
+	#sed 's/[_-]/ /g' <<<"${source_branch}" | sed -e 's/\b\(.\)/\u\1/g' | sed -r 's/(uat|ait)/\U\1/gi' > "${tmp_file}"
+	#echo | echo >> "${tmp_file}"
 
 	# print what we're doing to give the user some insight
 	printf "Merging origin:%s to upstream:%s\n\n" "${source_branch}" "${dest_branch}"
-	lab mr create upstream "${dest_branch}" --source "origin:${source_branch}"
+	lab mr create upstream "${dest_branch}" --source "origin:${source_branch}" # -f "${tmp_file}"
+	#rm -f "${tmp_file}"
 }
 
 # Easily change AWS profiles
