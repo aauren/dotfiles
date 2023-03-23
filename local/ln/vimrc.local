@@ -298,7 +298,7 @@ let g:ale_linters = {'go': ['golangci-lint','gopls','govet','golint']}
 
 " Python options see: https://github.com/dense-analysis/ale/blob/master/doc/ale-python.txt for more options
 " Set flake8 to set line length to 120 characters
-let g:ale_python_flake8_options = '--max-line-length 120'
+let g:ale_python_flake8_options = '--max-line-length 120 --extend-ignore E722'
 
 let g:ale_go_golangci_lint_options = ''
 
