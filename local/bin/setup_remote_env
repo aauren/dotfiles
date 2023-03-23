@@ -5,7 +5,7 @@ trap return_output INT
 
 #### Constants ####
 SSH_OPTS="-AT -o BatchMode=yes -o ConnectTimeout=5"
-RSYNC_OPTS="-rptX --size-only --ignore-times --no-links"
+RSYNC_OPTS="-rptX --old-args --size-only --ignore-times --no-links"
 EXCLUDE_GIT_DIR="--cvs-exclude"
 # The jedi-vim plugin is huge and is mostly unnecessary on remote systems
 EXCLUDE_JEDI_VIM="--exclude jedi-vim --exclude coc* --exclude terraform-ls --exclude ale"
