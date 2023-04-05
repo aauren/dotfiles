@@ -110,7 +110,7 @@ time_info_prompt() {
 }
 kubectl_info_prompt() {
 	if command -v kubectl &> /dev/null; then
-		if [[ $(kubectl config get-contexts 2>/dev/null | wc -l) -gt 2 ]]; then
+		if [[ $(kubectl config get-contexts 2>/dev/null | wc -l) -gt 1 ]]; then
 			print -P ' (%B%F{22}$(kubectl config current-context)%{$reset_color%})'
 		fi
 	fi
