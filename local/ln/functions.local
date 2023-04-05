@@ -204,6 +204,12 @@ ctx() {
 		uat1)
 			source "${HOME}/desktop_bin/disable-proxy"
 			return 0;;
+		kind-*)
+			source "${HOME}/desktop_bin/disable-proxy"
+			return 0;;
+		kube-node-mgmt-*)
+			source "${HOME}/desktop_bin/disable-proxy"
+			return 0;;
 		*)
 			source "${HOME}/desktop_bin/enable-proxy-tiny";;
 	esac
