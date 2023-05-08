@@ -34,7 +34,7 @@ augroup END
 " with it a bunch of limitations.
 "set previewpopup=height:40,width:100
 
-" Change color scheme to dark solarized if bundles is available {{{
+" Change Color Scheme (if bundles is available) {{{
 if filereadable(expand("~/.vimrc.bundles"))
   " On remote systems that run tmux not setting the background seems to cause issues with the margins
   " appearing to be a yellow/white color, but on non-remote systems running tmux setting a background
@@ -44,7 +44,23 @@ if filereadable(expand("~/.vimrc.bundles"))
   endif
   " Tells solarized to use the default terminal background instead of it's own (speeds up terminal behavior)
   let g:solarized_termtrans=1
-  colorscheme solarized
+  "Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
+  "If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
+  "(see < http://sunaku.github.io/tmux-24bit-color.html#usage > for more information.)
+  if (empty($TMUX))
+    if (has("nvim"))
+      "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
+      let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+    endif
+    "For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
+    "Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
+    " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
+    if (has("termguicolors")) && empty($SSH_TTY)
+      set termguicolors
+    endif
+  endif
+  let base16colorspace=256
+  colorscheme base16-gruvbox-dark-hard
   "highlight NonText guibg=#060606
   "highlight Folded  guibg=#0A0A0A guifg=#9090D0
 endif
@@ -110,8 +126,8 @@ let g:airline_powerline_fonts = 1
 let g:airline#extensions#hunks#enabled=1
 " Show branches in Airline
 let g:airline#extensions#branch#enabled=1
-" Airline theme that matches well with solarized theme
-let g:airline_theme="papercolor"
+" Airline theme that matches well with solarized theme (this now happens automatically because of base16)
+"let g:airline_theme="gruvbox"
 " Show vim-obsession session tracking status in airline (when tracking display [TRK SESS] in lower right)
 " In order to restore, use either vim -S or :source
 let g:airline_section_z = airline#section#create(['%{ObsessionStatus(''[TRK SESS]'', '''')}', 'windowswap', '%3p%% ', 'linenr', ':%3v '])

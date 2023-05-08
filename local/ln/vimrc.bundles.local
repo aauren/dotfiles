@@ -1,6 +1,9 @@
 " Vim solarized color scheme
 Plug 'altercation/vim-colors-solarized'
 
+" VIM gruvbox color scheme
+Plug 'chriskempson/base16-vim'
+
 " Refuses to execute malicious code that may be included in modelines
 Plug 'ciaranm/securemodelines'
 
