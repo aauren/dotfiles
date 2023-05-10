@@ -186,6 +186,7 @@ highlight CocErrorFloat ctermfg=red cterm=bold
 " Used in the ToggleLeadingSpace function below, used to indicate that when we open files we don't want them to show
 " leading spaces initially
 let g:show_leading_space = 0
+let g:show_sign_column = 0
 
 augroup whitespace
   " Upon buffer read or new buffer setup our listchars settings
@@ -389,6 +390,13 @@ function! ToggleCopyable()
   endif
   if exists(":GitGutterToggle")
     exe "GitGutterToggle"
+  endif
+  if g:show_sign_column == 0
+    set signcolumn=no
+    let g:show_sign_column = 1
+  else
+    set signcolumn=yes
+    let g:show_sign_column = 0
   endif
   " We need to re-link the GitGutter SignColumn to LineNr so it doesn't turn grey
   highlight! link SignColumn LineNr
