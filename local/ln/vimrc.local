@@ -258,6 +258,9 @@ augroup mygroup
   autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
   " Update signature help on jump placeholder.
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+  " On high-contrast themes CoC doesn't always find the correct selection scheme that is visible
+  " https://github.com/neoclide/coc.nvim/discussions/3999#discussioncomment-3725039
+  autocmd ColorScheme * hi! link CocMenuSel PmenuSel
 augroup end
 
 " }}}
