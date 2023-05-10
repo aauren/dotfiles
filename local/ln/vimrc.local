@@ -742,6 +742,16 @@ function! CocCRExpand() abort
   endif
 endfunction
 
+" Setup a scratch buffer for temporary editting
+function! Scratch()
+  noswapfile hide enew
+  setlocal buftype=nofile
+  setlocal bufhidden=hide
+  "setlocal nobuflisted
+  "lcd ~
+  file scratch
+endfunction
+
 
 " !help! ]]]
 " }}}
@@ -765,6 +775,8 @@ command! -complete=shellcmd -nargs=+ Shell call s:RunShellCommand(<q-args>)
 command! -nargs=* Z :call Z(<f-args>)
 " !help! V: edit file based on frequent list
 command! -nargs=* V :call V(<f-args>)
+" !help! Scratch: setup a scratch buffer for misc editting
+command! Scratch :call Scratch()
 " !help! ]]]
 
 " }}}
