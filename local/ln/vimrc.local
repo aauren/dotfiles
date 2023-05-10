@@ -34,38 +34,6 @@ augroup END
 " with it a bunch of limitations.
 "set previewpopup=height:40,width:100
 
-" Change Color Scheme (if bundles is available) {{{
-if filereadable(expand("~/.vimrc.bundles"))
-  " On remote systems that run tmux not setting the background seems to cause issues with the margins
-  " appearing to be a yellow/white color, but on non-remote systems running tmux setting a background
-  " just causes poor performance. With this hopefully we only set it when necessary.
-  if $TERM == "screen-256color" && !empty($SSH_TTY)
-    set background=dark
-  endif
-  " Tells solarized to use the default terminal background instead of it's own (speeds up terminal behavior)
-  let g:solarized_termtrans=1
-  "Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
-  "If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
-  "(see < http://sunaku.github.io/tmux-24bit-color.html#usage > for more information.)
-  if (empty($TMUX))
-    if (has("nvim"))
-      "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
-      let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-    endif
-    "For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
-    "Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
-    " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
-    if (has("termguicolors")) && empty($SSH_TTY)
-      set termguicolors
-    endif
-  endif
-  let base16colorspace=256
-  colorscheme base16-gruvbox-dark-hard
-  "highlight NonText guibg=#060606
-  "highlight Folded  guibg=#0A0A0A guifg=#9090D0
-endif
-" }}}
-
 " Various mappings for CTRL+P {{{
 
 " Search git directories faster by using silver searcher or ripgrep or ignoring git directories
@@ -1070,6 +1038,38 @@ let g:qfenter_hopen_map = ['<C-CR>', '<C-s>', '<C-x>']
 let g:qfenter_topen_map = ['<C-t>']
 " !help! ]]]
 
+" }}}
+
+" Change Color Scheme (if bundles is available) {{{
+if filereadable(expand("~/.vimrc.bundles"))
+  " On remote systems that run tmux not setting the background seems to cause issues with the margins
+  " appearing to be a yellow/white color, but on non-remote systems running tmux setting a background
+  " just causes poor performance. With this hopefully we only set it when necessary.
+  "if $TERM == "screen-256color" && !empty($SSH_TTY)
+    set background=dark
+  "endif
+  " Tells solarized to use the default terminal background instead of it's own (speeds up terminal behavior)
+  let g:solarized_termtrans=1
+  "Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
+  "If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
+  "(see < http://sunaku.github.io/tmux-24bit-color.html#usage > for more information.)
+  if (empty($TMUX))
+    if (has("nvim"))
+      "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
+      let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+    endif
+    "For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
+    "Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
+    " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
+    if (has("termguicolors")) && empty($SSH_TTY)
+      set termguicolors
+    endif
+  endif
+  let base16colorspace=256
+  colorscheme base16-gruvbox-dark-hard
+  "highlight NonText guibg=#060606
+  "highlight Folded  guibg=#0A0A0A guifg=#9090D0
+endif
 " }}}
 
 " vim: fdm=marker ts=2 et
