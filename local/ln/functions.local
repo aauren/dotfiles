@@ -207,6 +207,9 @@ ctx() {
 		kind-*)
 			source "${HOME}/desktop_bin/disable-proxy"
 			return 0;;
+		dev-*)
+			source "${HOME}/desktop_bin/disable-proxy"
+			return 0;;
 		kube-node-mgmt-*)
 			source "${HOME}/desktop_bin/disable-proxy"
 			return 0;;
