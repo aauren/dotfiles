@@ -70,7 +70,7 @@ glbrs() {
 	default="refs/heads"
 	user="$(git config user.email | cut -d'@' -f1 | tr -d "'")"
 	git_dir="$(git rev-parse --git-dir)"
-	if [[ -d "${git_dir}/refs/remots/${user}" ]]; then
+	if [[ -d "${git_dir}/refs/remotes/${user}" ]]; then
 		git_branch_info "refs/remotes/${user}" "${@}"
 	elif [[ -d "${git_dir}/${default}" ]]; then
 		git_branch_info "${default}" "${@}"

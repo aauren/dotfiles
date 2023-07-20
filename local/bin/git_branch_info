@@ -29,13 +29,12 @@ format_git_branches () {
 		# $ref $authordate and $authorname is actually set but the eval entry above, format of "git for-each-ref" is as follows:
 		# ref="master"; authordate="25 hours ago"; commiterdate="Tue Feb 19 12:04:02 2019 -0600"; authorname="<auther_name>"; sha1="e132403f6cd07d2e12874a4c6f0b31a4d8d3637d";
 		# shellcheck disable=SC2154
-		files_changed="$(git log "${ref}" --not --remotes=*/master --stat --pretty="format:" | grep '|')"
 		branches+=("${ref}")
 		if grep -q "/" <<<"${ref}"; then
 			ref="$("${SED_EXE}" -r 's;[a-zA-Z]+/(.*)$;\1;'<<<"${ref}")"
 		fi
 		# We'll use a hybrid of the above command and the output of git branch --no-merge to check for changes
-		if [[ "${files_changed}" ]] || echo "${not_merged}" | grep -q -e "^[ ]*${ref}[ ]*$"; then
+		if grep -q -e "^[ ]*${ref}[ ]*$" <<<"${not_merged}" ; then
 			nomerge="(*)"
 		fi
 		if [[ "${2}" && "${2}" == "-s" ]]; then
@@ -53,7 +52,8 @@ format_git_branches () {
 			printf "${RED}%-25s${RESET}" "${authorname}"
 			printf "${BOLD_WHITE}%s${RESET}${BOLD_RED}%s${RESET}\\n" "${ref}" "${nomerge}"
 		fi
-		if [[ "${2}" && "${2}" == "-v" && "${files_changed}" ]]; then
+		if [[ "${2}" && "${2}" == "-v" ]]; then
+			files_changed="$(git log "${ref}" --not --remotes=*/master --stat --pretty="format:" | grep '|')"
 			mystr="${mystr}$(printf "%s%s%s:\\n " "${RED}" "${ref}" "${RESET}")"
 			while read -r file_lines; do
 				file_part1="${file_lines%|*}"
