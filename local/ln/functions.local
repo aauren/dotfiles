@@ -158,16 +158,25 @@ prompt_yes_no() {
 prompt_for_selection() {
 	local it uinput option param count bg_color
 	local -a results
+	local ignore_header="${2}"
 	load_colors
 
-	count=1
+	count=0
 	while read -r it; do
 		bg_color=""
 		if [[ $(( count % 2 )) -eq 1 ]]; then
 			bg_color="${BG_BLACK}"
 		fi
-		printf "%s[%s%3i%s%s] - %s%s%s\\n" "${bg_color}" "${BOLD_RED}" "$((count++))" "${RESET}" "${bg_color}" "${BLUE}" "${it}" "${RESET}" 1>&2
-		results+=( "${it}" )
+		if [[ -n "${ignore_header}" && "${count}" -eq 0 ]]; then
+			printf "%8s%s%s%s\\n" "" "${BLUE}" "${it}" "${RESET}" 1>&2
+			let count+=1
+		else
+			printf "%s[%s%3i%s%s] - %s%s%s\\n" "${bg_color}" "${BOLD_RED}" "$((count++))" "${RESET}" "${bg_color}" \
+				"${BLUE}" "${it}" "${RESET}" 1>&2
+		fi
+		if [[ -z "${ignore_header}" || "${count}" -gt 1 ]]; then
+			results+=( "${it}" )
+		fi
 	done <<<"${1}"
 	printf "\\n%sChoose option (q to quit): %s" "${BOLD_WHITE}" "${RESET}" 1>&2
 	read -r uinput
@@ -410,7 +419,7 @@ kpp() {
 
 	unset K8S_NS K8S_POD
 	kube_results="$(k8sctl get pods "${@}")"
-	selection="$(prompt_for_selection "${kube_results}")"
+	selection="$(prompt_for_selection "${kube_results}" "true")"
 	namespace="$(k8s_get_ns_option "${@}")"
 	if [[ -z "${namespace}" ]]; then # if -n wasn't specified in our options
 		K8S_NS="$(awk '{print $1}' <<<"${selection}")"
