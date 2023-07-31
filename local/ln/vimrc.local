@@ -478,7 +478,7 @@ function! s:RunShellCommand(cmdline)
       if word[0] =~ '\v[%#<]'
         let word = expand(word)
       endif
-      let word = shellescape(word, 1)
+      let word = word
     endif
     call add(words, word)
   endfor
