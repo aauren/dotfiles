@@ -31,6 +31,9 @@ alias tree="tree -C -I '*pycache*|.git|test|doc'"
 alias v='fasd -sife vim' # Open vim with fasd file alias
 alias jctl='journalctl --since $(date "+%Y-%m-%d" -d "5 days ago")'
 alias hdu='helm dependency update --skip-refresh'
+alias ep="source ${HOME}/desktop_bin/enable-proxy-tiny"
+alias dp="source ${HOME}/desktop_bin/disable-proxy"
+alias ez="exec zsh"
 
 # Get the current ipv4 address
 alias myip="ip addr | grep -E 'inet [^/]+/24'"
