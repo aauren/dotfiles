@@ -227,6 +227,24 @@ ctx() {
 	esac
 }
 
+# Creates a temporary copy of a kubernetes config and updates the context
+pctx() {
+	local ctx_file
+	local tmp_ctx_dir="/dev/shm/auren-kubectx"
+
+	if [[ ! -d "${tmp_ctx_dir}" ]]; then
+		mkdir "${tmp_ctx_dir}"
+		chmod 700 "${tmp_ctx_dir}"
+	fi
+
+	ctx_file="$(mktemp -p "${tmp_ctx_dir}" kubectx-XXXXXXXXX)"
+	chmod 600 "${ctx_file}"
+	cat "${HOME}/.kube/config" >"${ctx_file}"
+
+	export KUBECONFIG="${ctx_file}"
+	ctx
+}
+
 # Parse go mod graph to find a dependencies parent, return full line from the mod graph when found. Multiple parameters
 # can be passed to find the parent of multiple dependencies.
 go-find-deps-parent() {
