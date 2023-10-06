@@ -28,7 +28,7 @@ Plug 'terryma/vim-expand-region'
 " Buffer exploration utility (puts buffer names at the top) disabled in favor of airline
 "Plug 'weynhamz/vim-plugin-minibufexpl'
 " Shows +/- along the left side of VIM screen
-Plug 'airblade/vim-gitgutter'
+Plug 'airblade/vim-gitgutter', {'branch': 'main'}
 
 " Allows for syntax completion and debugging of VIM scripts (I don't do much vim scripting)
 "Plug 'c9s/vim-dev-plugin'
