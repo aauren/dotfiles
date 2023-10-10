@@ -26,7 +26,12 @@ git_make_commit_message () {
 		fi
 		return 0
 	elif [[ "${repo_name}" == "argocd-monorepo" ]]; then
-		message="$(git diff --name-only --cached <<<"${changed_files}" | sed -r 's;^([^/]+)/[^/]+/([^/]+).*;\1/\2;' | sort -u)"
+		is_charts="$(sed -r 's;^[^/]+/([^/]+)/.*;\1;'<<<"${changed_files}" | sort -u)"
+		if [[ "${is_charts}" == "charts" ]]; then
+			message="$(sed -r 's;^[^/]+/[^/]+/([^/]+)/([^/]+)/([^/]+)/([^/]+).*;\1/\2/\3/\4;' <<<"${changed_files}" | sort -u)"
+		else
+			message="$(sed -r 's;^([^/]+)/[^/]+/([^/]+).*;\1/\2;' <<<"${changed_files}" | sort -u)"
+		fi
 		if [[ $(wc -l <<<"${message}") -eq 1 ]]; then
 			printf "%s" "${message}"
 			return 0
