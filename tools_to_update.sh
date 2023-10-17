@@ -200,7 +200,7 @@ aws_cli() {
 	pushd "${aws_cli}" &>/dev/null || return
 	curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 	unzip awscliv2.zip
-	./aws/install -i "${HOME}/.aws-cli" -b "${DESKTOPBIN}"
+	./aws/install -i "${HOME}/.aws-cli" -b "${DESKTOPBIN}" --update
 	popd &>/dev/null || return
 	rm -rf "${aws_cli}"
 }
