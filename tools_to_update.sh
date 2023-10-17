@@ -266,7 +266,7 @@ prompt_for_release() {
 all() {
 	echo "+++++++ Before continuing make sure to install the following: +++++++"
 	printf "+++++++ apt-get install -y libonig-dev golang-go musl-dev musl-tools attr upx libacl1-dev libattr1-dev"
-	printf "libcap-dev skopeo dconf-editor yamllint +++++++\n"
+	printf "libcap-dev skopeo dconf-editor yamllint liburing-dev +++++++\n"
 	printf "You must also install Docker, follow the instructions here: https://docs.docker.com/engine/install/ubuntu/\n"
 	read -r
 	zsh-git-prompt
