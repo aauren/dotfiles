@@ -1,0 +1,24 @@
+#compdef tbd
+
+_arguments '1:git file:->git_files'
+case "${state}" in
+	git_files)
+		local -a git_files
+		local search_dir
+		if [[ -z "${line[1]}" || "${line[1]}" != */* ]]; then
+			_files && ret=0
+		elif [[ "${line[1]}" == */ ]]; then
+			search_dir="${line[1]}"
+		else
+			search_dir="$(dirname "./${line[1]}")"
+		fi
+		while IFS= read -r file; do
+			git_files+=( "${file}" )
+		done < <(git log --pretty=format: --name-only --diff-filter=A "${search_dir}" 2>/dev/null | sort -u | grep "${line[1]}")
+		_describe 'command' git_files && ret=0
+	;;
+esac
+
+return 1
+
+# vim: noet:ts=4:sw=4

@@ -50,6 +50,11 @@ gitcm () {
 	((sleep 0.1 && tmux send-keys -t "$(tmux_info session_name):$(tmux_info window_name).$(tmux_info pane_index)" "$(echo "git cm \"$(git_make_commit_message): ")") &)
 }
 
+tbd() {
+	local file_path="${1}"
+	tig blame $(git log -2 --oneline -- "${1}" | awk 'END{print $1}') "${1}"
+}
+
 # Change to a different git worktree
 gwtc() {
 	cd "$(git worktree list | peco | awk '{print $1}')"
