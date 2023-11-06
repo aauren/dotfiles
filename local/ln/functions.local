@@ -55,6 +55,11 @@ tbd() {
 	tig blame $(git log -2 --oneline -- "${1}" | awk 'END{print $1}') "${1}"
 }
 
+lgd() {
+	local file_path="${1}"
+	git lg -10 -- "${1}"
+}
+
 # Change to a different git worktree
 gwtc() {
 	cd "$(git worktree list | peco | awk '{print $1}')"
