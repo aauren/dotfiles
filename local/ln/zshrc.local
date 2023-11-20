@@ -290,6 +290,17 @@ if [[ -d "${HOME}/thirdparty-git/nvm" ]]; then
 fi
 # }}}
 
+# pyenv {{{
+# Add and source nvm (node version manager) if it exists
+if [[ -d "${HOME}/thirdparty-git/pyenv" ]]; then
+	PYENV_DIR="${HOME}/thirdparty-git/pyenv"
+	if [[ -e "${PYENV_DIR}/bin/pyenv" ]]; then
+		PATH="${PYENV_DIR}/bin:${PATH}"
+		eval "$(pyenv init -)"
+	fi
+fi
+# }}}
+
 # Rust {{{
 # Add Rust bin directory
 if [[ -d "${HOME}/.cargo/bin" ]]; then
