@@ -110,12 +110,14 @@ time_info_prompt() {
 }
 kubectl_info_prompt() {
 	if command -v kubectl &> /dev/null; then
-		if [[ $(kubectl config get-contexts 2>/dev/null | wc -l) -gt 1 ]]; then
+		local kubectl_contexts
+		kubectl_context="$(kubectl config current-context 2>/dev/null)"
+		if [[ -n "${kubectl_context}" ]]; then
 			kubeconfig_override=""
 			if [[ -n "${KUBECONFIG}" ]]; then
 				kubeconfig_override="$(basename "${KUBECONFIG}") - "
 			fi
-			print -P ' (%B%F{22}${kubeconfig_override}$(kubectl config current-context)%{$reset_color%})'
+			print -P ' (%B%F{22}${kubeconfig_override}${kubectl_context}%{$reset_color%})'
 		fi
 	fi
 }
