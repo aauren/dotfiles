@@ -18,7 +18,7 @@ function build_ncurses() {
 	# Build
 	CC='/usr/bin/x86_64-alpine-linux-musl-gcc -static' CFLAGS='-fPIC' ./configure \
 		--disable-shared \
-		--enable-static
+		--enable-static || return 1
 }
 
 function build_readline() {
@@ -34,8 +34,8 @@ function build_readline() {
 	CC='/usr/bin/x86_64-alpine-linux-musl-gcc -static' \
 		CFLAGS='-fPIC' \
 		./configure --disable-shared --enable-static
-	make -j4
-	make install-static
+	make -j4 || return 1
+	make install-static || return 1
 }
 
 function build_openssl() {
@@ -52,7 +52,7 @@ function build_openssl() {
 		./Configure no-shared linux-x86_64
 
 	# Build
-	make -j4
+	make -j4 || return 1
 	echo "** Finished building OpenSSL"
 }
 
@@ -78,10 +78,10 @@ function build_socat() {
 }
 
 function doit() {
-	build_ncurses
-	build_readline
-	build_openssl
-	build_socat
+	build_ncurses || exit 1
+	build_readline || exit 1
+	build_openssl || exit 1
+	build_socat || exit 1
 
 	# Copy to output
 	if [ -d /output ]
