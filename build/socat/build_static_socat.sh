@@ -90,7 +90,7 @@ function doit() {
 		OUT_DIR=/output
 		mkdir -p $OUT_DIR
 		cp /build/socat-${SOCAT_VERSION}/socat $OUT_DIR/
-		echo "** Finished **"
+		echo "** Finished building socat **"
 	else
 		echo "** /output does not exist **"
 	fi
