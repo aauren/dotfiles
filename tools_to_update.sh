@@ -119,10 +119,14 @@ bfs() {
 	echo "+++++++ Installing / Updating bfs +++++++"
 	local bfs
 	bfs="$(mktemp -d bfs.XXXXXXXXX)"
-	git clone "https://github.com/tavianator/bfs.git" "${bfs}"
+	git clone "https://github.com/tavianator/bfs.git" "${bfs}/bfs_build"
+	cp build/bfs/build_static_bfs.sh "${bfs}"
+	cp build/bfs/Dockerfile "${bfs}"
 	pushd "${bfs}" &>/dev/null || return
-	make
-	cp bin/bfs "${LOCALBIN}/bfs"
+	#make LDFLAGS="-static"
+	docker build -t bfs_builder:latest .
+	docker run -ti --rm -v "$(pwd):/output" bfs_builder:latest
+	cp bfs "${LOCALBIN}/bfs"
 	popd &>/dev/null || return
 	rm -rf "${bfs}"
 }
