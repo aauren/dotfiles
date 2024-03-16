@@ -1,0 +1,13 @@
+--- socat-1.8.0.0/fdname.c	2023-11-13 13:31:08.000000000 -0600
++++ socat-1.8.0.0b/fdname.c	2024-03-16 15:56:05.343066079 -0500
+@@ -288,9 +288,7 @@
+    strncpy(protoname, protoentp->p_name, sizeof(protoname));
+ #elif HAVE_GETPROTOBYNUMBER_R==2 /* Solaris */
+    {
+-#     define FILAN_GETPROTOBYNUMBER_R_BUFLEN 1024
+-      char buffer[FILAN_GETPROTOBYNUMBER_R_BUFLEN];
+-      protoentp = getprotobynumber_r(proto, &protoent, buffer, FILAN_GETPROTOBYNUMBER_R_BUFLEN);
++      protoentp = getprotobynumber(proto);
+       strncpy(protoname, protoentp->p_name, sizeof(protoname));
+    }
+ #elif HAVE_GETPROTOBYNUMBER_R==3 /* AIX, OpenBSD */

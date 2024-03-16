@@ -2,10 +2,10 @@
 
 # Taken from the gist created by feiskyer: https://gist.github.com/feiskyer/1911c365014d9577dd765d5a7eb5aa89
 
-export SOCAT_VERSION=1.7.4.3
-export NCURSES_VERSION=6.3
-export READLINE_VERSION=8.1
-export OPENSSL_VERSION=1.1.1q
+export SOCAT_VERSION=1.8.0.0
+export NCURSES_VERSION=6.4
+export READLINE_VERSION=8.2
+export OPENSSL_VERSION=3.2.1
 
 function build_ncurses() {
 	cd /build
@@ -48,8 +48,7 @@ function build_openssl() {
 
 	# Configure
 	CC='/usr/bin/x86_64-alpine-linux-musl-gcc -static' \
-		CFLAGS='-fPIC' \
-		./Configure no-shared linux-x86_64
+		./Configure no-pic no-shared linux-x86_64
 
 	# Build
 	make -j4 || return 1
@@ -73,6 +72,8 @@ function build_socat() {
 		LDFLAGS="-L/build/readline -L/build/ncurses-${NCURSES_VERSION}/lib -L/build/openssl-${OPENSSL_VERSION}" \
 		sc_cv_getprotobynumber_r=2 \
 		./configure
+	patch -p1 -i ../patches/socat_fix_static.patch
+	patch -p1 -i ../patches/socat_fix_getprotobynumber.patch
 	make -j4
 	strip socat
 }
