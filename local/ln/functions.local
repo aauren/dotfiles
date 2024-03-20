@@ -379,6 +379,7 @@ awsp() {
 	# Find a host to do some work
 	export AWS_DEFAULT_PROFILE="${profile}"
 	export AWS_PROFILE="${profile}"
+	echo "${profile}" >"${HOME}/.aws/current_profile"
 
 	if ! aws_output=$(aws sts get-caller-identity 2>&1); then
 		if ! grep -q ExpiredToken <<<"${aws_output}"; then
