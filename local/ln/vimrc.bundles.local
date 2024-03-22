@@ -103,3 +103,13 @@ Plug 'fannheyward/coc-rust-analyzer', { 'do': 'yarn install --frozen-lockfile &&
 Plug 'neoclide/coc-solargraph', { 'do': 'yarn install --frozen-lockfile && yarn prepare', 'branch': 'master' }
 " Java - You also need a version of JDK 1.17 or above, installed with: apt install -y openjdk-17-jdk
 Plug 'neoclide/coc-java', { 'do': 'yarn install --frozen-lockfile && yarn prepare', 'branch': 'master' }
+
+
+""""""""""""""" Additional Bundle Includes """"""""""""""""""""""
+
+" VIM 9 Script includes
+if v:version >= 900
+  if filereadable(expand("~/.vimrc.vim9.bundle.local"))
+    source ~/.vimrc.vim9.bundle.local
+  endif
+endif

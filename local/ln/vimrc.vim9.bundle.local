@@ -1,0 +1,6 @@
+vim9script
+
+# CTRL-P Replacement based on vim9script it requires vim 9.1
+if v:version >= 901
+  Plug 'girishji/scope.vim'
+endif

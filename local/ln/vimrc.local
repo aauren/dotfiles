@@ -844,10 +844,20 @@ nnoremap <leader>x "_x
 nnoremap <leader>b :ls<CR>:b<Space>
 " !help! gb: Open/close buffer list and prompt for selection
 nnoremap gb :ls<CR>:b<Space>
-" !help! <CTRL-b>: Open ctrlp in tag mode for all files under the current working directory
-nnoremap <C-b> :CtrlPMRU<CR>
-" !help! <ALT-p>: Open ctrlp in using a new root
-nnoremap <Esc>p :CtrlPCurWD<CR>
+" If VIM version is 9.1+ replace CTRL-P with scope.vim
+if v:version >= 901
+  " !help! <CTRL-p>: (vim 9.1+) Open scope.vim in file mode
+  nnoremap <C-p> <scriptcmd>vim9cmd scope#fuzzy#File()<CR>
+  " !help! <CTRL-f>: (vim 9.1+) Open scope.vim in grep mode using ripgrep
+  nnoremap <C-t> <scriptcmd>vim9cmd scope#fuzzy#Grep('rg --vimgrep --no-heading --smart-case')<CR>
+  " !help! <CTRL-b>: (vim 9.1+) Open scope.vim in MRU (most recent used file) mode
+  nnoremap <C-b> <scriptcmd>vim9cmd scope#fuzzy#MRU()<CR>
+else
+  " !help! <CTRL-b>: Open ctrlp in tag mode for all files under the current working directory
+  nnoremap <C-b> :CtrlPMRU<CR>
+  " !help! <ALT-p>: Open ctrlp in using a new root
+  nnoremap <Esc>p :CtrlPCurWD<CR>
+endif
 " !help! <leader-s>: Toggle showing/hiding leading spaces
 nnoremap <leader>s :ToggleLeadingSpaces<CR>
 " We no longer use ctags
@@ -1093,6 +1103,17 @@ if filereadable(expand("~/.vimrc.bundles"))
   "highlight NonText guibg=#060606
   "highlight Folded  guibg=#0A0A0A guifg=#9090D0
 endif
+" }}}
+
+" Additional Includes {{{
+
+" Include for vim9scripts where vim9script has to go at the top of the file
+if v:version >= 900
+  if filereadable(expand("~/.vimrc.vim9.local"))
+    source ~/.vimrc.vim9.local
+  endif
+endif
+
 " }}}
 
 " vim: fdm=marker ts=2 et

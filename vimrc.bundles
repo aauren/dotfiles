@@ -41,7 +41,10 @@ silent! call plug#begin('~/.vim/bundle')
 
 " The Plugins that I chose to keep
 " The standard CTRL-P plugin that everyone needs in order to find stuff
-Plug 'ctrlpvim/ctrlp.vim'
+" In Vim 9.1+ I prefer scope.vim: https://github.com/girishji/scope.vim
+if v:version < 901
+  Plug 'ctrlpvim/ctrlp.vim'
+endif
 " Automagically make a directory when the file referenced in :e is missing parent directories
 Plug 'pbrisbin/vim-mkdir'
 " Wrapper around standard Unix commands

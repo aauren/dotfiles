@@ -1,0 +1,11 @@
+vim9script
+
+# Configure vim.scope Plugin {{{
+
+# vim.scope requires vim 9.1+
+if v:version >= 901
+  import autoload 'scope/fuzzy.vim'
+endif
+
+
+# }}}
