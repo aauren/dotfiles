@@ -969,6 +969,10 @@ nmap <leader>f <Plug>(coc-format)
 " !help! <leader rn>: rename the symbol under the cursor
 nmap <leader>rn <Plug>(coc-rename)
 
+" Pull up symbols goto
+" !help! <leader sy>: use CocList symbols to filter on symbols in the file
+nmap <leader>sy :CocList symbols<CR>
+
 " !help! ]]]
 " }}}
 
