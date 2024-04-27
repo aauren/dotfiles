@@ -5,6 +5,17 @@ vim9script
 # vim.scope requires vim 9.1+
 if v:version >= 901
   import autoload 'scope/fuzzy.vim'
+
+  def FindGit()
+      # Suppress error from 'git' command and always return success so that 'system()' is happy
+      var full_gitdir = system("git rev-parse --show-toplevel 2>/dev/null \|\| true")->trim()
+      var rel_gitdir = system("realpath --relative-to=" .. shellescape(getcwd()) .. " " .. full_gitdir .. " 2>/dev/null \|\| true")->trim()
+      fuzzy.File(fuzzy.FindCmd(rel_gitdir))
+  enddef
+
+  nnoremap <C-p> <scriptcmd>FindGit()<CR>
+  nnoremap <C-t> <scriptcmd>fuzzy.Grep('rg --vimgrep --no-heading --smart-case')<CR>
+  nnoremap <C-b> <scriptcmd>fuzzy.MRU()<CR>
 endif
 
 
