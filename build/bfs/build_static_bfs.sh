@@ -9,7 +9,7 @@ function build_bfs() {
 	./configure
 
 	# Build
-	make LDFLAGS="-static"
+	make -j20 LDFLAGS="-static"
 	strip bin/bfs
 }
 
