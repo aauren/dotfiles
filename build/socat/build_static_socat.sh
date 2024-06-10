@@ -3,9 +3,9 @@
 # Taken from the gist created by feiskyer: https://gist.github.com/feiskyer/1911c365014d9577dd765d5a7eb5aa89
 
 export SOCAT_VERSION=1.8.0.0
-export NCURSES_VERSION=6.4
+export NCURSES_VERSION=6.5
 export READLINE_VERSION=8.2
-export OPENSSL_VERSION=3.2.1
+export OPENSSL_VERSION=3.2.2
 
 function build_ncurses() {
 	cd /build
