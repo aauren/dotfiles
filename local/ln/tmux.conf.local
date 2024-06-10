@@ -184,7 +184,7 @@ bind V select-pane -L \; send-keys 'q' \; select-pane -L \; send-keys 'q' \; sel
 #set -g mouse-select-window on
 
 # For tmux 3.3 it changed the default of allowing passthrough of terminal escape sequences
-set -g allow-passthrough 1
+set -g allow-passthrough all
 
 #### Change Colors of Status Bars ####
 # Status Styling - For color mapping see: https://misc.flogisoft.com/_media/bash/colors_format/256_colors_bg.png
