@@ -6,6 +6,8 @@ function build_bfs() {
 	# Download
 	cd bfs_build
 
+	./configure
+
 	# Build
 	make LDFLAGS="-static"
 	strip bin/bfs
