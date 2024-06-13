@@ -221,25 +221,25 @@ ctx() {
 		return 1
 	fi
 	kubectx "${my_ctx}"
-	case "${my_ctx}" in
-		ait*)
-			source "${HOME}/desktop_bin/disable-proxy"
-			return 0;;
-		uat1)
-			source "${HOME}/desktop_bin/disable-proxy"
-			return 0;;
-		kind-*)
-			source "${HOME}/desktop_bin/disable-proxy"
-			return 0;;
-		dev-*)
-			source "${HOME}/desktop_bin/disable-proxy"
-			return 0;;
-		kube-node-mgmt-*)
-			source "${HOME}/desktop_bin/disable-proxy"
-			return 0;;
-		*)
-			source "${HOME}/desktop_bin/enable-proxy-tiny";;
-	esac
+#	case "${my_ctx}" in
+#		ait*)
+#			source "${HOME}/desktop_bin/disable-proxy"
+#			return 0;;
+#		uat1)
+#			source "${HOME}/desktop_bin/disable-proxy"
+#			return 0;;
+#		kind-*)
+#			source "${HOME}/desktop_bin/disable-proxy"
+#			return 0;;
+#		dev-*)
+#			source "${HOME}/desktop_bin/disable-proxy"
+#			return 0;;
+#		kube-node-mgmt-*)
+#			source "${HOME}/desktop_bin/disable-proxy"
+#			return 0;;
+#		*)
+#			source "${HOME}/desktop_bin/enable-proxy-tiny";;
+#	esac
 }
 
 # Creates a temporary copy of a kubernetes config and updates the context
