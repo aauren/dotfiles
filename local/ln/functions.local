@@ -260,6 +260,19 @@ pctx() {
 	ctx
 }
 
+# Creates a set of contexts for rancher
+rctx() {
+	my_ctx="${1}"
+	if [[ -z "${my_ctx}" ]]; then
+		my_ctx="$(rancher-tools rancher-server list | tail -n +2 | peco)"
+		my_ctx="$(awk '{print $1}' <<<"${my_ctx}")"
+	fi
+	if [[ -z "${my_ctx}" ]]; then
+		return 1
+	fi
+	rancher-tools create-ctx -a -s "${my_ctx}"
+}
+
 # Parse go mod graph to find a dependencies parent, return full line from the mod graph when found. Multiple parameters
 # can be passed to find the parent of multiple dependencies.
 go-find-deps-parent() {
