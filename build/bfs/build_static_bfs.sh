@@ -6,10 +6,10 @@ function build_bfs() {
 	# Download
 	cd bfs_build
 
-	./configure
+	./configure LDFLAGS="-static"
 
 	# Build
-	make -j20 LDFLAGS="-static"
+	make -j20
 	strip bin/bfs
 }
 
@@ -17,8 +17,7 @@ function doit() {
 	build_bfs || exit 1
 
 	# Copy to output
-	if [ -d /output ]
-	then
+	if [[ -d /output ]]; then
 		OUT_DIR=/output
 		mkdir -p $OUT_DIR
 		cp /build/bfs_build/bin/bfs $OUT_DIR/
