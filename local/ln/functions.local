@@ -477,6 +477,24 @@ kpp() {
 	fi
 }
 
+# kpp (kubernetes pick pod) - Allows you to pick a pod and a namespace dynamically from a list like the above except
+# with peco
+# Example: kppp
+kppp() {
+	local kube_results selection namespace
+
+	unset K8S_NS K8S_POD
+	selection="$(k8sctl get pods "${@}" | peco)"
+	namespace="$(k8s_get_ns_option "${@}")"
+	if [[ -z "${namespace}" ]]; then # if -n wasn't specified in our options
+		K8S_NS="$(awk '{print $1}' <<<"${selection}")"
+		K8S_POD="$(awk '{print $2}' <<<"${selection}")"
+	else
+		K8S_NS="${namespace}"
+		K8S_POD="$(awk '{print $1}' <<<"${selection}")"
+	fi
+}
+
 # Pick pod using name label as a subset
 kppl() {
 	local pod_name="${1}"
