@@ -63,7 +63,7 @@ format_git_branches () {
 				mystr="${mystr}$(printf "	%s%-60s%s -%s\\n " "${BOLD_WHITE}" "${file_part1}" "${RESET}" "${file_part2}")"
 			done <<< "${files_changed}"
 		fi
-	done <<<"$(git for-each-ref --tcl --sort=-committerdate --format="${fmt}" "${1}")"
+	done <<<"$(git for-each-ref --tcl --sort=-committerdate --format="${fmt}" "${1}" | head -n 35)"
 
 	if [[ "${2}" && "${2}" == "-s" ]]; then
 		printf "\\n%sSelect Branch to Switch to (q to quit): %s" "${BOLD_WHITE}" "${RESET}"
