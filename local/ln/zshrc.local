@@ -314,6 +314,9 @@ if [[ $(uname -a) == *"Darwin"* ]]; then
 	if [[ -d "/usr/local/opt/coreutils/libexec/gnubin" ]]; then
 		PATH="/usr/local/opt/coreutils/libexec/gnubin:${PATH}"
 	fi
+	if [[ -d "/opt/homebrew/bin" ]]; then
+		PATH="/opt/homebrew/bin:${PATH}"
+	fi
 	if command -v brew &>/dev/null; then
 		if brew_prefix="$(brew --prefix golang)"; then
 			if [[ -d "${brew_prefix}" ]]; then
