@@ -8,29 +8,34 @@ tmux_info() {
 
 # Automatically try to determine git message
 git_make_commit_message () {
-	local changed_files message
+	local changed_files message sed
+	if [[ $(uname -a) == *"Darwin"* ]]; then
+		sed="gsed"
+	else
+		sed="sed"
+	fi
 	changed_files="$(git diff --name-only --cached)"
 	repo_name="$(basename "$(git rev-parse --show-toplevel)")"
 	if [[ "${repo_name}" == "charts" ]]; then
-		message="$(sed -r 's;charts/([^/]+)/.*;\1;' <<<"${changed_files}" | sort -u)"
+		message="$(${sed} -r 's;charts/([^/]+)/.*;\1;' <<<"${changed_files}" | sort -u)"
 		if [[ $(wc -l <<<"${message}") -eq 1 ]]; then
 			printf "%s" "${message}"
 			return 0
 		fi
 		return 0
 	elif [[ "${repo_name}" == "inventory-schema" ]]; then
-		message="$(git diff --name-only --cached <<<"${changed_files}" | sed -r 's;poc/[0-9]{3}-([a-zA-Z]+[0-9])[^-]+-.*;\1;' | sort -u)"
+		message="$(git diff --name-only --cached <<<"${changed_files}" | ${sed} -r 's;poc/[0-9]{3}-([a-zA-Z]+[0-9])[^-]+-.*;\1;' | sort -u)"
 		if [[ $(wc -l <<<"${message}") -eq 1 ]]; then
 			printf "%s" "${message}"
 			return 0
 		fi
 		return 0
 	elif [[ "${repo_name}" == "argocd-monorepo" ]]; then
-		is_charts="$(sed -r 's;^[^/]+/([^/]+)/.*;\1;'<<<"${changed_files}" | sort -u)"
+		is_charts="$(${sed} -r 's;^[^/]+/([^/]+)/.*;\1;'<<<"${changed_files}" | sort -u)"
 		if [[ "${is_charts}" == "charts" ]]; then
-			message="$(sed -r 's;^[^/]+/[^/]+/([^/]+)/([^/]+)/([^/]+)/([^/]+).*;\1/\2/\3/\4;' <<<"${changed_files}" | sort -u)"
+			message="$(${sed} -r 's;^[^/]+/[^/]+/([^/]+)/([^/]+)/([^/]+)/([^/]+).*;\1/\2/\3/\4;' <<<"${changed_files}" | sort -u)"
 		else
-			message="$(sed -r 's;^([^/]+)/[^/]+/([^/]+).*;\1/\2;' <<<"${changed_files}" | sort -u)"
+			message="$(${sed} -r 's;^([^/]+)/[^/]+/([^/]+).*;\1/\2;' <<<"${changed_files}" | sort -u)"
 		fi
 		if [[ $(wc -l <<<"${message}") -eq 1 ]]; then
 			printf "%s" "${message}"
