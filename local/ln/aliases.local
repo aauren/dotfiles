@@ -21,12 +21,18 @@ alias glgh='git lg | head -n 20'
 alias gnp='git --no-pager'
 alias hg='history 1 | grep -i'
 alias cgrep='grep --color=always'
-alias cp='cp --reflink=auto'
+# Mac doesn't support Darwin reflink
+if [[ $(uname -a) != *"Darwin"* ]]; then
+	alias cp='cp --reflink=auto'
+fi
 alias t='tail -200f'
 alias tf='tail -f'
 alias tm='tail -200f /var/log/messages'
 alias hf='hostname -f'
-alias ssh='exec my_ssh'
+# Don't use custom ssh setup on Mac
+if [[ $(uname -a) != *"Darwin"* ]]; then
+	alias ssh='exec my_ssh'
+fi
 alias tree="tree -C -I '*pycache*|.git|test|doc'"
 alias v='fasd -sife vim' # Open vim with fasd file alias
 alias jctl='journalctl --since $(date "+%Y-%m-%d" -d "5 days ago")'
