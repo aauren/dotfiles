@@ -827,7 +827,7 @@ kda() { k8sctl describe application "${@}"; }
 
 ### Don't forget to add your function ^^ to the array and case for completions in section below
 
-K8S_FUNCS=(kpp kgp kgdp kddp kgds kdds kgrs kdrs kgss kdss)
+K8S_FUNCS=(kpp kppp kgp kgdp kddp kgds kdds kgrs kdrs kgss kdss)
 K8S_FUNCS+=(kgpr kdpr kgs kds kgsm kdsm kgcr kdcr kgcrb kdcrb kgsa kdsa kgl)
 K8S_FUNCS+=(kgcm kdcm kge kde kgns kdns kgn kdn kgr kdr kgrb kdrb kgse kdse kgj kdj kgjd kgrq)
 K8S_FUNCS+=(kdrq kgpdb kdpdb kgnp kdnp kgpsp kdpsp kgcj kdcj kgi kdi kgsc kdsc kgpv kdpv kgpvc kdpvc kgpru kdpru kgce)
