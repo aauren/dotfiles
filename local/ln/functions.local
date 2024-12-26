@@ -431,6 +431,14 @@ awsr() {
 	aws configure set region "${region}"
 }
 
+# Converge SSH config without running my_ssh
+converge_ssh() {
+	if [[ -d "${HOME}/.ssh/config.d" ]]; then
+		cat "${HOME}/.ssh/config.d/"* >"${HOME}/.ssh/config"
+		chmod 600 "${HOME}/.ssh/config"
+	fi
+}
+
 # Elastic Search Functions {{{
 # Finds the field data usage for a given environment
 elastic_fielddata() {
