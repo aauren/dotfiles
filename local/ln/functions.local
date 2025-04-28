@@ -44,7 +44,7 @@ git_make_commit_message () {
 		return 0
 	fi
 	# If you don't match anything else, do this
-	grep -o '[^/]*$' <<<"${changed_files}"| sed ':a;N;$!ba;s/\n/ \& /g'
+	grep -o '[^/]*$' <<<"${changed_files}"| ${sed} ':a;N;$!ba;s/\n/ \& /g'
 	return 0
 }
 
