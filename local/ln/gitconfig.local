@@ -38,6 +38,7 @@
 
 	# LOG
 	l = log --color --pretty=format:'%Cred%<(8)%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --decorate
+	la = log --color --pretty=format:'%Cred%<(8)%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an> <%ae>%Creset' --abbrev-commit --decorate
 	lg = l --graph
 
 	# REBASE/RESET
