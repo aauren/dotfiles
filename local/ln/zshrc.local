@@ -291,12 +291,20 @@ fi
 # }}}
 
 # pyenv {{{
-# Add and source nvm (node version manager) if it exists
+# Add and source pyenv (python version manager) if it exists
 if [[ -d "${HOME}/thirdparty-git/pyenv" ]]; then
 	PYENV_DIR="${HOME}/thirdparty-git/pyenv"
 	if [[ -e "${PYENV_DIR}/bin/pyenv" ]]; then
 		PATH="${PYENV_DIR}/bin:${PATH}"
 		eval "$(pyenv init -)"
+	fi
+fi
+# Add and source pyenv-virtualenv plugin (integrates with pyenv version manager) if it exists
+if [[ -d "${HOME}/thirdparty-git/pyenv/plugins/pyenv-virtualenv" ]]; then
+	PYENV_DIR="${HOME}/thirdparty-git/pyenv"
+	if [[ -e "${PYENV_DIR}/bin/pyenv" ]]; then
+		PATH="${PYENV_DIR}/bin:${PATH}"
+		eval "$(pyenv virtualenv-init -)"
 	fi
 fi
 # }}}
