@@ -55,7 +55,7 @@ bind C-c new-window -a
 bind C-n next-window -a
 
 # Clear activity marker on all windows
-bind C-k kill-session -C
+bind C-l kill-session -C
 
 # Vertically expand pane to consume the entire window height
 bind \; run-shell 'tmux resizep -y #{window_height}'
@@ -122,8 +122,8 @@ bind k select-pane -U
 bind l select-pane -R
 
 # Remap window navigation to CTRL + vim left/right movement keys
-bind -r C-h select-window -t :-
-bind -r C-l select-window -t :+
+bind -r C-j select-window -t :-
+bind -r C-k select-window -t :+
 
 # Remap pane resizing to SHIFT + vim movement keys
 bind -r H resize-pane -L 5
