@@ -246,18 +246,40 @@ rancher() {
 
 # socat - builds a statically linked socat binary
 socat() {
+	local tools_to_update_loc="$(dirname -- "${BASH_SOURCE[0]}")"
+	local build_socat_script="${tools_to_update_loc}/build/socat/build_static_socat.sh"
+	local build_socat_script_dir="$(dirname "${tools_to_update_loc}/build/socat/build_static_socat.sh")"
+	echo "+++++++ Prompting for Versions to Build socat +++++++"
+	prompt_and_update "http://www.dest-unreach.org/socat/download/" "${build_socat_script}" "SOCAT_VERSION"
+	prompt_and_update "https://ftp.gnu.org/pub/gnu/ncurses/" "${build_socat_script}" "NCURSES_VERSION"
+	prompt_and_update "https://ftp.gnu.org/gnu/readline/" "${build_socat_script}" "READLINE_VERSION"
+	prompt_and_update "https://openssl-library.org/source/" "${build_socat_script}" "OPENSSL_VERSION"
+	echo "+++++++ Showing Version Changes for socat +++++++"
+	git diff "${build_socat_script}"
 	echo "+++++++ Installing / Updating socat +++++++"
 	local socat_dir
 	socat_dir="$(mktemp -d socat.XXXXXXXXX)"
-	cp build/socat/build_static_socat.sh "${socat_dir}"
-	cp build/socat/Dockerfile "${socat_dir}"
-	cp -a build/socat/patches "${socat_dir}"
+	cp "${build_socat_script}" "${socat_dir}"
+	cp "${build_socat_script_dir}/Dockerfile" "${socat_dir}"
+	cp -a "${build_socat_script_dir}/patches" "${socat_dir}"
 	pushd "${socat_dir}" &>/dev/null || return
 	docker build -t socat_builder:latest .
 	docker run -ti --rm -v "$(pwd):/output" socat_builder:latest
 	cp socat "${LOCALBIN}/socat"
 	popd &>/dev/null || return
 	rm -rf "${socat_dir}"
+}
+
+prompt_and_update() {
+	local release url file_to_update var_name
+	url="${1}"
+	file_to_update="${2}"
+	var_name="${3}"
+	prompt_for_release "${1}"
+	if [[ -z "${release}" ]]; then
+		return
+	fi
+	sed -ri "s/(export ${var_name}=)(.*)$/\1${release}/g" "${build_socat_script}"
 }
 
 prompt_for_release() {
