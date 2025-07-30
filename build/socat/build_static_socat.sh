@@ -4,8 +4,8 @@
 
 export SOCAT_VERSION=1.8.0.3
 export NCURSES_VERSION=6.5
-export READLINE_VERSION=8.2.13
-export OPENSSL_VERSION=3.5.0
+export READLINE_VERSION=8.3
+export OPENSSL_VERSION=3.5.1
 
 function build_ncurses() {
 	cd /build
