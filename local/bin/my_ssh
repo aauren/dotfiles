@@ -27,16 +27,18 @@ Options:
   -A\t\tforward the SSH agent
   -c\t\trun a command upon SSH'ing
   -e\t\tdon't setup environment on remote machine
+  -o\t\tpass ssh options to ssh command
   -v\t\trun with verbose logging to show what's happening
   -z\t\trun ZSH upon SSH'ing"
 
 parse_args ()
 {
-	while getopts "h?eAzvc:" opt; do
+	while getopts "h?eAzvc:o:" opt; do
 		case "${opt}" in
 			A) additional_ssh_opts+=( "-A" );;
 			c) mycmd="${OPTARG}";;
 			e) nosetup=true;;
+			o) additional_ssh_opts+=( -o "${OPTARG}" );;
 			h|\?) echo -e "${usage}"; exit 0;;
 			v) verbose=true; set -x; additional_ssh_opts+=( "-vvv" );;
 			z) zsh=true;;
@@ -79,10 +81,12 @@ main ()
 	if [[ "PROXYJUMP" == "${unaliased_ssh_host}" ]]; then
 		echo "ProxyJump detected for host, skipping host setup and healthchecks..."
 	elif [[ -e "${HOME}/.ssh/no_check_hosts" ]] && grep -q -f "${HOME}/.ssh/no_check_hosts" <<<"${unaliased_ssh_host}"; then
-		echo "Detected No Check Host (~/.ssh/no_check_hosts)..."
+		echo 'Detected No Check Host (~/.ssh/no_check_hosts)...'
+	elif grep -q "ProxyCommand" <<<"${additional_ssh_opts}"; then
+		echo "Detected ProxyCommand in additional SSH opts (likely specified with -o), skipping healthchecks..."
 	else
 		if [[ -e "${HOME}/.ssh/unavailable_hosts" ]] && grep -qf "${HOME}/.ssh/unavailable_hosts" <<<"${unaliased_ssh_host}"; then
-			echo "Unavailable host detected (~/.ssh/unavailable_hosts)"
+			echo 'Unavailable host detected (~/.ssh/unavailable_hosts)'
 			host_opts+=("-p")
 		fi
 		if [[ -e "${HOME}/.ssh/no_nodeup_hosts" ]] && grep -Eqf "${HOME}/.ssh/no_nodeup_hosts" <<<"${unaliased_ssh_host}"; then
@@ -93,7 +97,7 @@ main ()
 		fi
 
 		if [[ -e "${HOME}/.ssh/no_setup_hosts" ]] && grep -Eqf "${HOME}/.ssh/no_setup_hosts" <<<"${unaliased_ssh_host}"; then
-			echo "Detected No Remote Env Setup Host (~/.ssh/no_setup_hosts)..."
+			echo 'Detected No Remote Env Setup Host (~/.ssh/no_setup_hosts)...'
 			nosetup=true
 			if [[ -n "${zsh}" ]]; then
 				echo "Was originally told to exec zsh after start, but skipping that because this is a no_setup_host";
