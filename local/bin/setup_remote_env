@@ -11,30 +11,21 @@ EXCLUDE_GIT_DIR="--cvs-exclude"
 EXCLUDE_JEDI_VIM="--exclude jedi-vim --exclude coc* --exclude terraform-ls --exclude ale"
 
 # Dotfile location
-DOTFILE_LOCATION='${HOME}/dotfiles/'
-LITERAL_DOT_LOC="${HOME}/dotfiles/"
+DOT='dotfiles/'
+LOCAL_DOT_LOC="${HOME}/${DOT}/"
 
 # Vundle Location
-VUNDLE_LOC='${HOME}/.vim/bundle/'
-LIT_VUNDLE_LOC="${HOME}/.vim/bundle/"
+VUNDLE='.vim/bundle/'
+LOCAL_VUNDLE_LOC="${HOME}/${VUNDLE}"
 
 # Vim autoload Location
-VIMAUTO_LOC='${HOME}/.vim/autoload/'
-LIT_VIMAUTO_LOC="${HOME}/.vim/autoload/"
+VIMAUTO='.vim/autoload/'
+LOCAL_VIMAUTO_LOC="${HOME}/${VIMAUTO}"
 
 # Bin location
-BIN_LOC='${HOME}/bin'
-LIT_BIN_LOC="${HOME}/bin/"
+BIN="bin"
+LOCAL_BIN_LOC="${HOME}/${BIN}/"
 
-GIT_REMOTE_UPDATE_COMMANDS="cd ${DOTFILE_LOCATION} && \
-	git stash &>/dev/null && \
-	git pull replaceme master &>/dev/null && \
-	echo ok"
-UPDATE_HOME_COMMANDS="RCRC=${DOTFILE_LOCATION}/rcrc PATH=${PATH}:${DOTFILE_LOCATION}/local/init/linker/bin ${DOTFILE_LOCATION}/local/init/linker/bin/rcup -x local && \
-	mkdir -p ~/bin && \
-	${DOTFILE_LOCATION}/local/bin/create_syms &> /dev/null && \
-	touch ~/.keep && \
-	touch ~/.viminfo &>/dev/null || true"
 GIT_URL_EXTRACT='s/.*git@([^:]+).*/\1/g'
 # Set correct sed options based on kernel versions
 if [[ $(uname -a) == *"Darwin"* ]]; then
@@ -52,14 +43,16 @@ This sets up a basic environment for productivity.
 
 Options:
   -h,-?\t\tdisplay this help text and exit
+  -o\t\tpass ssh options to ssh command
   -v\t\trun with verbose logging to show what's happening"
 
 #### Function Declarations ####
 parse_args ()
 {
-	while getopts "h?v" opt; do
+	while getopts "h?o:v" opt; do
 		case "${opt}" in
 			h|\?) echo -e "${usage}"; exit 0;;
+			o) additional_ssh_opts+=( -o "${OPTARG}" );;
 			v) verbose=true; set -x;;
 		esac
 	done
@@ -71,6 +64,14 @@ parse_args ()
 		exit 1
 	fi
 	ssh_conn_str="${1}"
+
+	if [[ -n "${additional_ssh_opts}" ]]; then
+		local ssh_opts_str="ssh"
+		for ssh_opt in "${additional_ssh_opts[@]}"; do
+			ssh_opts_str+=" ${ssh_opt}"
+		done
+		RSYNC_OPTS="${RSYNC_OPTS} -e \"${ssh_opts_str}\""
+	fi
 }
 
 block_output() {
@@ -83,11 +84,20 @@ block_output() {
 	fi
 }
 
+output_during_block() {
+	if [[ -n "${output_redirected}" ]]; then
+		printf -- "${@}" 1>&6
+	else
+		printf -- "${@}"
+	fi
+}
+
 return_output() {
 	if [[ -n "${output_redirected}" ]]; then
 		# If output has been redirected, then we return stdout and stderr so that the go back to the way they were
 		exec 1>&6 6>&- # restore reference to stdin and then remove the file handle
 		exec 2>&7 7>&- # restore reference to stdin and then remove the file handle
+		unset output_redirected
 	fi
 }
 
@@ -96,16 +106,16 @@ update_git ()
 	echo "Updating git..."
 	IFS_BAK=${IFS}
 	IFS=$'\n'
-	git_remotes=( $(grep "^\[remote" "${LITERAL_DOT_LOC}.git/config" | sed ${SED_OPTS} 's/^\[remote "(.+)".*/\1/g') )
+	git_remotes=( $(grep "^\[remote" "${LOCAL_DOT_LOC}.git/config" | sed ${SED_OPTS} 's/^\[remote "(.+)".*/\1/g') )
 	IFS=${IFS_BAK}
 	for gremote in "${git_remotes[@]}"; do
-		url=$(grep -A2 "${gremote}" "${LITERAL_DOT_LOC}.git/config" | grep url | sed ${SED_OPTS} ${GIT_URL_EXTRACT})
-		if [[ $(command ssh ${SSH_OPTS} ${ssh_conn_str} "PATH=${PATH}:${DOTFILE_LOCATION}/local/bin is_node_up -n ${url} 22 &>/dev/null && \
+		url=$(grep -A2 "${gremote}" "${LOCAL_DOT_LOC}.git/config" | grep url | sed ${SED_OPTS} ${GIT_URL_EXTRACT})
+		if [[ $(command ssh ${SSH_OPTS} "${additional_ssh_opts[@]}" ${ssh_conn_str} "PATH=${PATH}:${DOT_LOC}/local/bin is_node_up -n ${url} 22 &>/dev/null && \
 			echo ok") == "ok" ]]; then
 			echo "Syncing with ${url}"
-			command ssh ${SSH_OPTS} ${ssh_conn_str} "PATH=${PATH}:${DOTFILE_LOCATION}/local/bin ssh_key_del ${url} &>/dev/null"
+			command ssh ${SSH_OPTS} "${additional_ssh_opts[@]}" ${ssh_conn_str} "PATH=${PATH}:${DOT_LOC}/local/bin ssh_key_del ${url} &>/dev/null"
 			git_update_cmd=${GIT_REMOTE_UPDATE_COMMANDS//replaceme/${gremote}}
-			if [[ $(command ssh ${SSH_OPTS} ${ssh_conn_str} ${git_update_cmd}) == "ok" ]]; then
+			if [[ $(command ssh ${SSH_OPTS} "${additional_ssh_opts[@]}" ${ssh_conn_str} ${git_update_cmd}) == "ok" ]]; then
 				echo "Sync successful"
 				break
 			fi
@@ -115,8 +125,45 @@ update_git ()
 
 update_home ()
 {
-	echo "Updating home env..."
-	command ssh ${SSH_OPTS} ${ssh_conn_str} ${UPDATE_HOME_COMMANDS}
+	output_during_block "Updating home env... "
+	capture_before_date
+	command ssh ${SSH_OPTS} "${additional_ssh_opts[@]}" ${ssh_conn_str} ${UPDATE_HOME_COMMANDS}
+	print_duration
+}
+
+setup_remote_home_vars() {
+	REM_HOME="$(command ssh ${SSH_OPTS} "${additional_ssh_opts[@]}" ${ssh_conn_str} 'echo ${HOME}')"
+	if [[ -n "${verbose}" ]]; then
+		echo "REMOTE HOME: ${REM_HOME}"
+	fi
+	REMOTE_DOT_LOC="${REM_HOME}/${DOT}"
+	REMOTE_VUNDLE_LOC="${REM_HOME}/${VUNDLE}"
+	REMOTE_VIMAUTO_LOC="${REM_HOME}/${VIMAUTO}"
+	REMOTE_BIN_LOC="${REM_HOME}/${BIN}"
+	GIT_REMOTE_UPDATE_COMMANDS="cd ${REMOTE_DOT_LOC} && \
+		git stash &>/dev/null && \
+		git pull replaceme master &>/dev/null && \
+		echo ok"
+	UPDATE_HOME_COMMANDS="RCRC=${REMOTE_DOT_LOC}/rcrc PATH=${PATH}:${REMOTE_DOT_LOC}/local/init/linker/bin ${REMOTE_DOT_LOC}/local/init/linker/bin/rcup -x local && \
+		mkdir -p ~/bin && \
+		${REMOTE_DOT_LOC}/local/bin/create_syms &> /dev/null && \
+		touch ~/.keep && \
+		touch ~/.viminfo &>/dev/null || true"
+}
+
+capture_before_date() {
+	start_dt="$(date +%s.%N)"
+}
+
+print_duration() {
+	if [[ -n "${start_dt}" ]]; then
+		end_dt="$(date +%s.%N)"
+		# Using bc for floating point arithmatic
+		duration="$(echo "$end_dt - $start_dt" | bc)"
+
+		output_during_block "%s\n" "${duration}"
+		unset start_dt
+	fi
 }
 
 #### Main Program Flow ####
@@ -127,11 +174,35 @@ if [[ -z "${verbose}" ]]; then
 	SSH_OPTS+=" -o LogLevel=Error"
 fi
 
+echo "Finding remote home..."
+setup_remote_home_vars
+
 echo "Syncing dotfiles..."
 block_output
-rsync ${RSYNC_OPTS} --delete ${EXCLUDE_GIT_DIR} --rsync-path="mkdir -p ${VUNDLE_LOC} && rsync " ${EXCLUDE_JEDI_VIM} "${LIT_VUNDLE_LOC}" "${ssh_conn_str}:${VUNDLE_LOC}"
-rsync ${RSYNC_OPTS} ${EXCLUDE_GIT_DIR} "${LIT_VIMAUTO_LOC}" "${ssh_conn_str}:${VIMAUTO_LOC}"
-rsync ${RSYNC_OPTS} ${EXCLUDE_GIT_DIR} "${LITERAL_DOT_LOC}" "${ssh_conn_str}:${DOTFILE_LOCATION}"
-rsync ${RSYNC_OPTS} ${EXCLUDE_GIT_DIR} "${LIT_BIN_LOC}" "${ssh_conn_str}:${BIN_LOC}"
+output_during_block "\tCreating Remote VIM Dirs - "
+capture_before_date
+command ssh ${SSH_OPTS} "${additional_ssh_opts[@]}" ${ssh_conn_str} "mkdir -p ${REMOTE_VUNDLE_LOC}"
+print_duration
+
+output_during_block "\tSyncing vim vundles - "
+capture_before_date
+eval rsync ${RSYNC_OPTS} --delete ${EXCLUDE_GIT_DIR} ${EXCLUDE_JEDI_VIM} "${LOCAL_VUNDLE_LOC}" "${ssh_conn_str}:${REMOTE_VUNDLE_LOC}"
+print_duration
+
+output_during_block "\tSyncing vim autoload - "
+capture_before_date
+eval rsync ${RSYNC_OPTS} ${EXCLUDE_GIT_DIR} "${LOCAL_VIMAUTO_LOC}" "${ssh_conn_str}:${REMOTE_VIMAUTO_LOC}"
+print_duration
+
+output_during_block "\tSyncing dotfile - "
+capture_before_date
+eval rsync ${RSYNC_OPTS} ${EXCLUDE_GIT_DIR} "${LOCAL_DOT_LOC}" "${ssh_conn_str}:${REMOTE_DOT_LOC}"
+print_duration
+
+output_during_block "\tSyncing local bin - "
+capture_before_date
+eval rsync ${RSYNC_OPTS} ${EXCLUDE_GIT_DIR} "${LOCAL_BIN_LOC}" "${ssh_conn_str}:${REMOTE_BIN_LOC}"
+print_duration
+
 return_output
 update_home
