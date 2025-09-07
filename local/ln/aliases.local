@@ -80,6 +80,11 @@ if [[ ! -z ${TMUX_PANE} ]]; then
 	alias pno="tmux display -pt \"${TMUX_PANE:?}\" '#{pane_index}'"
 fi
 
+# Often sublime is installed as a flatpak, so if you don't find it in the PATH, then setup an alias
+if ! command -v sublime &>/dev/null && command -v flat-run &>/dev/null; then
+	alias sublime="flat-run sublime"
+fi
+
 # Aliases for showing more info about git commands
 alias gabrs='git_branch_info "refs"'
 alias gdrmb='git branch -r --merged | grep -Ev "((^[\W]*)\*|master)" | xargs git branch -rd'
