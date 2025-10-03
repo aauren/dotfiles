@@ -316,6 +316,15 @@ if [[ -d "${HOME}/.cargo/bin" ]]; then
 fi
 # }}}
 
+# Add local bin file
+if [[ -e "${HOME}/bin" ]]; then
+	PATH="${HOME}/bin:${PATH}"
+fi
+
+if [[ -e "${HOME}/desktop_bin" ]]; then
+	PATH="${HOME}/desktop_bin:${PATH}"
+fi
+
 # Brew {{{
 # If this is a Mac we'll add some more stuff
 if [[ $(uname -a) == *"Darwin"* ]]; then
@@ -335,15 +344,6 @@ if [[ $(uname -a) == *"Darwin"* ]]; then
 	fi
 fi
 # }}}
-
-# Add local bin file
-if [[ -e "${HOME}/bin" ]]; then
-	PATH="${HOME}/bin:${PATH}"
-fi
-
-if [[ -e "${HOME}/desktop_bin" ]]; then
-	PATH="${HOME}/desktop_bin:${PATH}"
-fi
 
 if [[ -e "${HOME}/binMan" ]]; then
 	PATH="${HOME}/binMan:${PATH}"
