@@ -108,9 +108,9 @@ main ()
 		if [[ -z ${nosetup} && ("${HOST}" != *@* || ${HOST%@*} != "root") ]]; then
 			echo "Setting Up Remove Env..."
 			if [[ -n "${verbose}" ]]; then
-				setup_remote_env "${additional_ssh_opts[@]}" -v "${HOST}" || exit $?
+				setup_remote_env "${additional_ssh_opts[@]}" -v "${HOST}" || RETVAL=$?
 			else
-				setup_remote_env "${additional_ssh_opts[@]}" "${HOST}" || exit $?
+				setup_remote_env "${additional_ssh_opts[@]}" "${HOST}" || RETVAL=$?
 			fi
 		fi
 	fi
