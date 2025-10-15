@@ -6,6 +6,7 @@ trap return_output INT
 #### Constants ####
 SSH_OPTS="-AT -o BatchMode=yes -o ConnectTimeout=5"
 RSYNC_OPTS="-rptX --old-args --size-only --ignore-times --no-links"
+RSYNC_OPTS_NO_EXT_ATTR="-rpt --old-args --size-only --ignore-times --no-links"
 EXCLUDE_GIT_DIR="--cvs-exclude"
 # The jedi-vim plugin is huge and is mostly unnecessary on remote systems
 EXCLUDE_JEDI_VIM="--exclude jedi-vim --exclude coc* --exclude terraform-ls --exclude ale"
@@ -151,6 +152,10 @@ setup_remote_home_vars() {
 		touch ~/.viminfo &>/dev/null || true"
 }
 
+change_rsync_opts() {
+	RSYNC_OPTS="${RSYNC_OPTS_NO_EXT_ATTR}"
+}
+
 capture_before_date() {
 	start_dt="$(date +%s.%N)"
 }
@@ -186,7 +191,11 @@ print_duration
 
 output_during_block "\tSyncing vim vundles - "
 capture_before_date
-eval rsync ${RSYNC_OPTS} --delete ${EXCLUDE_GIT_DIR} ${EXCLUDE_JEDI_VIM} "${LOCAL_VUNDLE_LOC}" "${ssh_conn_str}:${REMOTE_VUNDLE_LOC}"
+if ! eval rsync ${RSYNC_OPTS} --delete ${EXCLUDE_GIT_DIR} ${EXCLUDE_JEDI_VIM} "${LOCAL_VUNDLE_LOC}" "${ssh_conn_str}:${REMOTE_VUNDLE_LOC}"; then
+	# A common problem if the first rsync doesn't work is extended attributes on selinux systems, change and try again
+	change_rsync_opts
+	eval rsync ${RSYNC_OPTS} --delete ${EXCLUDE_GIT_DIR} ${EXCLUDE_JEDI_VIM} "${LOCAL_VUNDLE_LOC}" "${ssh_conn_str}:${REMOTE_VUNDLE_LOC}"
+fi
 print_duration
 
 output_during_block "\tSyncing vim autoload - "
