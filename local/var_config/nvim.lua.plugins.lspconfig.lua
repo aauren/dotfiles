@@ -42,34 +42,25 @@ return {
 			-- Define the list of servers to be installed automatically by mason-lspconfig.
 			-- See `:help mason-lspconfig-ensure-installed` for more details.
 			local lsp_servers = {
-				"ansiblels",
 				"clangd",
 				"cmake",
 				"dockerls",
-				"gh_actions_ls",
-				"gitlab_ci_ls",
 				"golangci_lint_ls",
 				"gopls",
 				"helm_ls",
 				"lua_ls",
 				"nginx_language_server",
 				"pyright",
-				"terraformls",
-				"tflint",
 				"yamlls",
 			}
 
 			local lint_servers = {
-				"ansible-lint",
 				"flake8",
 				"golangci-int",
 				"hadolint",
 				"luacheck",
 				"markdownlint",
-				"opa",
 				"shellcheck",
-				"tflint",
-				"tfsec",
 				"yamllint",
 			}
 
