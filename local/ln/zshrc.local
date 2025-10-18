@@ -292,21 +292,19 @@ fi
 
 # pyenv {{{
 # Add and source pyenv (python version manager) if it exists
-if [[ -d "${HOME}/thirdparty-git/pyenv" ]]; then
-	PYENV_DIR="${HOME}/thirdparty-git/pyenv"
-	if [[ -e "${PYENV_DIR}/bin/pyenv" ]]; then
-		PATH="${PYENV_DIR}/bin:${PATH}"
-		eval "$(pyenv init -)"
+for iDir in "${HOME}/thirdparty-git/pyenv" "${HOME}/.pyenv"; do
+	if [[ -d "${iDir}" ]]; then
+		PYENV_DIR="${iDir}"
+		if [[ -e "${PYENV_DIR}/bin/pyenv" ]]; then
+			PATH="${PYENV_DIR}/bin:${PATH}"
+			eval "$(pyenv init -)"
+		fi
+		# Add and source pyenv-virtualenv plugin (integrates with pyenv version manager) if it exists
+		if [[ -d "${PYENV_DIR}/plugins/pyenv-virtualenv" ]]; then
+			eval "$(pyenv virtualenv-init -)"
+		fi
 	fi
-fi
-# Add and source pyenv-virtualenv plugin (integrates with pyenv version manager) if it exists
-if [[ -d "${HOME}/thirdparty-git/pyenv/plugins/pyenv-virtualenv" ]]; then
-	PYENV_DIR="${HOME}/thirdparty-git/pyenv"
-	if [[ -e "${PYENV_DIR}/bin/pyenv" ]]; then
-		PATH="${PYENV_DIR}/bin:${PATH}"
-		eval "$(pyenv virtualenv-init -)"
-	fi
-fi
+done
 # }}}
 
 # Rust {{{
