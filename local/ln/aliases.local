@@ -8,7 +8,6 @@ fi
 # Simple, self-explanatory aliases
 alias ll='ls -lrt --color'
 alias lt='ls -lrt'
-alias vi='vim'
 alias bzip='bzip2'
 alias bunzip='bunzip2'
 alias umerge='emerge --unmerge'

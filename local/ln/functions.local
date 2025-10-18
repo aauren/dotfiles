@@ -6,6 +6,14 @@ tmux_info() {
 	tmux display -pt "${TMUX_PANE:?}" "#{${tmux_var}}"
 }
 
+vi() {
+	if command -v nvim; then
+		nvim "${@}"
+	else
+		vim "${@}"
+	fi
+}
+
 # Automatically try to determine git message
 git_make_commit_message () {
 	local changed_files message sed
