@@ -7,10 +7,18 @@ tmux_info() {
 }
 
 vi() {
-	if command -v nvim; then
+	if command -v nvim &>/dev/null; then
 		nvim "${@}"
 	else
-		vim "${@}"
+		command vim -X "${@}"
+	fi
+}
+
+vim() {
+	if command -v nvim &>/dev/null; then
+		nvim "${@}"
+	else
+		command vim -X "${@}"
 	fi
 }
 

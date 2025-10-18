@@ -33,7 +33,7 @@ if [[ $(uname -a) != *"Darwin"* ]]; then
 	alias ssh='exec my_ssh'
 fi
 alias tree="tree -C -I '*pycache*|.git|test|doc'"
-alias v='fasd -sife vim' # Open vim with fasd file alias
+alias v='fasd -sife nvim' # Open nvim with fasd file alias
 alias jctl='journalctl --since="-30 min"'
 alias hdu='helm dependency update --skip-refresh'
 alias ep="source ${HOME}/desktop_bin/enable-proxy-tiny"
@@ -51,9 +51,6 @@ alias lessg='less +G'
 
 # Copies the tmux buffer to the X clipboard
 alias copy-tbuff='tmux save-buffer - | xsel -ib'
-
-# Starts vim without it trying to connect to the X server (saves time on start when you're at a console)
-alias vim='vim -X'
 
 # Preserves the environment during a sudo operation
 alias sudo='sudo -E '
