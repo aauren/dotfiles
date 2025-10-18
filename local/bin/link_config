@@ -1,0 +1,25 @@
+#!/bin/bash
+
+
+LOCAL_LOC="${HOME}/dotfiles/local"
+
+echo "Linking configs contained in ${LOCAL_LOC}/config_items"
+while read -r config_to_link; do
+	src="${config_to_link%%:*}"
+	target="$(eval "echo ${config_to_link##*:}")"
+	# If the file or symlink already exists at the target then bail
+	if [[ -e "${target}" ]]; then
+		continue
+	fi
+
+	printf "\tLinking %s to %s\n" "${src}" "${target}"
+
+	# If the parent directories don't exist, then create them
+	target_dir="$(dirname "${target}")"
+	if [[ ! -d "${target_dir}" ]]; then
+		mkdir -p "${target_dir}"
+	fi
+
+	# Do the linking
+	ln -sf "${LOCAL_LOC}/var_config/${src}" "${target}"
+done <"${LOCAL_LOC}/config_items"

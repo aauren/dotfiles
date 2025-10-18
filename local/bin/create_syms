@@ -51,6 +51,9 @@ fi
 echo "linking cheat files"
 [[ -L "${HOME}/.cheat" ]] || ln -sf "${HOME}/dotfiles/local/cheat" "${HOME}/.cheat"
 
+echo "linking variable config files"
+[[ -x "${HOME}/dotfiles/local/bin/link_config" ]] && "${HOME}/dotfiles/local/bin/link_config"
+
 if [[ -d "${HOME}/.setup.d" ]]; then
 	echo "running additional setup scripts"
 	for setup_file in "${HOME}/.setup.d/"*; do
