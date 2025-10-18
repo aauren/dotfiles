@@ -7,6 +7,11 @@ vim.opt.hlsearch = true
 -- Set line numbering to true
 vim.opt.number = true
 
+-- Set visual tab spacing to 4 characters instead of 8
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
+
 -- {{{ Initially set defaults
 myfn.BaseSanity()
 
