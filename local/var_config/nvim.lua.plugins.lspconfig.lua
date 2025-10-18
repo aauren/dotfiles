@@ -42,6 +42,7 @@ return {
 			-- Define the list of servers to be installed automatically by mason-lspconfig.
 			-- See `:help mason-lspconfig-ensure-installed` for more details.
 			local lsp_servers = {
+				"bashls",
 				"clangd",
 				"cmake",
 				"dockerls",
