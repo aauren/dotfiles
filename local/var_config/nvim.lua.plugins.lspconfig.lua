@@ -73,6 +73,28 @@ return {
 				"yamllint",
 			}
 
+			-- {{{ START: Load and merge machine-specific configuration
+			-- Use pcall (protected call) to safely require the machine-specific config.
+			-- This will not error if the file `lua/machine.lua` does not exist.
+			local ok, machine_config = pcall(require, "config.machine.local")
+
+			if ok and machine_config then
+				-- Append additional LSP servers if they are defined in the machine config
+				if machine_config.lsp_servers_add and type(machine_config.lsp_servers_add) == "table" then
+					for _, server in ipairs(machine_config.lsp_servers_add) do
+						table.insert(lsp_servers, server)
+					end
+				end
+
+				-- Append additional lint servers if they are defined in the machine config
+				if machine_config.lint_servers_add and type(machine_config.lint_servers_add) == "table" then
+					for _, server in ipairs(machine_config.lint_servers_add) do
+						table.insert(lint_servers, server)
+					end
+				end
+			end
+			-- }}} END: Load and merge machine-specific configuration
+
 			-- Setup mason so it can manage external tools.
 			mason_core.setup()
 
