@@ -22,7 +22,7 @@ vim.api.nvim_create_autocmd({ 'BufRead', 'BufNewFile', 'BufWinEnter' }, {
 	group = basesanity_group,
 	pattern = '*',
 	callback = function()
-		myfn.BaseSanity()
+		pcall(myfn.BaseSanity)
 	end,
 	desc = "Make sure that base settings are always on"
 })
