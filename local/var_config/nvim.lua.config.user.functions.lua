@@ -41,7 +41,6 @@ end
 _G.restore_register = restore_register
 -- }}}
 
-
 -- {{{ Toggle Leading Spaces
 -- Initialize the global variable if it doesn't exist
 if vim.g.show_leading_space == nil then
