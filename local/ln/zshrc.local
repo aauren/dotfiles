@@ -299,8 +299,9 @@ for iDir in "${HOME}/thirdparty-git/pyenv" "${HOME}/.pyenv"; do
 			PATH="${PYENV_DIR}/bin:${PATH}"
 			eval "$(pyenv init -)"
 		fi
-		# Add and source pyenv-virtualenv plugin (integrates with pyenv version manager) if it exists
-		if [[ -d "${PYENV_DIR}/plugins/pyenv-virtualenv" ]]; then
+		# Add and source pyenv-virtualenv plugin (integrates with pyenv version manager) if it exists (don't run on OSX
+		# as it takes forever for prompts to appear when this is the case.
+		if [[ -d "${PYENV_DIR}/plugins/pyenv-virtualenv" && $(uname -a) != *"Darwin"* ]]; then
 			eval "$(pyenv virtualenv-init -)"
 		fi
 	fi
