@@ -179,9 +179,9 @@
 [user]
 	name = Aaron U'Ren
 [core]
-	editor = vim
+	editor = nvim
 [diff]
-	tool = vimdiff
+	tool = nvimdiff
 	renameLimit = 1000
 [difftool]
 	prompt = false
