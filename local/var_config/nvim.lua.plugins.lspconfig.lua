@@ -65,6 +65,10 @@ return {
 				"yamllint",
 			}
 
+			local misc_install = {
+				"tree-sitter-cli",
+			}
+
 			-- {{{ START: Load and merge machine-specific configuration
 			-- Use pcall (protected call) to safely require the machine-specific config.
 			-- This will not error if the file `lua/machine.lua` does not exist.
@@ -92,6 +96,9 @@ return {
 
 			-- Install non-lsp packages using Mason
 			mason_install(lint_servers)
+
+			-- Install non-lsp packages using Mason
+			mason_install(misc_install)
 
 			-- Use mason-lspconfig to configure servers based on the `servers` list.
 			-- This will automatically pass the `on_attach` function and capabilities to each server.
