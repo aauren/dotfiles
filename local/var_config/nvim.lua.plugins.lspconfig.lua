@@ -65,6 +65,16 @@ return {
 				"yamllint",
 			}
 
+			-- This section should be kept in sync with nvim.lua.plugins.conform.lua
+			local formatters = {
+				"black", -- Python formatter
+				"isort", -- Python formatter - sorts packages alphabetically
+				"luaformatter", -- Lua formatter
+				"prettier", -- General formatter to make things look better (only works for some langs)
+				"shfmt", -- Shell formatter
+				"stylua", -- Lua formatter
+			}
+
 			local misc_install = {
 				"tree-sitter-cli",
 			}
@@ -94,8 +104,11 @@ return {
 			-- Setup mason so it can manage external tools.
 			mason_core.setup()
 
-			-- Install non-lsp packages using Mason
+			-- Install non-lsp linting packages using Mason
 			mason_install(lint_servers)
+
+			-- Install non-lsp formatter packages using Mason
+			mason_install(formatters)
 
 			-- Install non-lsp packages using Mason
 			mason_install(misc_install)

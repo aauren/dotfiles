@@ -5,6 +5,7 @@ nvim.lua.config.user.general.lua:${HOME}/.config/nvim/lua/config/user/general.lu
 nvim.lua.config.user.keymap.lua:${HOME}/.config/nvim/lua/config/user/keymap.lua
 nvim.lua.plugins.aerial.lua:${HOME}/.config/nvim/lua/plugins/aerial.lua
 nvim.lua.plugins.barbar.lua:${HOME}/.config/nvim/lua/plugins/barbar.lua
+nvim.lua.plugins.conform.lua:${HOME}/.config/nvim/lua/plugins/conform.lua
 nvim.lua.plugins.gitsigns.lua:${HOME}/.config/nvim/lua/plugins/gitsigns.lua
 nvim.lua.plugins.gruvbox.lua:${HOME}/.config/nvim/lua/plugins/gruvbox.lua
 nvim.lua.plugins.lualine.lua:${HOME}/.config/nvim/lua/plugins/lualine.lua
