@@ -1,7 +1,23 @@
 return {
 	{
 		"folke/trouble.nvim",
-		opts = {}, -- for default options, refer to the configuration section for custom setup.
+		opts = {
+			preview = {
+				type = "float",
+				relative = "editor",
+				border = "rounded",
+				title = "Preview",
+				title_pos = "center",
+				position = { 0, -2 },
+				size = { width = 0.4, height = 0.6 },
+				zindex = 200,
+			},
+			modes = {
+				lsp_base = {
+					focus = true,
+				},
+			},
+		}, -- for default options, refer to the configuration section for custom setup.
 		cmd = "Trouble",
 		keys = {
 			{
@@ -35,5 +51,5 @@ return {
 				desc = "Quickfix List (Trouble)",
 			},
 		},
-	}
+	},
 }

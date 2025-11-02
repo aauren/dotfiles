@@ -177,19 +177,19 @@ vim.keymap.set('n', 'ga', vim.lsp.buf.code_action, {
 	desc = "Execute a code action"
 })
 
-vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {
+vim.keymap.set('n', 'gd', "<cmd>Trouble lsp_definitions<cr>", {
 	noremap = true,
 	silent = true,
 	desc = "Go to symbol definition"
 })
 
-vim.keymap.set('n', 'gr', vim.lsp.buf.references, {
+vim.keymap.set('n', 'gr', "<cmd>Trouble lsp_references<cr>", {
 	noremap = true,
 	silent = true,
 	desc = "Go to symbol references"
 })
 
-vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, {
+vim.keymap.set('n', 'gi', "<cmd>Trouble lsp_implementations<cr>", {
 	noremap = true,
 	silent = true,
 	desc = "Go to symbol implementation"
