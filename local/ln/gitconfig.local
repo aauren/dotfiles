@@ -166,6 +166,25 @@
 	wtr = "!git worktree list | peco | awk '{print $1}' | xargs -o git worktree remove"
 
 	# MISC
+	# Opens up your editor with all files that are part of a set of commits up to the current one. If a start commit is
+	# not provided, then it assumes HEAD~1
+	ed = "!f() { \
+		if [[ -z "${1}" ]]; then \
+			v1="HEAD~1"; \
+		else \
+			if [[ -n "${1}" ]]; then \
+				v1="HEAD~${1}"; \
+			else \
+				v1="${1}"; \
+			fi; \
+		fi; \
+		if [[ -z "${2}" ]]; then \
+			v2="HEAD"; \
+		else \
+			v2="${2}"; \
+		fi; \
+		git log --name-only --pretty="" ${v1}..${v2} | sort | uniq | xargs nvim; \
+	}; f"
 	# Opens up your editor with all files that are part of your working directory
 	edit = !$EDITOR $(git status --short | awk '$1 ~ /^M|A|U/ {print $2}' )
 	# Opens up your editor with all of the files that were modified as part of a specified commit
