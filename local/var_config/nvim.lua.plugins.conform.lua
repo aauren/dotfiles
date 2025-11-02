@@ -33,7 +33,7 @@ return {
 					javascript = { "prettierd", "prettier", stop_after_first = true },
 					json = { "jq" },
 					golang = { "gofmt", "goimports" },
-					lua = { "stylua", "lua-format" },
+					lua = { "stylua", "lua-format", stop_after_first = true },
 					python = { "isort", "black" },
 					rust = { "rustfmt", lsp_format = "fallback" },
 					shell = { "shfmt" },
