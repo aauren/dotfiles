@@ -138,6 +138,7 @@ end
 -- ToggleCopyable function with state-based toggling
 function M.ToggleCopyable()
 	local gs = require('gitsigns')
+	local indent = require('blink.indent')
 
 	if vim.g.copyable_mode then
 		-- Turn everything back on
@@ -147,6 +148,7 @@ function M.ToggleCopyable()
 		vim.g.copyable_mode = false
 		vim.diagnostic.show()
 		gs.toggle_signs(true)
+		indent.enable(true)
 	else
 		-- Turn everything off for easy copying
 		vim.g.saved_relative_num = vim.o.relativenumber
@@ -157,6 +159,7 @@ function M.ToggleCopyable()
 		vim.g.copyable_mode = true
 		vim.diagnostic.hide()
 		gs.toggle_signs(false)
+		indent.enable(false)
 	end
 
 	M.MyTogTW()
