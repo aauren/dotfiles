@@ -7,6 +7,7 @@ nvim.lua.plugins.aerial.lua:${HOME}/.config/nvim/lua/plugins/aerial.lua
 nvim.lua.plugins.barbar.lua:${HOME}/.config/nvim/lua/plugins/barbar.lua
 nvim.lua.plugins.blink.indent.lua:${HOME}/.config/nvim/lua/plugins/blink.indent.lua
 nvim.lua.plugins.conform.lua:${HOME}/.config/nvim/lua/plugins/conform.lua
+nvim.lua.plugins.diffview.lua:${HOME}/.config/nvim/lua/plugins/diffview.lua
 nvim.lua.plugins.gitsigns.lua:${HOME}/.config/nvim/lua/plugins/gitsigns.lua
 nvim.lua.plugins.gruvbox.lua:${HOME}/.config/nvim/lua/plugins/gruvbox.lua
 nvim.lua.plugins.lualine.lua:${HOME}/.config/nvim/lua/plugins/lualine.lua
