@@ -71,15 +71,15 @@ vim.keymap.set('i', 'JJ', '<Esc>', {
 
 -- {{{ Normal Key Bindings
 
--- Go to the previous buffer
-vim.keymap.set('n', '<A-j>', ':bprevious<CR>', {
+-- Go to the previous buffer (using commands from plugin barbar)
+vim.keymap.set('n', '<A-j>', ':BufferPrevious<CR>', {
 	noremap = true,
 	silent = true,
 	desc = "Go to previous buffer"
 })
 
--- Go to the next buffer
-vim.keymap.set('n', '<A-k>', ':bnext<CR>', {
+-- Go to the next buffer (using commands from plugin barbar)
+vim.keymap.set('n', '<A-k>', ':BufferNext<CR>', {
 	noremap = true,
 	silent = true,
 	desc = "Go to next buffer"
