@@ -85,6 +85,20 @@ vim.keymap.set('n', '<A-k>', ':BufferNext<CR>', {
 	desc = "Go to next buffer"
 })
 
+-- Go to the previous tab
+vim.keymap.set('n', '<A-h>', ':tabprevious<CR>', {
+	noremap = true,
+	silent = true,
+	desc = "Go to previous tab"
+})
+
+-- Go to the next tab
+vim.keymap.set('n', '<A-l>', ':tabnext<CR>', {
+	noremap = true,
+	silent = true,
+	desc = "Go to next tab"
+})
+
 vim.keymap.set('n', 'p', 'p`]', {
 	noremap = true,
 	silent = true,
