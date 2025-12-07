@@ -52,6 +52,7 @@ return {
 				"lua_ls",
 				"nginx_language_server",
 				"pyright",
+				"ts_ls",
 				"yamlls",
 			}
 
