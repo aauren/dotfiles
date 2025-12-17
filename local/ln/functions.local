@@ -67,8 +67,17 @@ git_make_commit_message () {
 # Automatically creates a git commit message based on the files that are staged and prints it on the line
 gitcm () {
 	git --no-pager dc
+	# If the user passes a parameter, then assume that it is conventional commit syntax
+	build_commit_msg=""
+	if [[ -n $1 ]]; then
+		build_commit_msg="${1}("
+	fi
+	build_commit_msg+="$(git_make_commit_message)"
+	if [[ -n $1 ]]; then
+		build_commit_msg+=")"
+	fi
 	# shellcheck disable=SC1105,SC2116
-	((sleep 0.1 && tmux send-keys -t "$(tmux_info session_name):$(tmux_info window_name).$(tmux_info pane_index)" "$(echo "git cm \"$(git_make_commit_message): ")") &)
+	((sleep 0.1 && tmux send-keys -t "$(tmux_info session_name):$(tmux_info window_name).$(tmux_info pane_index)" "$(echo "git cm \"${build_commit_msg}: ")") &)
 }
 
 tbd() {
