@@ -22,6 +22,33 @@ vim.keymap.set('c', 'w!!', 'w !sudo tee > /dev/null %', {
 	desc = 'Save file with sudo'
 })
 
+-- Cmdline completion: select next item with Down arrow
+vim.keymap.set('c', '<Down>', function()
+	if vim.fn.pumvisible() == 1 then
+		return '<C-n>'
+	end
+	return '<Down>'
+end, {
+	noremap = true,
+	silent = true,
+	expr = true,
+	desc = "Cmdline completion: select next item with Down arrow"
+})
+
+-- Cmdline completion: select previous item with Up arrow
+vim.keymap.set('c', '<Up>', function()
+	if vim.fn.pumvisible() == 1 then
+		return '<C-p>'
+	end
+	return '<Up>'
+end, {
+	noremap = true,
+	silent = true,
+	expr = true,
+	desc = "Cmdline completion: select previous item with Up arrow"
+})
+
+
 -- }}}
 
 -- {{{ Visual Key Bindings
@@ -55,6 +82,7 @@ vim.keymap.set('v', '<leader>d', '"_d', {
 
 -- {{{ Insert Key Bindings
 
+-- Map jj & JJ to escape to leave insert mode
 vim.keymap.set('i', 'jj', '<Esc>', {
 	noremap = true,
 	silent = true,
@@ -65,6 +93,32 @@ vim.keymap.set('i', 'JJ', '<Esc>', {
 	noremap = true,
 	silent = true,
 	desc = "Exit insert mode"
+})
+
+-- Completion: select next item with Down arrow
+vim.keymap.set('i', '<Down>', function()
+	if vim.fn.pumvisible() == 1 then
+		return '<C-n>'
+	end
+	return '<Down>'
+end, {
+  noremap = true,
+  silent = true,
+  expr = true,
+  desc = "Completion: select next item with Down arrow"
+})
+
+-- Completion: select previous item with Up arrow
+vim.keymap.set('i', '<Up>', function()
+	if vim.fn.pumvisible() == 1 then
+		return '<C-p>'
+	end
+	return '<Up>'
+end, {
+	noremap = true,
+	silent = true,
+	expr = true,
+	desc = "Completion: select previous item with Up arrow"
 })
 
 -- }}}
@@ -365,4 +419,4 @@ vim.keymap.set('', '<leader>hs', myfn.SplitCurrentBuffer, {
 
 -- }}}
 
--- vim: fdm=marker ts=2 noet
+-- vim: fdm=marker ts=2 sw=2 sts=2 noet

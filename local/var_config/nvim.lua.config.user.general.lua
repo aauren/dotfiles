@@ -165,4 +165,4 @@ vim.api.nvim_create_autocmd("CursorMovedI", {
 })
 -- }}}
 
--- vim: fdm=marker ts=2 noet
+-- vim: fdm=marker ts=2 sw=2 sts=2 noet
