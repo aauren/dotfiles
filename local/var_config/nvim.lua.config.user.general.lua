@@ -21,8 +21,8 @@ local basesanity_group = vim.api.nvim_create_augroup("basesanity", { clear = tru
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile", "BufWinEnter" }, {
 	group = basesanity_group,
 	pattern = "*",
-	callback = function()
-		pcall(myfn.BaseSanity)
+	callback = function(ev)
+		pcall(myfn.BaseSanity, ev)
 	end,
 	desc = "Make sure that base settings are always on",
 })

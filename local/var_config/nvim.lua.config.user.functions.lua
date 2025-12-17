@@ -1,7 +1,9 @@
 local M = {}
 
 -- {{{ Default Sanity Functions That Run on BuffEnter
-function M.BaseSanity()
+function M.BaseSanity(ev)
+	local DEFAULT_TW = 120
+
 	-- Disable mouse mode so that I can use the mouse to highlight things and the like
 	vim.opt.mouse = ""
 
@@ -12,7 +14,12 @@ function M.BaseSanity()
 	vim.opt.magic = true
 
 	-- Set Text Width to 120 chars
-	vim.opt.textwidth = 120
+	---- If EditorConfig or modeline set a value, it won't be 0, so we leave it alone.
+	if ev == nil then
+		vim.opt.textwidth = DEFAULT_TW
+	elseif vim.bo[ev.buf].textwidth == 0 then
+		vim.bo[ev.buf].textwidth = DEFAULT_TW
+	end
 
 	-- Set marker at the text width
 	vim.opt.colorcolumn = '+1'
