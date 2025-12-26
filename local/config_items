@@ -17,5 +17,6 @@ nvim.lua.plugins.nvimlint.lua:${HOME}/.config/nvim/lua/plugins/nvimlint.lua
 nvim.lua.plugins.telescope.lua:${HOME}/.config/nvim/lua/plugins/telescope.lua
 nvim.lua.plugins.treesitter.lua:${HOME}/.config/nvim/lua/plugins/treesitter.lua
 nvim.lua.plugins.trouble.lua:${HOME}/.config/nvim/lua/plugins/trouble.lua
+nvim.lua.plugins.vim-eunuch.lua:${HOME}/.config/nvim/lua/plugins/vim-eunuch.lua
 nvim.lua.plugins.vim-fugitive.lua:${HOME}/.config/nvim/lua/plugins/vim-fugitive.lua
 nvim.lua.plugins.whichkey.lua:${HOME}/.config/nvim/lua/plugins/whichkey.lua
