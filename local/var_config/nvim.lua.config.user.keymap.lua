@@ -30,7 +30,6 @@ vim.keymap.set('c', '<Down>', function()
 	return '<Down>'
 end, {
 	noremap = true,
-	silent = true,
 	expr = true,
 	desc = "Cmdline completion: select next item with Down arrow"
 })
@@ -43,7 +42,6 @@ vim.keymap.set('c', '<Up>', function()
 	return '<Up>'
 end, {
 	noremap = true,
-	silent = true,
 	expr = true,
 	desc = "Cmdline completion: select previous item with Up arrow"
 })
