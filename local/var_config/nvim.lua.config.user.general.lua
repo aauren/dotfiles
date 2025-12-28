@@ -107,19 +107,60 @@ local filetype_group = vim.api.nvim_create_augroup("filetype", { clear = true })
 
 -- {{{ Restore Last Cursor Postition in File
 -- restore cursor to file position in previous editing session
+-- Restore last cursor position and center view, without breaking terminal-mode
 vim.api.nvim_create_autocmd("BufReadPost", {
 	callback = function(args)
+		-- Ignore special buffers (terminal, nofile, prompt, etc.)
+		if vim.bo[args.buf].buftype ~= "" then
+			return
+		end
+
 		local mark = vim.api.nvim_buf_get_mark(args.buf, '"')
 		local line_count = vim.api.nvim_buf_line_count(args.buf)
-		if mark[1] > 0 and mark[1] <= line_count then
-			vim.api.nvim_win_set_cursor(0, mark)
-			-- defer centering slightly so it's applied after render
-			vim.schedule(function()
-				vim.cmd("normal! zz")
-			end)
+
+		-- mark = {line, col}; line=0 means "no mark"
+		if mark[1] == 0 or mark[1] > line_count then
+			return
 		end
+
+		-- Defer until UI/window state is stable, but run in the correct window
+		vim.schedule(function()
+			-- Find a window currently showing this buffer
+			local win = -1
+			for _, w in ipairs(vim.api.nvim_list_wins()) do
+				if vim.api.nvim_win_get_buf(w) == args.buf then
+					win = w
+					break
+				end
+			end
+			if win == -1 or not vim.api.nvim_win_is_valid(win) then
+				return
+			end
+
+			-- Run cursor + centering in that window's context (not the current terminal window)
+			vim.api.nvim_win_call(win, function()
+				-- Window could have changed layout; keep this safe
+				pcall(vim.api.nvim_win_set_cursor, win, mark)
+				pcall(vim.cmd, "normal! zz")
+			end)
+		end)
 	end,
 })
+
+-- Previous version that did not work with sidekick
+--vim.api.nvim_create_autocmd("BufReadPost", {
+--	callback = function(args)
+--		local mark = vim.api.nvim_buf_get_mark(args.buf, '"')
+--		local line_count = vim.api.nvim_buf_line_count(args.buf)
+--		if mark[1] > 0 and mark[1] <= line_count then
+--			vim.api.nvim_win_set_cursor(0, mark)
+--			-- defer centering slightly so it's applied after render
+--			vim.schedule(function()
+--				vim.cmd("normal! zz")
+--			end)
+--		end
+--	end,
+--})
 -- }}}
 
 -- {{{ Auto Resize Splits When Term Win Changes Size
