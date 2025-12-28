@@ -9,6 +9,11 @@ return {
 				backend = "tmux",
 				enabled = true,
 			},
+			win = {
+				split = {
+					width = 0.35,
+				},
+			},
 		},
 	},
 	keys = {
