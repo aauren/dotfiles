@@ -32,7 +32,7 @@ return {
 					-- You can customize some of the format options for the filetype (:help conform.format)
 					javascript = { "prettierd", "prettier", stop_after_first = true },
 					json = { "jq" },
-					golang = { "gofmt", "goimports" },
+					go = { "gofmt", "goimports" },
 					lua = { "stylua", "lua-format", stop_after_first = true },
 					python = { "isort", "black" },
 					rust = { "rustfmt", lsp_format = "fallback" },
