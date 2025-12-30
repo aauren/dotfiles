@@ -313,6 +313,33 @@ vim.keymap.set('n', '<leader>Z', ':close<CR>', {
 })
 -- }}}
 
+-- {{{ Resize vim Windows Vertically / Horizontally
+-- Use a count before the mapping, e.g. 35<leader>rv
+vim.keymap.set('n', '<leader>rv', function()
+  local n = vim.v.count
+  if n == 0 then
+    -- optional: prompt if no count given
+    local s = vim.fn.input('Width (percent): ')
+    n = tonumber(s) or 0
+  end
+  if n > 0 then
+    vim.cmd('vertical resize ' .. math.floor(vim.o.columns * n / 100))
+  end
+end, {desc = 'Vertical resize to count or prompt'})
+
+vim.keymap.set('n', '<leader>rh', function()
+  local n = vim.v.count
+  if n == 0 then
+    -- optional: prompt if no count given
+    local s = vim.fn.input('Height (percent): ')
+    n = tonumber(s) or 0
+  end
+  if n > 0 then
+    vim.cmd('horizontal resize ' .. math.floor(vim.o.lines * n / 100))
+  end
+end, {desc = 'Vertical resize to count or prompt'})
+-- }}}
+
 -- {{{ Delete / Modify without Affecting Paste Buffer
 vim.keymap.set('', '<leader>dd', '"_dd', {
 	noremap = true,
