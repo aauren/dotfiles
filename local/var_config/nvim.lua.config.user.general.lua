@@ -115,6 +115,11 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 			return
 		end
 
+		-- If something requested a specific line, don't restore last cursor
+		if vim.v.lnum ~= 0 then
+			return
+		end
+
 		local mark = vim.api.nvim_buf_get_mark(args.buf, '"')
 		local line_count = vim.api.nvim_buf_line_count(args.buf)
 
@@ -137,9 +142,13 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 				return
 			end
 
-			-- Run cursor + centering in that window's context (not the current terminal window)
 			vim.api.nvim_win_call(win, function()
-				-- Window could have changed layout; keep this safe
+				-- Only restore if nothing has positioned the cursor yet
+				local cur = vim.api.nvim_win_get_cursor(win) -- {line, col}
+				if cur[1] ~= 1 or cur[2] ~= 0 then
+					return
+				end
+
 				pcall(vim.api.nvim_win_set_cursor, win, mark)
 				pcall(vim.cmd, "normal! zz")
 			end)
@@ -147,20 +156,6 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 	end,
 })
 
--- Previous version that did not work with sidekick
---vim.api.nvim_create_autocmd("BufReadPost", {
---	callback = function(args)
---		local mark = vim.api.nvim_buf_get_mark(args.buf, '"')
---		local line_count = vim.api.nvim_buf_line_count(args.buf)
---		if mark[1] > 0 and mark[1] <= line_count then
---			vim.api.nvim_win_set_cursor(0, mark)
---			-- defer centering slightly so it's applied after render
---			vim.schedule(function()
---				vim.cmd("normal! zz")
---			end)
---		end
---	end,
---})
 -- }}}
 
 -- {{{ Auto Resize Splits When Term Win Changes Size
