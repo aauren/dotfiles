@@ -46,6 +46,9 @@ end, {
 	desc = "Cmdline completion: select previous item with Up arrow"
 })
 
+-- Allow CTRL-w to work even when terminal mode is active
+vim.keymap.set('t', '<C-w>', '<C-\\><C-n><C-w>', { noremap = true, silent = true })
+
 
 -- }}}
 
