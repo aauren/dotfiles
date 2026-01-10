@@ -14,7 +14,19 @@ return {
 			},
 			modes = {
 				lsp_base = {
+					-- attempt to control the bottom height for LSP References
+					win = {
+						position = "bottom",
+						size = 0.15,
+					},
 					focus = true,
+				},
+				diagnostics = {
+					-- attempt to control the bottom height for Diagnostics
+					win = {
+						position = "bottom",
+						size = 0.15,
+					},
 				},
 			},
 		}, -- for default options, refer to the configuration section for custom setup.
