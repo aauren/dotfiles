@@ -116,42 +116,47 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 		end
 
 		-- If something requested a specific line, don't restore last cursor
-		if vim.v.lnum ~= 0 then
+		if vim.v.lnum > 1 then
+			vim.b[args.buf].last_cursor_restore_skip = true
 			return
 		end
 
-		local mark = vim.api.nvim_buf_get_mark(args.buf, '"')
-		local line_count = vim.api.nvim_buf_line_count(args.buf)
+		vim.b[args.buf].last_cursor_restore_skip = false
+	end,
+})
 
-		-- mark = {line, col}; line=0 means "no mark"
-		if mark[1] == 0 or mark[1] > line_count then
+vim.api.nvim_create_autocmd("BufWinEnter", {
+	callback = function(args)
+		-- Ignore special buffers (terminal, nofile, prompt, etc.)
+		if vim.bo[args.buf].buftype ~= "" then
+			return
+		end
+
+		if vim.b[args.buf].last_cursor_restore_skip then
+			return
+		end
+
+		if vim.b[args.buf].last_cursor_restored then
 			return
 		end
 
 		-- Defer until UI/window state is stable, but run in the correct window
 		vim.schedule(function()
-			-- Find a window currently showing this buffer
-			local win = -1
-			for _, w in ipairs(vim.api.nvim_list_wins()) do
-				if vim.api.nvim_win_get_buf(w) == args.buf then
-					win = w
-					break
-				end
-			end
-			if win == -1 or not vim.api.nvim_win_is_valid(win) then
+			if vim.api.nvim_get_current_buf() ~= args.buf then
 				return
 			end
 
-			vim.api.nvim_win_call(win, function()
-				-- Only restore if nothing has positioned the cursor yet
-				local cur = vim.api.nvim_win_get_cursor(win) -- {line, col}
-				if cur[1] ~= 1 or cur[2] ~= 0 then
-					return
-				end
+			local mark = vim.api.nvim_buf_get_mark(args.buf, '"')
+			local line_count = vim.api.nvim_buf_line_count(args.buf)
 
-				pcall(vim.api.nvim_win_set_cursor, win, mark)
-				pcall(vim.cmd, "normal! zz")
-			end)
+			-- mark = {line, col}; line=0 means "no mark"
+			if mark[1] == 0 or mark[1] > line_count then
+				return
+			end
+
+			pcall(vim.api.nvim_win_set_cursor, 0, mark)
+			pcall(vim.cmd, "normal! zz")
+			vim.b[args.buf].last_cursor_restored = true
 		end)
 	end,
 })
