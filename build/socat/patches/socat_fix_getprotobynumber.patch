@@ -1,13 +1,29 @@
---- socat-1.8.0.0/fdname.c	2023-11-13 13:31:08.000000000 -0600
-+++ socat-1.8.0.0b/fdname.c	2024-03-16 15:56:05.343066079 -0500
-@@ -288,9 +288,7 @@
-    strncpy(protoname, protoentp->p_name, sizeof(protoname));
- #elif HAVE_GETPROTOBYNUMBER_R==2 /* Solaris */
-    {
--#     define FILAN_GETPROTOBYNUMBER_R_BUFLEN 1024
--      char buffer[FILAN_GETPROTOBYNUMBER_R_BUFLEN];
--      protoentp = getprotobynumber_r(proto, &protoent, buffer, FILAN_GETPROTOBYNUMBER_R_BUFLEN);
-+      protoentp = getprotobynumber(proto);
-       strncpy(protoname, protoentp->p_name, sizeof(protoname));
-    }
+--- socat-1.8.1.0/fdname.c	2023-11-13 13:31:08.000000000 -0600
++++ socat-1.8.1.0b/fdname.c	2024-03-16 15:56:05.343066079 -0500
+@@ -289,7 +289,7 @@
+    if (sockname.soa.sa_family == AF_INET ||
+        sockname.soa.sa_family == AF_INET6) {
+ #if HAVE_GETPROTOBYNUMBER_R==1 /* Linux */
+-      rc = getprotobynumber_r(proto, &protoent, protoname, sizeof(protoname), &protoentp);
++      rc = getprotobynumber(proto);
+       if (protoentp == NULL) {
+ 	 Warn2("sockname(): getprotobynumber_r(proto=%d, ...): %s",
+ 	       proto, strerror(rc));
+@@ -299,7 +299,7 @@
+       {
+ #     define FILAN_GETPROTOBYNUMBER_R_BUFLEN 1024
+ 	 char buffer[FILAN_GETPROTOBYNUMBER_R_BUFLEN];
+-	 protoentp = getprotobynumber_r(proto, &protoent, buffer, FILAN_GETPROTOBYNUMBER_R_BUFLEN);
++	 protoentp = getprotobynumber(proto);
+ 	 if (protoentp == NULL) {
+ 	    Warn2("sockname(): getprotobynumber_r(proto=%d, ...): %s",
+ 		  proto, strerror(rc));
+@@ -310,7 +310,7 @@
  #elif HAVE_GETPROTOBYNUMBER_R==3 /* AIX, OpenBSD */
+       {
+ 	 struct protoent_data proto_data = { 0 }; 	/* OpenBSD might SIGSEGV */
+-	 rc = getprotobynumber_r(proto, &protoent, &proto_data);
++	 rc = getprotobynumber(proto);
+ 	 if (rc == 0) {
+ 	    strncpy(protoname, protoent.p_name, sizeof(protoname));
+ 	    endprotoent_r(&proto_data);

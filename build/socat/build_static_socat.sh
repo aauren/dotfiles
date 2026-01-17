@@ -2,12 +2,13 @@
 
 # Taken from the gist created by feiskyer: https://gist.github.com/feiskyer/1911c365014d9577dd765d5a7eb5aa89
 
-export SOCAT_VERSION=1.8.0.3
-export NCURSES_VERSION=6.5
+export SOCAT_VERSION=1.8.1.0
+export NCURSES_VERSION=6.6
 export READLINE_VERSION=8.3
-export OPENSSL_VERSION=3.5.1
+export OPENSSL_VERSION=3.6.0
 
 function build_ncurses() {
+	echo "=================================================== BUILDING ncruses ==================================================="
 	cd /build
 
 	# Download
@@ -22,6 +23,7 @@ function build_ncurses() {
 }
 
 function build_readline() {
+	echo "=================================================== BUILDING Readline ==================================================="
 	cd /build
 
 	# Download
@@ -39,6 +41,7 @@ function build_readline() {
 }
 
 function build_openssl() {
+	echo "=================================================== BUILDING OpenSSL ==================================================="
 	cd /build
 
 	# Download
@@ -56,6 +59,7 @@ function build_openssl() {
 }
 
 function build_socat() {
+	echo "=================================================== BUILDING SOCAT ==================================================="
 	cd /build
 
 	# Download
@@ -72,8 +76,11 @@ function build_socat() {
 		LDFLAGS="-L/build/readline -L/build/ncurses-${NCURSES_VERSION}/lib -L/build/openssl-${OPENSSL_VERSION}" \
 		sc_cv_getprotobynumber_r=2 \
 		./configure
+	echo "=================================================== PATCHING SOCAT ==================================================="
 	patch -p1 -i ../patches/socat_fix_static.patch
 	patch -p1 -i ../patches/socat_fix_getprotobynumber.patch
+	patch -p1 -i ../patches/socat_fix_abi_compliance_msghdr_xio-netlink.patch
+	echo "=================================================== MAKING SOCAT ==================================================="
 	make -j20
 	strip socat
 }

@@ -1,11 +1,11 @@
 --- socat-1.8.0.0/Makefile	2024-03-16 16:00:05.284496954 -0500
 +++ socat-1.8.0.0b/Makefile	2024-03-16 15:42:44.306276847 -0500
-@@ -110,7 +110,7 @@
+@@ -112,7 +112,7 @@
  	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ socat.o libxio.a $(CLIBS)
  
- procan.o: procan.c
--	$(CC) $(CFLAGS) -c -D CC=\"$(CC)\" -o $@ procan.c
-+	$(CC) $(CFLAGS) -c -D CC=\"/usr/bin/x86_64-alpine-linux-musl-gcc\" -o $@ procan.c
+ procan.o: $(srcdir)/procan.c
+-	$(CC) $(CFLAGS) -c -D CC="\"$(CC)\"" -o $@ $(srcdir)/procan.c
++	$(CC) $(CFLAGS) -c -D CC="\"/usr/bin/x86_64-alpine-linux-musl-gcc\"" -o $@ $(srcdir)/procan.c
  
  PROCAN_OBJS=procan_main.o procan.o procan-cdefs.o hostan.o error.o sycls.o sysutils.o utils.o vsnprintf_r.o snprinterr.o
  procan: $(PROCAN_OBJS)
