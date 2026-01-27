@@ -303,7 +303,7 @@ end, { expr = true, noremap = true })
 -- }}}
 
 -- {{{ Close Buffer/Window
-vim.keymap.set('n', '<leader>z', ':bdelete<CR>', {
+vim.keymap.set('n', '<leader>z', ':bp | bd #<CR>', {
 	noremap = true,
 	silent = true,
 	desc = "Close current buffer"
