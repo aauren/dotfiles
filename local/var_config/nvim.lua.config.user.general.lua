@@ -12,6 +12,9 @@ vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.softtabstop = 4
 
+-- Disable auto-selection of first item in autocomplete
+vim.opt.wildmode = "longest:list"
+
 -- {{{ Initially set defaults
 myfn.BaseSanity()
 
