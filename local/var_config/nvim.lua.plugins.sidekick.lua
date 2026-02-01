@@ -11,7 +11,7 @@ return {
 			},
 			win = {
 				split = {
-					width = 0.35,
+					width = 0.5,
 				},
 			},
 		},
