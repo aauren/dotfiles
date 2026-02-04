@@ -22,6 +22,87 @@ vim() {
 	fi
 }
 
+# Find and open files matching one or more partial names in vim
+vf() {
+	local sc pattern file basename_file
+	local -a found_files all_files
+	set_search_command
+
+	# Check if at least one pattern was provided
+	if [[ $# -eq 0 ]]; then
+		echo "Usage: vimf <pattern1> [pattern2] [pattern3] ..."
+		return 1
+	fi
+
+	# Find files matching each pattern (using null-terminated strings for special chars)
+	for pattern in "${@}"; do
+		# If in a git repo, use git ls-files which respects .gitignore
+		if git rev-parse --git-dir &>/dev/null; then
+			# Match pattern only against the basename (filename), not the full path
+			while IFS= read -r file; do
+				basename_file="${file##*/}"
+				if [[ "${basename_file}" == *${pattern}* ]] || [[ "${basename_file:l}" == *${pattern:l}* ]]; then
+					found_files+=("${file}")
+				fi
+			done < <(git ls-files)
+		else
+			found_files=("${(@0)$("${sc}" . "${EXCLUDE_GIT_PATTERN[@]}" -type f -iname "*${pattern}*" -print0)}")
+		fi
+		# Filter out empty entries and ensure only files (not directories)
+		for file in "${found_files[@]}"; do
+			[[ -n "${file}" && -f "${file}" ]] && all_files+=("${file}")
+		done
+		found_files=()
+	done
+
+	# Check if any files were found
+	if [[ ${#all_files[@]} -eq 0 ]]; then
+		echo "No files found matching patterns: ${*}"
+		return 1
+	fi
+
+	# Open all found files in vim
+	vim "${all_files[@]}"
+}
+
+# Find and open files using peco for interactive filtering
+vff() {
+	local sc selected_file file
+	local -a all_files filtered_files
+	set_search_command
+
+	# Find all files first and store them in an array to ensure complete input for peco
+	# If in a git repo, use git ls-files which respects .gitignore
+	if git rev-parse --git-dir &>/dev/null; then
+		all_files=("${(@f)$(git ls-files)}")
+	else
+		all_files=("${(@0)$("${sc}" . "${EXCLUDE_GIT_PATTERN[@]}" -type f -print0)}")
+	fi
+
+	# Filter out empty entries and ensure only files (not directories)
+	for file in "${all_files[@]}"; do
+		[[ -n "${file}" && -f "${file}" ]] && filtered_files+=("${file}")
+	done
+
+	# Check if any files were found
+	if [[ ${#filtered_files[@]} -eq 0 ]]; then
+		echo "No files found"
+		return 1
+	fi
+
+	# Pass the complete list to peco for filtering and capture selection
+	selected_file=$(printf "%s\n" "${filtered_files[@]}" | peco)
+
+	# Check if any files were selected
+	if [[ -z "${selected_file}" ]]; then
+		echo "No files selected"
+		return 1
+	fi
+
+	# Open selected file(s) in vim
+	vim ${(f)selected_file}
+}
+
 # Automatically try to determine git message
 git_make_commit_message () {
 	local changed_files message sed
