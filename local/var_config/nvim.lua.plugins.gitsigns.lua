@@ -56,6 +56,27 @@ return {
 				end,
 				desc = "Git toggle current line blame",
 			},
+			-- Navigation
+			{
+				"]c",
+				function()
+					if vim.wo.diff then return "]c" end
+					vim.schedule(function() require("gitsigns").next_hunk() end)
+					return "<Ignore>"
+				end,
+				expr = true,
+				desc = "Jump to next hunk",
+			},
+			{
+				"[c",
+				function()
+					if vim.wo.diff then return "[c" end
+					vim.schedule(function() require("gitsigns").prev_hunk() end)
+					return "<Ignore>"
+				end,
+				expr = true,
+				desc = "Jump to previous hunk",
+			},
 		},
 	}
 }
