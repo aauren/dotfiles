@@ -55,8 +55,19 @@ return {
 				})
 			end
 
+			-- <A-p>: project files, ignoring .gitignore (show ALL files)
+			local function project_files_all()
+				local root = project_root()
+				Snacks.picker.files({
+					cwd = root,
+					hidden = true,
+					ignored = true, -- always show gitignored files
+				})
+			end
+
 			-- Keymaps
 			vim.keymap.set("n", "<c-p>", project_files, { desc = "Snacks: find project files (git root)" })
+			vim.keymap.set("n", "<A-p>", project_files_all, { desc = "Snacks: find ALL files (ignore .gitignore)" })
 			vim.keymap.set("n", "<c-t>", Snacks.picker.lsp_workspace_symbols, { desc = "Snacks: workspace symbols" })
 			vim.keymap.set("n", "<A-r>", project_grep, { desc = "Snacks: live grep (git root)" })
 			vim.keymap.set("n", "<c-b>", Snacks.picker.recent, { desc = "Snacks: recent files" })
