@@ -39,6 +39,8 @@ alias hdu='helm dependency update --skip-refresh'
 alias ep="source ${HOME}/desktop_bin/enable-proxy-tiny"
 alias dp="source ${HOME}/desktop_bin/disable-proxy"
 alias ez="exec zsh"
+# Enable claude in sandbox mode by default in order to avoid prompt fatigue
+alias claude="claude --sandbox"
 
 # Get the current ipv4 address
 alias myip="ip addr | grep -E 'inet [^/]+/24'"
