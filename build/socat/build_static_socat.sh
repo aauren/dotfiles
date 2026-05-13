@@ -2,10 +2,10 @@
 
 # Taken from the gist created by feiskyer: https://gist.github.com/feiskyer/1911c365014d9577dd765d5a7eb5aa89
 
-export SOCAT_VERSION=1.8.1.0
+export SOCAT_VERSION=1.8.1.1
 export NCURSES_VERSION=6.6
 export READLINE_VERSION=8.3
-export OPENSSL_VERSION=3.6.0
+export OPENSSL_VERSION=3.6.2
 
 function build_ncurses() {
 	echo "=================================================== BUILDING ncruses ==================================================="
