@@ -72,6 +72,7 @@ return {
 			vim.keymap.set("n", "<A-r>", project_grep, { desc = "Snacks: live grep (git root)" })
 			vim.keymap.set("n", "<c-b>", Snacks.picker.recent, { desc = "Snacks: recent files" })
 			vim.keymap.set("n", "<leader>fh", Snacks.picker.help, { desc = "Snacks: help tags" })
+			vim.keymap.set("n", "<leader>fk", Snacks.picker.keymaps, { desc = "Snacks: search keymaps" })
 		end,
 	},
 }
