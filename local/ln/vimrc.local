@@ -1042,10 +1042,10 @@ map <leader>j :%!python -m json.tool<CR>
 map <leader>X :call DoPrettyXML()<CR>
 " !help! <leader map>: Dump all of the current keys bindings/mappings to a file and open it
 map <leader>map :call ExportKeys()<CR>
-" !help! <leader vs>: Split the current buffer to the other vertical
-map <leader>vs :call VSplitCurrentBuffer()<CR>
-" !help! <leader hs>: Split the current buffer to the other horizontal
-map <leader>hs :call SplitCurrentBuffer()<CR>
+" !help! <leader wv>: Split the current buffer to the other vertical (renamed from <leader>vs)
+map <leader>wv :call VSplitCurrentBuffer()<CR>
+" !help! <leader ws>: Split the current buffer to the other horizontal (renamed from <leader>hs)
+map <leader>ws :call SplitCurrentBuffer()<CR>
 " !help! <leader vc>: Open my vim customizations to a vertical split
 map <leader>vc :call ShowVimCustomizations()<CR>
 " Because we can sometimes have buffers like nerdtree or outline, we want to close the current buffer without

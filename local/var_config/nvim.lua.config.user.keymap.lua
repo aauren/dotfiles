@@ -431,14 +431,18 @@ end, {
 })
 
 -- Split the current buffer to the other vertical
-vim.keymap.set('', '<leader>vs', myfn.VSplitCurrentBuffer, {
+-- Renamed from <leader>vs to free up the <leader>v* namespace and to group
+-- window operations under <leader>w*; also avoids colliding with gitsigns'
+-- <leader>hs (stage hunk) which is the ecosystem-standard binding.
+vim.keymap.set('', '<leader>wv', myfn.VSplitCurrentBuffer, {
 	noremap = true,
 	silent = true,
 	desc = "Split the current buffer to the other vertical"
 })
 
 -- Split the current buffer to the other horizontal
-vim.keymap.set('', '<leader>hs', myfn.SplitCurrentBuffer, {
+-- Renamed from <leader>hs (see note above).
+vim.keymap.set('', '<leader>ws', myfn.SplitCurrentBuffer, {
 	noremap = true,
 	silent = true,
 	desc = "Split the current buffer to the other horizontal"
