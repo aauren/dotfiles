@@ -15,6 +15,13 @@ vim.opt.softtabstop = 4
 -- Disable auto-selection of first item in autocomplete
 vim.opt.wildmode = "longest:list"
 
+-- How long (ms) Neovim waits for a mapped sequence to complete.
+-- which-key.nvim uses this to decide when to pop its hint window: lower = faster
+-- popup, but single-key mappings that share a prefix (e.g. <leader>r toggles
+-- relativenumber while <leader>rv resizes) fire sooner if you pause mid-sequence.
+-- 300ms is the which-key default recommendation; bump to ~500 if it feels too eager.
+vim.opt.timeoutlen = 300
+
 -- {{{ Initially set defaults
 myfn.BaseSanity()
 
