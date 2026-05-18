@@ -118,58 +118,59 @@ local filetype_group = vim.api.nvim_create_augroup("filetype", { clear = true })
 -- {{{ Restore Last Cursor Postition in File
 -- restore cursor to file position in previous editing session
 -- Restore last cursor position and center view, without breaking terminal-mode
-vim.api.nvim_create_autocmd("BufReadPost", {
-	callback = function(args)
-		-- Ignore special buffers (terminal, nofile, prompt, etc.)
-		if vim.bo[args.buf].buftype ~= "" then
-			return
-		end
-
-		-- If something requested a specific line, don't restore last cursor
-		if vim.v.lnum > 1 then
-			vim.b[args.buf].last_cursor_restore_skip = true
-			return
-		end
-
-		vim.b[args.buf].last_cursor_restore_skip = false
-	end,
-})
-
-vim.api.nvim_create_autocmd("BufWinEnter", {
-	callback = function(args)
-		-- Ignore special buffers (terminal, nofile, prompt, etc.)
-		if vim.bo[args.buf].buftype ~= "" then
-			return
-		end
-
-		if vim.b[args.buf].last_cursor_restore_skip then
-			return
-		end
-
-		if vim.b[args.buf].last_cursor_restored then
-			return
-		end
-
-		-- Defer until UI/window state is stable, but run in the correct window
-		vim.schedule(function()
-			if vim.api.nvim_get_current_buf() ~= args.buf then
-				return
-			end
-
-			local mark = vim.api.nvim_buf_get_mark(args.buf, '"')
-			local line_count = vim.api.nvim_buf_line_count(args.buf)
-
-			-- mark = {line, col}; line=0 means "no mark"
-			if mark[1] == 0 or mark[1] > line_count then
-				return
-			end
-
-			pcall(vim.api.nvim_win_set_cursor, 0, mark)
-			pcall(vim.cmd, "normal! zz")
-			vim.b[args.buf].last_cursor_restored = true
-		end)
-	end,
-})
+-- THIS SEEMS TO DO MORE HARM THAN GOOD SO I'M COMMENTING IT OUT FOR HOW
+---vim.api.nvim_create_autocmd("BufReadPost", {
+---	callback = function(args)
+---		-- Ignore special buffers (terminal, nofile, prompt, etc.)
+---		if vim.bo[args.buf].buftype ~= "" then
+---			return
+---		end
+---
+---		-- If something requested a specific line, don't restore last cursor
+---		if vim.v.lnum > 1 then
+---			vim.b[args.buf].last_cursor_restore_skip = true
+---			return
+---		end
+---
+---		vim.b[args.buf].last_cursor_restore_skip = false
+---	end,
+---})
+---
+---vim.api.nvim_create_autocmd("BufWinEnter", {
+---	callback = function(args)
+---		-- Ignore special buffers (terminal, nofile, prompt, etc.)
+---		if vim.bo[args.buf].buftype ~= "" then
+---			return
+---		end
+---
+---		if vim.b[args.buf].last_cursor_restore_skip then
+---			return
+---		end
+---
+---		if vim.b[args.buf].last_cursor_restored then
+---			return
+---		end
+---
+---		-- Defer until UI/window state is stable, but run in the correct window
+---		vim.schedule(function()
+---			if vim.api.nvim_get_current_buf() ~= args.buf then
+---				return
+---			end
+---
+---			local mark = vim.api.nvim_buf_get_mark(args.buf, '"')
+---			local line_count = vim.api.nvim_buf_line_count(args.buf)
+---
+---			-- mark = {line, col}; line=0 means "no mark"
+---			if mark[1] == 0 or mark[1] > line_count then
+---				return
+---			end
+---
+---			pcall(vim.api.nvim_win_set_cursor, 0, mark)
+---			pcall(vim.cmd, "normal! zz")
+---			vim.b[args.buf].last_cursor_restored = true
+---		end)
+---	end,
+---})
 
 -- }}}
 
