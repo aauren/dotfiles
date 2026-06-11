@@ -545,6 +545,30 @@ converge_ssh() {
 	fi
 }
 
+# Redefine npm so that we have a correct user config on demand
+npm() {
+	local NPMRC_FILES=(
+		"$HOME/.npmrc"
+		"$HOME/.npmrc.local"
+	)
+	tmp="$(mktemp "${TMPDIR:-/tmp}/npmrc.XXXXXX")" || return 1
+
+	for file in "${NPMRC_FILES[@]}"; do
+		[[ -r "$file" ]] || continue
+		{
+			print -r -- ""
+			print -r -- "; ---- ${file} ----"
+			command cat "$file"
+		} >>| "$tmp"
+	done
+
+	command npm --userconfig "$tmp" "$@"
+	rc=$?
+
+	rm -f "$tmp"
+	return "$rc"
+}
+
 # Elastic Search Functions {{{
 # Finds the field data usage for a given environment
 elastic_fielddata() {
