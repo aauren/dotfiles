@@ -7,4 +7,4 @@ for my_file in ${1}; do
 	cat "${my_file}"
 done
 
-# vim: set noet ts=4 sw=4 syntax=sh ft=sh
+# vim: set noet ts=4 sw=4 syntax=sh ft=sh:

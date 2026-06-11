@@ -100,4 +100,4 @@ if ($1>=x) { printf ("%-6.2f %s ", $1/x, hr[x]); break }
 # Custom ps command that sorts by memory used and displays: user, tty, pid, parent pid, memory used, %cpu, %mem, process state, number of threads associated with process (nlwp), cputime used, full command with args
 alias psa="ps -eo 'euser,tty,pid,ppid,rss,%cpu,%mem,stat,nlwp,cputime,command' --sort 'rss'"
 
-# vim: set noet ts=4 sw=4
+# vim: set noet ts=4 sw=4:

@@ -1245,4 +1245,4 @@ ipvs-get-vip() {
 }
 # }}}
 
-# vim: set noet ts=4 sw=4 syntax=sh ft=sh fdm=marker
+# vim: set noet ts=4 sw=4 syntax=sh ft=sh fdm=marker:

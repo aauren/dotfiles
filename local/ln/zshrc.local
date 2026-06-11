@@ -469,4 +469,4 @@ if [[ -d "${HOME}/.config/base16-shell" ]]; then
 fi
 # }}}
 
-# vim: set noet ts=4 sw=4 fdm=marker
+# vim: set noet ts=4 sw=4 fdm=marker:
