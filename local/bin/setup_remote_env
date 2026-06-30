@@ -50,8 +50,9 @@ Options:
 #### Function Declarations ####
 parse_args ()
 {
-	while getopts "h?o:v" opt; do
+	while getopts "h?o:vA" opt; do
 		case "${opt}" in
+			A) :;;
 			h|\?) echo -e "${usage}"; exit 0;;
 			o) additional_ssh_opts+=( -o "${OPTARG}" );;
 			v) verbose=true; set -x;;
