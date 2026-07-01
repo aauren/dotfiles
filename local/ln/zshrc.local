@@ -236,14 +236,14 @@ bindkey -M viins '^K' vi-end-of-line
 # }}}
 
 # Additional File Sourcing (.zshrc.user.local & .function.local) {{{
-# Add additional zsh functions not in git
-if [[ -e "${HOME}/.zshrc.user.local" ]]; then
-	source "${HOME}/.zshrc.user.local"
-fi
-
 # Source misc functions
 if [[ -e "${HOME}/.functions.local" ]]; then
 	source "${HOME}/.functions.local"
+fi
+
+# Add additional zsh functions not in git
+if [[ -e "${HOME}/.zshrc.user.local" ]]; then
+	source "${HOME}/.zshrc.user.local"
 fi
 # }}}
 
