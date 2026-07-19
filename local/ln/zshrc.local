@@ -286,6 +286,7 @@ if [[ -d "${HOME}/thirdparty-git/nvm" ]]; then
 	if [[ -e "${NVM_DIR/nvm.sh}" ]]; then
 		source "${NVM_DIR}/nvm.sh"
 		source "${NVM_DIR}/bash_completion" # this works for bash and zsh
+		nvm use default --silent
 	fi
 fi
 # }}}
