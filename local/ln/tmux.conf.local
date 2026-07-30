@@ -250,22 +250,16 @@ set -g pane-active-border-style "fg=colour12"
 
 # Tried to get this working this way, but it seems like tpm isn't working very well for me
 set -g @tpm_plugins '              \
-  fcsonline/tmux-thumbs            \
+  Morantron/tmux-fingers           \
   jaclu/tmux-power-zoom            \
   tmux-plugins/tmux-resurrect      \
 '
 
-# Tmux Thumbs plugin that allows you to easily select items out of the pane buffer
-# Bind key to capital F (default: space)
-set -g @thumbs-key F
-# Ensures that the full text next to the hint is shown (default: left)
-set -g @thumbs-position off_left
-# Don't use new shortcuts for the same string on the screen (default: disabled)
-set -g @thumbs-unique enabled
-# Change the highlighted fg color to blue to be better looking
-set -g @thumbs-fg-color "blue"
-# Must be near the bottom so that tmux-thumbs runs
-run-shell ~/.tmux/plugins/tmux-thumbs/tmux-thumbs.tmux
+### Tmux fingers patterns
+# Kubernetes namespace
+set -g @fingers-pattern-kube-namespace '^(?<match>[a-z0-9](?:[-a-z0-9]*[a-z0-9])?)(?=[ ]+[a-z0-9](?:[-.a-z0-9]*[a-z0-9])?[ ]+[0-9]+/[0-9]+[ ]+)'
+# Kubernetes pods
+set -g @fingers-pattern-kube-pod '(?<match>[a-z0-9](?:[-.a-z0-9]*[a-z0-9])?)(?=[ ]+[0-9]+/[0-9]+[ ]+)'
 # Old tmux fingers config below for posterity
 #set -g @fingers-hint-format "#[fg=colour124,bold]%s"
 #set -g @fingers-hint-format-nocompact "#[fg=colour124,bold][%s]"
