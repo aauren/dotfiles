@@ -21,6 +21,10 @@ set -g history-limit 20000
 # switch and attach operations, which is basically the equivalent of always specifying "-E" with each of theses commands
 set -g update-environment ""
 
+# Source row-zoom and then bind it to R:
+# This allows a row to be zoomed to the full vertical real-estate and then go back
+bind R run-shell '~/.tmux/scripts/row-zoom "#{pane_id}"'
+
 # Prefix+a causes us to return to previous window
 bind C-a last-window
 
