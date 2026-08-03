@@ -1,5 +1,7 @@
 #!/bin/bash
-# Shows a list of branches for the first parameter (usually something like "refs" or "refs/heads")
+# Shows a list of branches matching the ref patterns given as the first parameter (usually something like
+# "refs/heads" or "refs/heads refs/remotes"). Multiple patterns may be passed as a single space separated
+# argument. Avoid a bare "refs", since that also pulls in refs/tags.
 # May be used with the following options as the second parameter (will only accept one of the following):
 #  * -c: non-color - strips color from the output (useful for pipeing into other commands)
 #  * -s: select - puts your into a mode to select a branch out of the output (automatically change to that branch)
@@ -18,23 +20,27 @@ format_git_branches () {
 	BOLD_RED=$(tput bold; tput setaf 1)
 	GREEN=$(tput setaf 2)
 	local mystr branch_name not_merged
-	local fmt="ref=%(refname:short); authordate=%(authordate:relative); commiterdate=%(committerdate); authorname=%(authorname); sha1=%(objectname);"
+	local fmt="fullref=%(refname); ref=%(refname:short); authordate=%(authordate:relative); commiterdate=%(committerdate); authorname=%(authorname); sha1=%(objectname);"
 	not_merged="$(git branch --no-merge)"
 	echo -e "==========================================Branches================================================"
 	local -i count=1
-	local -a branches
+	local -a branches branch_refs
+	# We want word splitting here so that a caller can pass several ref patterns in a single argument
+	# shellcheck disable=SC2206
+	local -a patterns=(${1})
+	# Remote HEAD symrefs (refs/remotes/<remote>/HEAD) just point at a remote's default branch and render as a
+	# bare remote name, so we drop them below before the row limit rather than after
 	while read -r entry; do
 		eval "${entry}"
-		local nomerge files_changed
-		# $ref $authordate and $authorname is actually set but the eval entry above, format of "git for-each-ref" is as follows:
-		# ref="master"; authordate="25 hours ago"; commiterdate="Tue Feb 19 12:04:02 2019 -0600"; authorname="<auther_name>"; sha1="e132403f6cd07d2e12874a4c6f0b31a4d8d3637d";
+		local nomerge="" files_changed=""
+		# $fullref $ref $authordate and $authorname are actually set by the eval above, format of "git for-each-ref" is:
+		# fullref="refs/heads/master"; ref="master"; authordate="25 hours ago"; commiterdate="Tue Feb 19 12:04:02 2019 -0600"; authorname="<auther_name>"; sha1="e132403f6cd07d2e12874a4c6f0b31a4d8d3637d";
 		# shellcheck disable=SC2154
 		branches+=("${ref}")
-		if grep -q "/" <<<"${ref}"; then
-			ref="$("${SED_EXE}" -r 's;[a-zA-Z]+/(.*)$;\1;'<<<"${ref}")"
-		fi
-		# We'll use a hybrid of the above command and the output of git branch --no-merge to check for changes
-		if grep -q -e "^[ ]*${ref}[ ]*$" <<<"${not_merged}" ; then
+		# shellcheck disable=SC2154
+		branch_refs+=("${fullref}")
+		# git branch --no-merge only ever reports local branches, so we don't try to flag remote ones
+		if [[ "${fullref}" == refs/heads/* ]] && grep -q -e "^[ *]*${ref}[ ]*$" <<<"${not_merged}"; then
 			nomerge="(*)"
 		fi
 		if [[ "${2}" && "${2}" == "-s" ]]; then
@@ -63,7 +69,8 @@ format_git_branches () {
 				mystr="${mystr}$(printf "	%s%-60s%s -%s\\n " "${BOLD_WHITE}" "${file_part1}" "${RESET}" "${file_part2}")"
 			done <<< "${files_changed}"
 		fi
-	done <<<"$(git for-each-ref --tcl --sort=-committerdate --format="${fmt}" "${1}" | head -n 35)"
+	done <<<"$(git for-each-ref --tcl --sort=-committerdate --format="${fmt}" "${patterns[@]}" |
+		grep -v 'fullref="refs/remotes/[^"]*/HEAD"' | head -n 35)"
 
 	if [[ "${2}" && "${2}" == "-s" ]]; then
 		printf "\\n%sSelect Branch to Switch to (q to quit): %s" "${BOLD_WHITE}" "${RESET}"
@@ -75,11 +82,12 @@ format_git_branches () {
 			echo "Could not validate input"
 			exit 1
 		fi
-		# if the branch contains a slash, indicating that it is a remote, see if a non-remote version of the branch
-		# exists and if it does switch to that one instead
-		branch_name=${branches[$((uinput - 1))]}
-		if grep -q "/" <<<"${branch_name}" &>/dev/null; then
-			if git rev-parse --verify "${branch_name#*/}" &>/dev/null; then
+		# For a remote-tracking ref, strip the remote name and switch to the local branch instead if we have one.
+		# We check the full refname rather than looking for a slash, because plenty of local branches are
+		# namespaced (feat/foo, issues/1234) and we'd otherwise mangle those.
+		branch_name="${branches[$((uinput - 1))]}"
+		if [[ "${branch_refs[$((uinput - 1))]}" == refs/remotes/* ]]; then
+			if git rev-parse --verify --quiet "${branch_name#*/}" >/dev/null; then
 				branch_name="${branch_name#*/}"
 			fi
 		fi
