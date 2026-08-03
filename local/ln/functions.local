@@ -506,7 +506,7 @@ awsp() {
 	echo "${profile}" >"${HOME}/.aws/current_profile"
 
 	if ! aws_output=$(aws sts get-caller-identity 2>&1); then
-		if ! grep -q ExpiredToken <<<"${aws_output}"; then
+		if ! grep -Eq 'ExpiredToken|InvalidClientTokenId' <<<"${aws_output}"; then
 			printf -- "Ran into the following error while checking authentication: %s\n" "${aws_output}"
 			return 1
 		fi
