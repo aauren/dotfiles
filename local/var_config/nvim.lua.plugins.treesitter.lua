@@ -30,7 +30,6 @@ return {
 					"nginx",
 					"python",
 					"terraform",
-					"tmux",
 					"toml",
 					"vim",
 					"vimdoc",
