@@ -160,6 +160,34 @@ vim.keymap.set('n', 'p', 'p`]', {
 	desc = "Paste and move cursor to end of pasted text"
 })
 
+-- Set last motion and change semi-colon to perform last motion (only works with nvim >=0.13
+if vim.fn.has("nvim-0.13") == 1 then
+	local last_motion
+
+	vim.api.nvim_create_autocmd("CmdAtom", {
+		callback = function(ev)
+			local motion = ev.data.moved or ev.match == "motion"
+
+			-- Record motions, but don't record ";" itself or editing commands.
+			if motion and not (ev.data.changed or ev.data.lhs == ";") then
+				last_motion = ev.data
+			end
+		end,
+	})
+
+	vim.keymap.set("n", ";", function()
+		vim.schedule(function()
+			if last_motion then
+				vim.api.nvim_feedkeys(
+					last_motion.keys or last_motion.lhs,
+					last_motion.keys and "n" or "m",
+					false
+				)
+			end
+		end)
+	end)
+end
+
 -- {{{ Mode Agnostic Movement using G/F/J/K
 -- Move right one word in normal, visual, select, and operator-pending modes
 vim.keymap.set('', '<C-G>', '<C-Right>', {
