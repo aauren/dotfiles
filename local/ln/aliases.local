@@ -40,6 +40,7 @@ alias ep="source ${HOME}/desktop_bin/enable-proxy-tiny"
 alias dp="source ${HOME}/desktop_bin/disable-proxy"
 alias ez="exec zsh"
 alias oc="opencode"
+alias tma="tmux a -t 0"
 
 # Get the current ipv4 address
 alias myip="ip addr | grep -E 'inet [^/]+/24'"
