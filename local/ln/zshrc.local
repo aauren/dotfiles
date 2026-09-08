@@ -364,33 +364,21 @@ if [[ -e "${HOME}/.local/bin" ]]; then
 	PATH="${HOME}/.local/bin:${PATH}"
 fi
 
-# Clean up the path by removing duplicate entries
-PATH=$(awk -v RS=':' -v ORS=":" '!a[$1]++{if (NR > 1) printf ORS; printf $a[$1]}' <<< "${PATH}")
+# Remove duplicate PATH entries while preserving the first occurrence.
+typeset -U path PATH
 
-# For whatever reason, sometimes /usr/sbin and /sbin come after /usr/bin and /bin with ZSH, this statement makes sure
-# that if those paths exist in PATH that they always come first
-if grep -q /usr/sbin <<<"${PATH}"; then
-	PATH=$(awk -v RS=':' -v ORS=":" '
-	BEGIN { pattern = "^(/usr)?/(s)?bin$" }
-	{
-	if ($1 ~ pattern) {
-		if ($1 ~ /sbin/) {
-			print $1
-			gsub("sbin","bin",$1)
-			if (a[$1] < 1) {
-				print $1
-			}
-		}
-		else {
-			a[$1]++
-			print $1
-		}
-	}
-	else {
-	print $1
-	}
-	}' <<< "${PATH}")
+# Place /usr/sbin immediately before /usr/bin.
+if (( ${path[(I)/usr/sbin]} && ${path[(I)/usr/bin]} )); then
+	path=(${path:#/usr/sbin})
+	path[${path[(i)/usr/bin]}]=(/usr/sbin /usr/bin)
 fi
+
+# Place /sbin immediately before /bin.
+if (( ${path[(I)/sbin]} && ${path[(I)/bin]} )); then
+	path=(${path:#/sbin})
+	path[${path[(i)/bin]}]=(/sbin /bin)
+fi
+
 # }}}
 
 # Completion Setup {{{
