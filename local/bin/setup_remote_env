@@ -157,6 +157,18 @@ change_rsync_opts() {
 	RSYNC_OPTS="${RSYNC_OPTS_NO_EXT_ATTR}"
 }
 
+setup_remote_terminfo() {
+	if [[ ${TERM:-} != *ghostty* ]]; then
+		return
+	fi
+
+	output_during_block "\tInstalling ${TERM} terminfo - "
+	capture_before_date
+	infocmp -x "${TERM}" | command ssh ${SSH_OPTS} "${additional_ssh_opts[@]}" ${ssh_conn_str} \
+		'mkdir -p "$HOME/.terminfo" && tic -x -o "$HOME/.terminfo" /dev/stdin'
+	print_duration
+}
+
 capture_before_date() {
 	start_dt="$(date +%s.%N)"
 }
@@ -185,6 +197,7 @@ setup_remote_home_vars
 
 echo "Syncing dotfiles..."
 block_output
+setup_remote_terminfo
 output_during_block "\tCreating Remote VIM Dirs - "
 capture_before_date
 command ssh ${SSH_OPTS} "${additional_ssh_opts[@]}" ${ssh_conn_str} "mkdir -p ${REMOTE_VUNDLE_LOC}"
