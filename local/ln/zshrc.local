@@ -30,38 +30,6 @@ setopt nohashcmds
 
 # }}}
 
-# SSH Agent Setup {{{
-# Command to start up ssh-agen if there is an SSH key in your profile
-if [[ -z ${SSH_AUTH_SOCK} ]]; then
-	if [[ -e "${XDG_RUNTIME_DIR}/ssh-agent.socket" ]]; then
-		export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
-	elif [[ -z $(pgrep ssh-agent) ]]; then
-		eval $(ssh-agent)
-	fi
-fi
-
-# Add any missing SSH identities
-if [[ -d "${HOME}/.ssh" ]]; then
-	SSH_ADD=$(ssh-add -l)
-	declare -a identities
-	for file in ${HOME}/.ssh/id*.pub; do
-		[[ -e "${file}" ]] || break # in case it selected the wildcard (which isn't a real cert) abort
-		identity=$(ssh-keygen -lf ${file} | cut -f2 -d' ')
-		if [[ $SSH_ADD != *${identity}* ]]; then
-			identities+="${file%.*}"
-		fi
-	done
-	for file in ${HOME}/.ssh/*.pem; do
-		[[ -e "${file}" ]] || break # in case it selected the wildcard (which isn't a real cert) abort
-		identities+="${file}"
-	done
-	if [[ ${#identities} -ne 0 ]]; then
-		echo "Identities were missing, adding: ${identities[@]}"
-		ssh-add ${identities[@]}
-	fi
-fi
-# }}}
-
 # ZSH Prompt Setup {{{
 # Changes prompt to include information about Git repos and what zvim mode we're in
 source "${HOME}/dotfiles/local/lib/git_prompt/zshrc.sh"
@@ -250,6 +218,16 @@ fi
 # Path Additions, Language Setup, and Cleanup {{{
 # Include additional paths for cheat
 export CHEATPATH="$CHEATPATH:/home/auren/.cheat.local"
+
+# SSH Agent Setup {{{
+
+# Check to make sure an SSH agent is running, if not attempt to start one (see: ~/.functions.local)
+setup_ssh_agent
+
+# Ensure that SSH agent is setup to add keys to agent and to use keychain on mac (see: ~/.functions.local)
+initialize_ssh_config
+
+# }}}
 
 # Golang {{{
 # Add GOPATH env variable

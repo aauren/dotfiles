@@ -569,6 +569,140 @@ npm() {
 	return "$rc"
 }
 
+# SSH Setup Functions {{{
+
+# Reuse an available SSH agent, preferring a persistent systemd user agent when supported.
+setup_ssh_agent() {
+	local agent_environment runtime_dir service_name socket_path ssh_agent_path systemd_socket unit_dir unit_file
+	local -a socket_candidates
+
+	# If an authentication socket already exists in this session, use it
+	if [[ -n "${SSH_AUTH_SOCK}" && -S "${SSH_AUTH_SOCK}" ]]; then
+		return 0
+	fi
+	unset SSH_AUTH_SOCK
+
+	# If systemd already has a running agent, then use it check the following in order:
+	# - /run/user/<id>/ssh-agent.socket
+	# - /run/user/<id>/dotfiles-ssh-agent/agent.sock
+	runtime_dir="${XDG_RUNTIME_DIR:-/run/user/${EUID}}"
+	socket_candidates=(
+		"${runtime_dir}/ssh-agent.socket"
+		"${runtime_dir}/dotfiles-ssh-agent/agent.sock"
+	)
+	for socket_path in "${socket_candidates[@]}"; do
+		if [[ -S "${socket_path}" ]]; then
+			export SSH_AUTH_SOCK="${socket_path}"
+			return 0
+		fi
+	done
+
+	if ! ssh_agent_path="$(command -v ssh-agent)"; then
+		printf "Unable to set up SSH agent: ssh-agent is not installed\n" >&2
+		return 1
+	fi
+
+	# If systemd is available on this system, run ssh-agent as a user systemd service and use its socket
+	if [[ -d /run/systemd/system ]] && command -v systemctl &>/dev/null \
+		&& command systemctl --user show-environment &>/dev/null; then
+		service_name="dotfiles-ssh-agent.service"
+		systemd_socket="${runtime_dir}/dotfiles-ssh-agent/agent.sock"
+		unit_dir="${XDG_CONFIG_HOME:-${HOME}/.config}/systemd/user"
+		unit_file="${unit_dir}/${service_name}"
+
+		if [[ ! -e "${unit_file}" ]]; then
+			if ! command mkdir -p "${unit_dir}"; then
+				printf "Unable to create systemd user unit directory: %s\n" "${unit_dir}" >&2
+				return 1
+			fi
+			{
+				printf "[Unit]\n"
+				printf "Description=OpenSSH authentication agent\n\n"
+				printf "[Service]\n"
+				printf "Type=simple\n"
+				printf "RuntimeDirectory=dotfiles-ssh-agent\n"
+				printf "RuntimeDirectoryMode=0700\n"
+				printf "ExecStart=%s -D -a %%t/dotfiles-ssh-agent/agent.sock\n\n" "${ssh_agent_path}"
+				printf "[Install]\n"
+				printf "WantedBy=default.target\n"
+			} >| "${unit_file}" || {
+				printf "Unable to write systemd user unit: %s\n" "${unit_file}" >&2
+				return 1
+			}
+			command systemctl --user daemon-reload || return 1
+		fi
+
+		if command systemctl --user enable --now "${service_name}"; then
+			export SSH_AUTH_SOCK="${systemd_socket}"
+			return 0
+		fi
+		printf "Unable to start systemd SSH agent; falling back to a shell-owned agent\n" >&2
+	fi
+
+	# If all else fails, try to just run ssh-agent on its own
+	if ! agent_environment="$(command ssh-agent -s)"; then
+		printf "Unable to launch ssh-agent\n" >&2
+		return 1
+	fi
+	eval "${agent_environment}"
+}
+
+# Install portable agent settings once, using config.d when that convention already exists.
+initialize_ssh_config() {
+	local config_contents marker snippet snippet_file ssh_config ssh_dir target_file
+
+	ssh_dir="${HOME}/.ssh"
+	ssh_config="${ssh_dir}/config"
+	snippet_file="${ssh_dir}/config.d/zz_use_ssh_keychain"
+	marker="# >>> dotfiles SSH agent configuration >>>"
+	snippet="${marker}
+Host *
+  IgnoreUnknown UseKeychain
+  AddKeysToAgent yes
+  UseKeychain yes
+# <<< dotfiles SSH agent configuration <<<"
+
+	if [[ ! -d "${ssh_dir}" ]]; then
+		if ! command mkdir -p "${ssh_dir}"; then
+			printf "Unable to create SSH configuration directory: %s\n" "${ssh_dir}" >&2
+			return 1
+		fi
+		command chmod 700 "${ssh_dir}" || return 1
+	fi
+
+	if [[ -r "${ssh_config}" ]]; then
+		config_contents="$(<"${ssh_config}")"
+		if [[ "${config_contents}" == *"${marker}"* ]] \
+			|| [[ "${config_contents}" == *"IgnoreUnknown UseKeychain"* \
+				&& "${config_contents}" == *"AddKeysToAgent yes"* \
+				&& "${config_contents}" == *"UseKeychain yes"* ]]; then
+			return 0
+		fi
+	fi
+
+	if [[ -d "${ssh_dir}/config.d" ]]; then
+		[[ -e "${snippet_file}" ]] && return 0
+		printf "%s\n" "${snippet}" >| "${snippet_file}" || {
+			printf "Unable to write SSH configuration snippet: %s\n" "${snippet_file}" >&2
+			return 1
+		}
+		target_file="${snippet_file}"
+	else
+		if [[ -s "${ssh_config}" ]]; then
+			printf "\n" >> "${ssh_config}" || return 1
+		fi
+		printf "%s\n" "${snippet}" >> "${ssh_config}" || {
+			printf "Unable to update SSH configuration: %s\n" "${ssh_config}" >&2
+			return 1
+		}
+		target_file="${ssh_config}"
+	fi
+
+	command chmod 600 "${target_file}"
+}
+
+# }}}
+
 # Elastic Search Functions {{{
 # Finds the field data usage for a given environment
 elastic_fielddata() {
