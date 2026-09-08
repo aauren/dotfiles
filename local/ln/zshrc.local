@@ -317,30 +317,41 @@ if [[ -d "${HOME}/thirdparty-git/nvm" ]]; then
 	export NVM_DIR="${HOME}/thirdparty-git/nvm"
 
 	if [[ -s "${NVM_DIR}/nvm.sh" ]]; then
-		_nvm_extendedglob_was_on="${options[extendedglob]}" # Save the current state of nvm extended glob
+		# We need to turn off extended glob before running nvm scripts for performance, we return it at the bottom
+		# afterwards
+		_nvm_extendedglob_was_on="${options[extendedglob]}"
 
-		# nvm_strip_path and nvm in general doesn't work with extendedglob support enabled, so most of the functionality in
-		# this if statement is related to working around that while leaving extended glob enabled
 		unsetopt extendedglob
+		# This enables nvm based commands like nvm_strip_path and the like without selecting a node version which is
+		# more overhead and delays a shell on some slower systems
 		source "${NVM_DIR}/nvm.sh" --no-use
-		if [[ -s "${NVM_DIR}/bash_completion" ]]; then
-			source "${NVM_DIR}/bash_completion" # this works for bash and ZSH
+
+		# Remove an inherited NVM version before selecting the default directly.
+		PATH="$(nvm_strip_path "${PATH}")"
+
+		_nvm_default_version="$(<"${NVM_DIR}/alias/default")"
+		_nvm_default_root="${NVM_DIR}/versions/node/${_nvm_default_version}"
+
+		# Instead of using nvm to do this, we derrive the node version ourselves and add it to our path to improve
+		# performance. bash completion is handled after compinit (See completion setup).
+		if [[ -x "${_nvm_default_root}/bin/node" ]]; then
+			export NVM_BIN="${_nvm_default_root}/bin"
+			export NVM_INC="${_nvm_default_root}/include/node"
+			PATH="${NVM_BIN}:${PATH}"
 		fi
 
-		# Remove any inherited nvm version so failure genuinely falls back.
-		PATH="$(nvm_strip_path "${PATH}")"
-		functions[_nvm_without_extendedglob]="${functions[nvm]}" # Save the current nvm function into a new function
-
-		# Overwrite the current nvm function with one that removes extendedglob support and then calls the original nvm
+		# Preserve your workaround for NVM and extendedglob.
+		functions[_nvm_without_extendedglob]="${functions[nvm]}"
 		nvm() {
-		  setopt localoptions noextendedglob
-		  _nvm_without_extendedglob "$@"
+			setopt localoptions noextendedglob
+			_nvm_without_extendedglob "$@"
 		}
 
-		[[ "${_nvm_extendedglob_was_on}" == on ]] && setopt extendedglob # Restore the state of nvm extended glob
-		unset _nvm_extendedglob_was_on
+		[[ "${_nvm_extendedglob_was_on}" == on ]] && setopt extendedglob
 
-		nvm use default --silent || true # Failure leaves Homebrew/system Node available.
+		unset _nvm_extendedglob_was_on
+		unset _nvm_default_version
+		unset _nvm_default_root
 	fi
 fi
 # }}}
@@ -417,9 +428,16 @@ fi
 if type helm > /dev/null; then
 	source <(helm completion zsh 2>/dev/null)
 fi
+# Additionally, many things run compinit if it hasn't already run as a safe-guard, so this keeps compinit from running
+# twice.
 
 if type lab >/dev/null; then
 	source <(lab completion zsh)
+fi
+
+# NVM Completions
+if [[ -s "${NVM_DIR}/bash_completion" ]]; then
+	source "${NVM_DIR}/bash_completion" # works for both bash and zsh despite the name
 fi
 
 if type aws_completer > /dev/null; then
