@@ -453,8 +453,9 @@ if [[ -s "${NVM_DIR}/bash_completion" ]]; then
 	source "${NVM_DIR}/bash_completion" # works for both bash and zsh despite the name
 fi
 
-if type aws_completer > /dev/null; then
-	complete -C "$(type aws_completer | awk '{print $3}')" aws
+# AWS completions
+if [[ -n "${commands[aws_completer]}" ]]; then
+	complete -C "${commands[aws_completer]}" aws
 fi
 
 # This seems to need to be run last
