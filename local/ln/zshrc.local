@@ -386,13 +386,50 @@ fi
 # load our own completion functions
 fpath=(~/.zsh/completion /usr/local/share/zsh/site-functions $fpath)
 
+### Automatically generate zsh completion files if the executable is newer than the completion file (this reduces
+### startup time by not shelling out to the executables each time the shell inits and instead relying on completion
+### functions in the fpath
+### Call with: _refresh_zsh_completion <executable> <fpath_output_file_name> [<params> <sent> <to> <executable>]
+_refresh_zsh_completion() {
+	local command_name="$1"
+	local output="$2"
+	local executable="${commands[$command_name]}"
+	local temporary
+
+	shift 2
+
+	[[ -n "$executable" ]] || return 0
+
+	# Keep the existing completion unless the executable is newer.
+	if [[ -s "$output" ]] && [[ ! "$executable" -nt "$output" ]]; then
+		return 0
+	fi
+
+	temporary="${output}.tmp.$$"
+
+	if "$executable" "$@" >| "$temporary" && [[ -s "$temporary" ]]; then
+		command mv -f -- "$temporary" "$output"
+	else
+		command rm -f -- "$temporary"
+		print -u2 "Unable to regenerate completion for ${command_name}"
+		return 1
+	fi
+}
+
+# Check and generate kind fpath completions
+_refresh_zsh_completion kind "${fpath[1]}/_kind" completion zsh
+
+# Check and generate kubectl fpath completions
+_refresh_zsh_completion kubectl "${fpath[1]}/_kubectl" completion zsh
+
+# Check and generate helm fpath completions
+_refresh_zsh_completion helm "${fpath[1]}/_helm" completion zsh
+
+unfunction _refresh_zsh_completion
+
 # Write out completions for tldr to our current completion directory
 if type tldr > /dev/null; then
 	tldr --zsh-completion | sed 's/\[\[//' > "${fpath[1]}/_tldr"
-fi
-
-if type kind >/dev/null; then
-	kind completion zsh > "${fpath[1]}/_kind"
 fi
 
 # Mark bashcompinit and compinit as functions and override any similarly named commands that exist in PATH
@@ -408,14 +445,6 @@ bashcompinit
 compinit -u
 
 # Things that load their completion using source (which is discouraged) need to be loaded AFTER compinit or we get # errors
-# Load helm completions
-if type kubectl > /dev/null; then
-	source <(kubectl completion zsh)
-fi
-
-if type helm > /dev/null; then
-	source <(helm completion zsh 2>/dev/null)
-fi
 # Additionally, many things run compinit if it hasn't already run as a safe-guard, so this keeps compinit from running
 # twice.
 
