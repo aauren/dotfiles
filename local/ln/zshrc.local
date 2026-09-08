@@ -448,10 +448,6 @@ compinit -u
 # Additionally, many things run compinit if it hasn't already run as a safe-guard, so this keeps compinit from running
 # twice.
 
-if type lab >/dev/null; then
-	source <(lab completion zsh)
-fi
-
 # NVM Completions
 if [[ -s "${NVM_DIR}/bash_completion" ]]; then
 	source "${NVM_DIR}/bash_completion" # works for both bash and zsh despite the name
