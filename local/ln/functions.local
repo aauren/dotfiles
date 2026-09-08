@@ -106,7 +106,7 @@ vff() {
 # Automatically try to determine git message
 git_make_commit_message () {
 	local changed_files message sed
-	if [[ $(uname -a) == *"Darwin"* ]]; then
+	if [[ "${OSTYPE}" == *"Darwin"* ]]; then
 		sed="gsed"
 	else
 		sed="sed"

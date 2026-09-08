@@ -1,5 +1,5 @@
 # Turn on coloring for both Mac and others in a way they understand
-if [[ $(uname -a) == *"Darwin"* ]]; then
+if [[ "${OSTYPE}" == *"darwin"* ]]; then
 	alias ls='ls -G'
 else
 	alias ls='ls --color'
@@ -21,7 +21,7 @@ alias gnp='git --no-pager'
 alias hg='history 1 | grep -i'
 alias cgrep='grep --color=always'
 # Mac doesn't support Darwin reflink
-if [[ $(uname -a) != *"Darwin"* ]]; then
+if [[ "${OSTYPE}" != *"darwin"* ]]; then
 	alias cp='cp --reflink=auto'
 fi
 alias t='tail -200f'
@@ -29,7 +29,7 @@ alias tf='tail -f'
 alias tm='tail -200f /var/log/messages'
 alias hf='hostname -f'
 # Don't use custom ssh setup on Mac
-if [[ $(uname -a) != *"Darwin"* ]]; then
+if [[ "${OSTYPE}" != *"darwin"* ]]; then
 	alias ssh='exec my_ssh'
 fi
 alias tree="tree -C -I '*pycache*|.git|test|doc'"
@@ -71,7 +71,9 @@ alias s='export SHELL=/bin/zsh && sudo -sE'
 alias lsd='find . -maxdepth 1 -type d -exec ls -d {} \; | grep -v "^.$" | cut -c 3-'
 
 # Find all of the modules that are built against the currently running kernel
-alias findmod="find /lib/modules/$(uname -r)/ -type f -iname '*.o' -or -iname '*.ko'"
+if [[ "${OSTYPE}" == linux* ]]; then
+	alias findmod='find /lib/modules/$(uname -r)/ -type f -iname '*.o' -or -iname '*.ko''
+fi
 
 # Grabs the tmux pane index and makes it use-able on the CLI
 if [[ ! -z ${TMUX_PANE} ]]; then
