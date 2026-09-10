@@ -32,13 +32,173 @@ setopt nohashcmds
 
 # ZSH Prompt Setup {{{
 # Changes prompt to include information about Git repos and what zvim mode we're in
-source "${HOME}/dotfiles/local/lib/git_prompt/zshrc.sh"
+
+# Git Status via gitstatusd {{{
+# Git information comes from gitstatusd (https://github.com/romkatv/gitstatus), a daemon that we start once per shell
+# and then query on every prompt, which is quite a bit faster than shelling out to git and python like we used to. The
+# binaries are built statically by tools_to_update.sh and named by kernel and arch, so we pick the right one here.
+_gitstatus_dir="${HOME}/dotfiles/local/lib/gitstatus"
+if [[ "${OSTYPE}" == *"darwin"* ]]; then
+	_gitstatus_os="darwin"
+else
+	_gitstatus_os="linux"
+fi
+# Linux calls it aarch64 and macOS calls it arm64, which is what uname -m (and therefore the build) reports on each
+case "${CPUTYPE}" in
+	x86_64|amd64)
+		_gitstatus_arch="x86_64"
+		;;
+	aarch64|arm64)
+		[[ "${_gitstatus_os}" == "darwin" ]] && _gitstatus_arch="arm64" || _gitstatus_arch="aarch64"
+		;;
+	*)
+		_gitstatus_arch="${CPUTYPE}"
+		;;
+esac
+GITSTATUS_DAEMON="${_gitstatus_dir}/gitstatusd-${_gitstatus_os}-${_gitstatus_arch}"
+# Never let the plugin download a binary behind our back, we only ever want to run the ones we built ourselves
+GITSTATUS_AUTO_INSTALL=0
+
+if [[ -x "${GITSTATUS_DAEMON}" ]]; then
+	source "${_gitstatus_dir}/gitstatus.plugin.zsh"
+	# The -1 values turn on real counts for staged, unstaged, conflicted, and untracked instead of just 0/1 flags
+	gitstatus_stop 'PROMPT' && gitstatus_start -s -1 -u -1 -c -1 -d -1 'PROMPT'
+else
+	print -u2 "gitstatusd binary not found at ${GITSTATUS_DAEMON}, git info will be missing from the prompt"
+fi
+unset _gitstatus_dir _gitstatus_os _gitstatus_arch
+
+# The theme is identical to magicmonty/bash-git-prompt, carried over from the zsh-git-prompt days
+ZSH_THEME_GIT_PROMPT_PREFIX="["
+ZSH_THEME_GIT_PROMPT_SUFFIX="]"
+ZSH_THEME_GIT_PROMPT_HASH_PREFIX=":"
+ZSH_THEME_GIT_PROMPT_SEPARATOR="|"
+ZSH_THEME_GIT_PROMPT_BRANCH="%{$fg_bold[magenta]%}"
+ZSH_THEME_GIT_PROMPT_STAGED="%{$fg[red]%}%{●%G%}"
+ZSH_THEME_GIT_PROMPT_CONFLICTS="%{$fg[red]%}%{✖%G%}"
+ZSH_THEME_GIT_PROMPT_CHANGED="%{$fg[blue]%}%{✚%G%}"
+ZSH_THEME_GIT_PROMPT_BEHIND="%{↓%2G%}"
+ZSH_THEME_GIT_PROMPT_AHEAD="%{↑%2G%}"
+ZSH_THEME_GIT_PROMPT_STASHED="%{$fg_bold[blue]%}%{⚑ %G%}"
+ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[cyan]%}%{…%G%}"
+ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg_bold[green]%}%{✔%G%}"
+ZSH_THEME_GIT_PROMPT_LOCAL=" L"
+# The remote branch will be shown between these two
+ZSH_THEME_GIT_PROMPT_UPSTREAM_FRONT="{%{$fg[blue]%}"
+ZSH_THEME_GIT_PROMPT_UPSTREAM_END="%{${reset_color}%}}"
+ZSH_THEME_GIT_PROMPT_MERGING="%{$fg_bold[magenta]%}|MERGING%{${reset_color}%}"
+ZSH_THEME_GIT_PROMPT_REBASE="%{$fg_bold[magenta]%}|REBASE%{${reset_color}%} "
+ZSH_THEME_GIT_PROMPT_ACTION="%{$fg_bold[magenta]%}|"
+# 0 never shows the upstream, 1 shows remote/branch, 2 shows just the remote when the branch names match
+ZSH_GIT_PROMPT_SHOW_UPSTREAM=2
+
+# Runs before every prompt and fills GIT_PROMPT_STATUS with the formatted git segment (empty outside of a repo). We do
+# this in a precmd hook rather than $(...) in PROMPT so that gitstatus_query runs in this shell and we don't fork.
+git_prompt_update() {
+	emulate -L zsh
+	typeset -g GIT_PROMPT_STATUS=''
+
+	# Ask the daemon about $PWD and bail (leaving the segment empty) if it isn't running or we're not in a repo
+	gitstatus_query 'PROMPT' || return 0
+	[[ "${VCS_STATUS_RESULT}" == 'ok-sync' ]] || return 0
+
+	local branch upstream git_status clean=1
+
+	# Detached HEAD shows the hash prefixed with ':' like the old prompt did. Branch names can contain % so we escape it
+	if [[ -n "${VCS_STATUS_LOCAL_BRANCH}" ]]; then
+		branch="${VCS_STATUS_LOCAL_BRANCH//\%/%%}"
+	else
+		branch="${ZSH_THEME_GIT_PROMPT_HASH_PREFIX}${VCS_STATUS_COMMIT[1,7]}"
+	fi
+	git_status="${ZSH_THEME_GIT_PROMPT_PREFIX}${ZSH_THEME_GIT_PROMPT_BRANCH}${branch}%{${reset_color}%}"
+
+	# During a rebase the action looks like "rebase-i 2/5", so we keep the progress and show it like the old prompt did
+	case "${VCS_STATUS_ACTION}" in
+		'')
+			;;
+		rebase*|am*)
+			git_status+="${ZSH_THEME_GIT_PROMPT_REBASE}${VCS_STATUS_ACTION[(w)2]}"
+			;;
+		merge)
+			git_status+="${ZSH_THEME_GIT_PROMPT_MERGING}"
+			;;
+		*)
+			# cherry, revert, and bisect didn't show in the old prompt but are worth knowing about
+			git_status+="${ZSH_THEME_GIT_PROMPT_ACTION}${(U)VCS_STATUS_ACTION}%{${reset_color}%}"
+			;;
+	esac
+
+	# Branch with no upstream gets " L", otherwise show the upstream in braces unless it's the boring default
+	if [[ -n "${VCS_STATUS_LOCAL_BRANCH}" && -z "${VCS_STATUS_REMOTE_BRANCH}" ]]; then
+		git_status+="${ZSH_THEME_GIT_PROMPT_LOCAL}%{${reset_color}%}"
+	elif (( ZSH_GIT_PROMPT_SHOW_UPSTREAM > 0 )) && [[ -n "${VCS_STATUS_REMOTE_BRANCH}" ]]; then
+		upstream="${VCS_STATUS_REMOTE_NAME}/${VCS_STATUS_REMOTE_BRANCH}"
+		# origin/master and origin/main are what you'd assume anyway, so we don't clutter the prompt with them
+		if [[ "${upstream}" != "origin/master" && "${upstream}" != "origin/main" ]]; then
+			# When the remote branch has the same name as ours, just the remote name is enough (e.g. {origin})
+			if (( ZSH_GIT_PROMPT_SHOW_UPSTREAM == 2 )) && [[ "${VCS_STATUS_REMOTE_BRANCH}" == "${VCS_STATUS_LOCAL_BRANCH}" ]]; then
+				upstream="${VCS_STATUS_REMOTE_NAME}"
+			fi
+			git_status+="${ZSH_THEME_GIT_PROMPT_UPSTREAM_FRONT}${upstream//\%/%%}${ZSH_THEME_GIT_PROMPT_UPSTREAM_END}%{${reset_color}%}"
+		fi
+	fi
+
+	# Ahead / behind the upstream, e.g. " ↓1↑3", with the leading space only when there's something to show
+	if (( VCS_STATUS_COMMITS_BEHIND || VCS_STATUS_COMMITS_AHEAD )); then
+		git_status+=" "
+	fi
+	if (( VCS_STATUS_COMMITS_BEHIND )); then
+		git_status+="${ZSH_THEME_GIT_PROMPT_BEHIND}${VCS_STATUS_COMMITS_BEHIND}%{${reset_color}%}"
+	fi
+	if (( VCS_STATUS_COMMITS_AHEAD )); then
+		git_status+="${ZSH_THEME_GIT_PROMPT_AHEAD}${VCS_STATUS_COMMITS_AHEAD}%{${reset_color}%}"
+	fi
+
+	git_status+="${ZSH_THEME_GIT_PROMPT_SEPARATOR}"
+
+	# Everything after the separator is working tree state, each counter only appears when it's non-zero
+	if (( VCS_STATUS_NUM_STAGED )); then
+		git_status+="${ZSH_THEME_GIT_PROMPT_STAGED}${VCS_STATUS_NUM_STAGED}%{${reset_color}%}"
+		clean=0
+	fi
+	if (( VCS_STATUS_NUM_CONFLICTED )); then
+		git_status+="${ZSH_THEME_GIT_PROMPT_CONFLICTS}${VCS_STATUS_NUM_CONFLICTED}%{${reset_color}%}"
+		clean=0
+	fi
+	if (( VCS_STATUS_NUM_UNSTAGED )); then
+		git_status+="${ZSH_THEME_GIT_PROMPT_CHANGED}${VCS_STATUS_NUM_UNSTAGED}%{${reset_color}%}"
+		clean=0
+	fi
+	if (( VCS_STATUS_NUM_UNTRACKED )); then
+		git_status+="${ZSH_THEME_GIT_PROMPT_UNTRACKED}${VCS_STATUS_NUM_UNTRACKED}%{${reset_color}%}"
+		clean=0
+	fi
+	# Stashes count as not clean, which is how the old prompt behaved too
+	if (( VCS_STATUS_STASHES )); then
+		git_status+="${ZSH_THEME_GIT_PROMPT_STASHED}${VCS_STATUS_STASHES}%{${reset_color}%}"
+		clean=0
+	fi
+	# Nothing above fired, so show the green check mark
+	if (( clean )); then
+		git_status+="${ZSH_THEME_GIT_PROMPT_CLEAN}%{${reset_color}%}"
+	fi
+
+	GIT_PROMPT_STATUS="%{${reset_color}%}${git_status}${ZSH_THEME_GIT_PROMPT_SUFFIX}%{${reset_color}%}"
+}
+
+# zsh runs every function in its precmd hook array right before it draws a prompt (after the previous command exits, and
+# again on each empty enter), so hooking git_prompt_update here means GIT_PROMPT_STATUS is always fresh by the time
+# PROMPT gets expanded. gitstatus_query only exists if the plugin loaded above, so we skip the hook when it didn't.
+autoload -Uz add-zsh-hook
+if (( ${+functions[gitstatus_query]} )); then
+	add-zsh-hook precmd git_prompt_update
+fi
+# }}}
+
 local vi_normal_marker="[%{$fg[magenta]%}N%{$reset_color%}]"
 local vi_insert_marker="[%{$fg[cyan]%}I%{$reset_color%}]"
 local vi_unknown_marker="[%{$fg[red]%}U%{$reset_color%}]"
 local vi_mode="$vi_insert_marker"
-ZSH_GIT_PROMPT_SHOW_UPSTREAM=2
-ZSH_GIT_PROMPT_PYBIN=python3
 vi_mode_indicator () {
 case ${KEYMAP} in
 	(vicmd)      echo $vi_normal_marker ;;
@@ -110,7 +270,7 @@ aws_info_prompt() {
 		printf ')'
 	fi
 }
-export PROMPT='$(dir_info_prompt)$(kubectl_info_prompt)$(aws_info_prompt)$(rel_info_prompt)$(time_info_prompt) $(git_super_status)
+export PROMPT='$(dir_info_prompt)$(kubectl_info_prompt)$(aws_info_prompt)$(rel_info_prompt)$(time_info_prompt) ${GIT_PROMPT_STATUS}
 [$[HISTCMD]]%(?.%{$fg[green]%}[0].%{$fg[red]%}[%?])%{$reset_color%}${vi_mode}%# '
 # }}}
 
