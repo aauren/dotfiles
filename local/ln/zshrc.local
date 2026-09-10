@@ -246,17 +246,25 @@ time_info_prompt() {
 	print -P ' (%F{33}$(TZ="America/Chicago" date "+%D %T")%{$reset_color%})'
 }
 kubectl_info_prompt() {
-	if command -v kubectl &> /dev/null; then
-		local kubectl_contexts
-		kubectl_context="$(kubectl config current-context 2>/dev/null)"
-		if [[ -n "${kubectl_context}" ]]; then
-			kubeconfig_override=""
-			if [[ -n "${KUBECONFIG}" ]]; then
-				kubeconfig_override="$(basename "${KUBECONFIG}") - "
-			fi
-			print -P ' (%B%F{22}${kubeconfig_override}${kubectl_context}%{$reset_color%})'
+	local config="${KUBECONFIG:-${HOME}/.kube/config}"
+	local line kubectl_context kubeconfig_override
+
+	[[ -r "${config}" ]] || return
+
+	while IFS= read -r line; do
+		if [[ "${line}" == "current-context: "* ]]; then
+			kubectl_context="${line#current-context: }"
+			break
 		fi
+	done < "${config}"
+
+	[[ -n "${kubectl_context}" ]] || return
+
+	if [[ -n "${KUBECONFIG}" ]]; then
+		kubeconfig_override="$(basename "${KUBECONFIG}") - "
 	fi
+
+	print -P " (%B%F{22}${kubeconfig_override}${kubectl_context}%{$reset_color%})"
 }
 aws_info_prompt() {
 	local tmp_aws_p tmp_aws_r
