@@ -162,10 +162,35 @@ setup_remote_terminfo() {
 		return
 	fi
 
-	output_during_block "\tInstalling ${TERM} terminfo - "
+	if [[ ! ${TERM} =~ ^[[:alnum:]_.+-]+$ ]]; then
+		output_during_block "%s\n" "Refusing to install invalid terminal name: ${TERM}"
+		return 1
+	fi
+
+	if ! command -v infocmp &>/dev/null; then
+		output_during_block "%s\n" "Cannot export ${TERM} terminfo: local infocmp is unavailable"
+		return 1
+	fi
+
+	output_during_block "\tEnsuring ${TERM} terminfo - "
 	capture_before_date
-	infocmp -x "${TERM}" | command ssh ${SSH_OPTS} "${additional_ssh_opts[@]}" ${ssh_conn_str} \
-		'mkdir -p "$HOME/.terminfo" && tic -x -o "$HOME/.terminfo" /dev/stdin'
+	if ! infocmp -x "${TERM}" | command ssh ${SSH_OPTS} "${additional_ssh_opts[@]}" ${ssh_conn_str} \
+		"if ! command -v infocmp >/dev/null 2>&1; then
+			cat >/dev/null
+			echo 'Cannot inspect ${TERM} terminfo: remote infocmp is unavailable' >&2
+			exit 1
+		elif infocmp '${TERM}' >/dev/null 2>&1; then
+			cat >/dev/null
+		elif ! command -v tic >/dev/null 2>&1; then
+			cat >/dev/null
+			echo 'Cannot install ${TERM} terminfo: remote tic is unavailable' >&2
+			exit 1
+		else
+			mkdir -p \"\$HOME/.terminfo\" && tic -x -o \"\$HOME/.terminfo\" /dev/stdin
+		fi"; then
+		output_during_block "failed\n"
+		return 1
+	fi
 	print_duration
 }
 
