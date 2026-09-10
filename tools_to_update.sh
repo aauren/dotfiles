@@ -4,15 +4,42 @@ DOTFILEDIR="${HOME}/dotfiles"
 DESKTOPBIN="${HOME}/desktop_bin"
 LOCALBIN="${DOTFILEDIR}/local/bin"
 
-# zsh-git-prompt
-zsh-git-prompt() {
-	echo "+++++++ Installing / Updating zsh-git-prompt +++++++"
-	local git_prompt_dir
-	git_prompt_dir="$(mktemp -d git_prompt.XXXXXXXXX)"
-	git clone "https://github.com/starcraftman/zsh-git-prompt.git" "${git_prompt_dir}"
-	cp "${git_prompt_dir}/zshrc.sh" "${DOTFILEDIR}/local/lib/git_prompt/zshrc.sh"
-	cp "${git_prompt_dir}/gitstatus.py" "${DOTFILEDIR}/local/lib/git_prompt/gitstatus.py"
-	rm -rf "${git_prompt_dir}"
+# gitstatus - builds statically linked gitstatusd binaries for the zsh prompt and vendors the zsh plugin that drives them
+# On Linux this builds both x86_64 and aarch64 via docker (aarch64 needs qemu binfmt, e.g. apt-get install
+# qemu-user-static binfmt-support). macOS can't be cross-built from Linux, so run this on the Mac itself to build the
+# darwin binary natively (needs xcode-select --install and brew, the upstream build script installs the rest).
+gitstatus() {
+	local tools_to_update_loc="$(dirname -- "${BASH_SOURCE[0]}")"
+	local build_gitstatus_script_dir="${tools_to_update_loc}/build/gitstatus"
+	local gitstatus_lib="${DOTFILEDIR}/local/lib/gitstatus"
+	echo "+++++++ Installing / Updating gitstatus +++++++"
+	local gitstatus_dir arch
+	gitstatus_dir="$(mktemp -d gitstatus.XXXXXXXXX)"
+	git clone "https://github.com/romkatv/gitstatus.git" "${gitstatus_dir}/gitstatus_build"
+	cp "${build_gitstatus_script_dir}/build_static_gitstatus.sh" "${gitstatus_dir}"
+	cp "${build_gitstatus_script_dir}/Dockerfile" "${gitstatus_dir}"
+	pushd "${gitstatus_dir}" &>/dev/null || return
+	if [[ "${OSTYPE}" == *"darwin"* ]]; then
+		pushd gitstatus_build &>/dev/null || return
+		./build -w -s
+		cp usrbin/gitstatusd "${gitstatus_lib}/gitstatusd-darwin-$(uname -m)"
+		popd &>/dev/null || return
+	else
+		for arch in amd64 arm64; do
+			docker build --platform "linux/${arch}" -t "gitstatus_builder:${arch}" . || return
+			docker run --platform "linux/${arch}" -ti --rm -v "$(pwd):/output" "gitstatus_builder:${arch}" || return
+		done
+		cp gitstatusd-linux-x86_64 "${gitstatus_lib}/gitstatusd-linux-x86_64"
+		cp gitstatusd-linux-aarch64 "${gitstatus_lib}/gitstatusd-linux-aarch64"
+	fi
+	# The plugin needs install and build.info next to it, and the version in build.info must match what the binaries
+	# were built with, so all three binaries should be rebuilt together whenever the upstream version changes
+	cp gitstatus_build/gitstatus.plugin.zsh "${gitstatus_lib}/gitstatus.plugin.zsh"
+	cp gitstatus_build/install "${gitstatus_lib}/install"
+	cp gitstatus_build/build.info "${gitstatus_lib}/build.info"
+	cp gitstatus_build/LICENSE "${gitstatus_lib}/LICENSE"
+	popd &>/dev/null || return
+	rm -rf "${gitstatus_dir}"
 }
 
 # Tools needed for reducing go binary sizes
@@ -292,10 +319,10 @@ prompt_for_release() {
 all() {
 	echo "+++++++ Before continuing make sure to install the following: +++++++"
 	printf "+++++++ apt-get install -y libonig-dev golang-go musl-dev musl-tools attr upx libacl1-dev libattr1-dev"
-	printf "libcap-dev skopeo dconf-editor yamllint liburing-dev +++++++\n"
+	printf "libcap-dev skopeo dconf-editor yamllint liburing-dev qemu-user-static binfmt-support +++++++\n"
 	printf "You must also install Docker, follow the instructions here: https://docs.docker.com/engine/install/ubuntu/\n"
 	read -r
-	zsh-git-prompt
+	gitstatus
 	peco
 	gron
 	ripgrep
@@ -306,14 +333,14 @@ all() {
 }
 
 list() {
-	echo "zsh-git-prompt, peco, gron, silver-serach, ripgrep, bfs, dive, reg, lab, helm, kubectx, aws_cli, hadolint,"
+	echo "gitstatus, peco, gron, silver-serach, ripgrep, bfs, dive, reg, lab, helm, kubectx, aws_cli, hadolint,"
 	echo "rancher, socat"
 }
 
 main() {
 	local rust_installed go_tools_installed haskell_stack
 	case "${1}" in
-		zsh-git-prompt|peco|gron|silver-search|ripgrep|bfs|dive|reg|lab|helm|kubectx|kubectl|aws_cli|hadolint|\
+		gitstatus|peco|gron|silver-search|ripgrep|bfs|dive|reg|lab|helm|kubectx|kubectl|aws_cli|hadolint|\
 			rancher|socat|list|all)
 			${1}
 			;;
