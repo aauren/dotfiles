@@ -62,7 +62,10 @@ GITSTATUS_AUTO_INSTALL=0
 if [[ -x "${GITSTATUS_DAEMON}" ]]; then
 	source "${_gitstatus_dir}/gitstatus.plugin.zsh"
 	# The -1 values turn on real counts for staged, unstaged, conflicted, and untracked instead of just 0/1 flags
-	gitstatus_stop 'PROMPT' && gitstatus_start -s -1 -u -1 -c -1 -d -1 'PROMPT'
+	git_prompt_start_daemon() {
+		gitstatus_stop 'PROMPT' && gitstatus_start -s -1 -u -1 -c -1 -d -1 'PROMPT'
+	}
+	git_prompt_start_daemon
 else
 	print -u2 "gitstatusd binary not found at ${GITSTATUS_DAEMON}, git info will be missing from the prompt"
 fi
@@ -98,8 +101,14 @@ git_prompt_update() {
 	emulate -L zsh
 	typeset -g GIT_PROMPT_STATUS=''
 
-	# Ask the daemon about $PWD and bail (leaving the segment empty) if it isn't running or we're not in a repo
-	gitstatus_query 'PROMPT' || return 0
+	# Ask the daemon about $PWD and bail (leaving the segment empty) if we're not in a repo. A failed query means the
+	# daemon is gone (the plugin stops it when it dies), so we restart it once and retry, which makes a crash cost one
+	# prompt instead of the rest of the session. The cap keeps a binary that dies on every query from forking forever
+	if ! gitstatus_query 'PROMPT'; then
+		(( _git_prompt_restarts >= 5 )) && return 0
+		typeset -gi _git_prompt_restarts=$(( _git_prompt_restarts + 1 ))
+		git_prompt_start_daemon && gitstatus_query 'PROMPT' || return 0
+	fi
 	[[ "${VCS_STATUS_RESULT}" == 'ok-sync' ]] || return 0
 
 	local branch upstream git_status clean=1

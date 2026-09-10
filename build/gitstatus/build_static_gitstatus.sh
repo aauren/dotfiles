@@ -9,10 +9,10 @@ function build_gitstatus() {
 	echo "=================================================== BUILDING gitstatusd ==================================================="
 	cd /build/gitstatus_build || return 1
 
-	# -w downloads the libgit2 tarball into ./deps, tools are already installed via the Dockerfile so no -s here. We
-	# need _LARGEFILE64_SOURCE because musl >= 1.2.5 no longer exposes ino64_t / off64_t under _GNU_SOURCE alone,
-	# which upstream sidesteps by pinning a very old alpine image
-	CXXFLAGS="-D_LARGEFILE64_SOURCE" ./build -w || return 1
+	# -w downloads the libgit2 tarball into ./deps, tools are already installed via the Dockerfile so no -s here. The
+	# source in gitstatus_build has to be the aauren/gitstatus fork, since its ./build already passes
+	# _LARGEFILE64_SOURCE for musl >= 1.2.5 and pins the libgit2 fork with the untracked dir use-after-free fix
+	./build -w || return 1
 
 	# The build script already runs a smoke test against a scratch repo, but we also want to be sure that nothing dynamic
 	# snuck in, since the whole point of this is to not depend on anything on the target system
