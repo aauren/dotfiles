@@ -308,8 +308,6 @@ socat() {
 	local build_socat_script_dir="$(dirname "${tools_to_update_loc}/build/socat/build_static_socat.sh")"
 	echo "+++++++ Prompting for Versions to Build socat +++++++"
 	prompt_and_update "http://www.dest-unreach.org/socat/download/" "${build_socat_script}" "SOCAT_VERSION"
-	prompt_and_update "https://ftp.gnu.org/pub/gnu/ncurses/" "${build_socat_script}" "NCURSES_VERSION"
-	prompt_and_update "https://ftp.gnu.org/gnu/readline/" "${build_socat_script}" "READLINE_VERSION"
 	prompt_and_update "https://openssl-library.org/source/" "${build_socat_script}" "OPENSSL_VERSION"
 	echo "+++++++ Showing Version Changes for socat +++++++"
 	git diff "${build_socat_script}"
@@ -358,7 +356,6 @@ all() {
 	ripgrep
 	bfs
 	aws_cli
-	rancher
 	socat
 }
 

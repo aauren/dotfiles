@@ -3,42 +3,14 @@
 # Taken from the gist created by feiskyer: https://gist.github.com/feiskyer/1911c365014d9577dd765d5a7eb5aa89
 
 export SOCAT_VERSION=1.8.1.3
-export NCURSES_VERSION=6.6
-export READLINE_VERSION=8.3
 export OPENSSL_VERSION=4.0.2
 
-function build_ncurses() {
-	echo "=================================================== BUILDING ncruses ==================================================="
-	cd /build
-
-	# Download
-	curl -LO https://ftp.gnu.org/pub/gnu/ncurses/ncurses-${NCURSES_VERSION}.tar.gz
-	tar zxvf ncurses-${NCURSES_VERSION}.tar.gz
-	cd ncurses-${NCURSES_VERSION}
-
-	# Build
-	CC='/usr/bin/x86_64-alpine-linux-musl-gcc -static' CFLAGS='-fPIC' ./configure \
-		--disable-shared \
-		--enable-static || return 1
-}
-
-function build_readline() {
-	echo "=================================================== BUILDING Readline ==================================================="
-	cd /build
-
-	# Download
-	curl -LO https://ftp.gnu.org/gnu/readline/readline-${READLINE_VERSION}.tar.gz
-	tar xzvf readline-${READLINE_VERSION}.tar.gz
-	cd readline-${READLINE_VERSION}
-	ln -s /build/readline-${READLINE_VERSION} /build/readline
-
-	# Build
-	CC='/usr/bin/x86_64-alpine-linux-musl-gcc -static' \
-		CFLAGS='-fPIC' \
-		./configure --disable-shared --enable-static
-	make -j20 || return 1
-	make install-static || return 1
-}
+# socat's ./configure only wires up readline support if it can actually find a usable readline at
+# configure time (see AC_MSG_CHECKING(for usable readline) in configure.ac), and that check never
+# succeeded against our statically built copy. `strings` on the resulting binary confirmed no rl_*
+# or history_* symbols ever made it in, so xioopen_readline() was always compiled out behind
+# `#if WITH_READLINE`. We were building ncurses+readline for nothing this whole time; dropping them
+# shrinks the build and doesn't change the shipped binary's behavior at all.
 
 function build_openssl() {
 	echo "=================================================== BUILDING OpenSSL ==================================================="
@@ -50,8 +22,20 @@ function build_openssl() {
 	cd openssl-${OPENSSL_VERSION}
 
 	# Configure
+	# We disable a long tail of legacy/niche algorithms (old export ciphers, national/regional
+	# algorithms we have no reason to speak, compression which is a CRIME-attack vector anyway,
+	# ENGINE support, etc.) that socat never touches, since a static build pulls in the entire
+	# enabled algorithm set whether socat calls it or not. This is the single biggest lever on
+	# final binary size. -Os and -ffunction-sections/-fdata-sections let the linker's
+	# --gc-sections (set in build_socat) drop whatever unreferenced code remains.
 	CC='/usr/bin/x86_64-alpine-linux-musl-gcc -static' \
-		./Configure no-pic no-shared linux-x86_64
+		./Configure no-pic no-shared \
+		no-idea no-mdc2 no-rc5 no-md2 no-whirlpool no-blake2 no-seed no-camellia no-cast \
+		no-sm2 no-sm3 no-sm4 no-siphash no-ocb no-scrypt no-rmd160 no-argon2 no-aria no-siv \
+		no-comp no-weak-ssl-ciphers no-ssl-trace no-engine no-psk no-srp no-egd \
+		no-apps no-tests no-docs no-demos \
+		-Os -ffunction-sections -fdata-sections \
+		linux-x86_64
 
 	# Build
 	make -j20 || return 1
@@ -71,9 +55,9 @@ function build_socat() {
 	# NOTE: `NETDB_INTERNAL` is non-POSIX, and thus not defined by MUSL.
 	# We define it this way manually.
 	CC='/usr/bin/x86_64-alpine-linux-musl-gcc -static' \
-		CFLAGS="-fPIC -DWITH_OPENSSL -I/build -I/build/openssl-${OPENSSL_VERSION}/include -I/build/readline-${READLINE_VERSION} -DNETDB_INTERNAL=-1" \
-		CPPFLAGS="-DWITH_OPENSSL -I/build -I/build/openssl-${OPENSSL_VERSION}/include -I/build/readline -DNETDB_INTERNAL=-1" \
-		LDFLAGS="-L/build/readline -L/build/ncurses-${NCURSES_VERSION}/lib -L/build/openssl-${OPENSSL_VERSION}" \
+		CFLAGS="-fPIC -DWITH_OPENSSL -I/build -I/build/openssl-${OPENSSL_VERSION}/include -DNETDB_INTERNAL=-1 -Os -ffunction-sections -fdata-sections" \
+		CPPFLAGS="-DWITH_OPENSSL -I/build -I/build/openssl-${OPENSSL_VERSION}/include -DNETDB_INTERNAL=-1" \
+		LDFLAGS="-L/build/openssl-${OPENSSL_VERSION} -Wl,--gc-sections" \
 		sc_cv_getprotobynumber_r=2 \
 		./configure || return 1
 	echo "=================================================== PATCHING SOCAT ==================================================="
@@ -87,8 +71,6 @@ function build_socat() {
 }
 
 function doit() {
-	build_ncurses || exit 1
-	build_readline || exit 1
 	build_openssl || exit 1
 	build_socat || exit 1
 
