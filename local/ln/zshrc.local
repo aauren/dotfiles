@@ -575,7 +575,8 @@ _refresh_zsh_completion() {
 
 	shift 2
 
-	[[ -n "$executable" ]] || return 0
+	# $commands can hold dangling symlinks, so we check that it actually resolves before running it
+	[[ -n "$executable" && -x "$executable" ]] || return 0
 
 	# Keep the existing completion unless the executable is newer.
 	if [[ -s "$output" ]] && [[ ! "$executable" -nt "$output" ]]; then
