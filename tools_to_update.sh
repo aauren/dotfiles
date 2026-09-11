@@ -15,7 +15,10 @@ gitstatus() {
 	echo "+++++++ Installing / Updating gitstatus +++++++"
 	local gitstatus_dir arch
 	gitstatus_dir="$(mktemp -d gitstatus.XXXXXXXXX)"
-	git clone "https://github.com/romkatv/gitstatus.git" "${gitstatus_dir}/gitstatus_build"
+	# We build from our own fork, since it pins the libgit2 fork with the untracked dir use-after-free fix and the
+	# build script and install know about it. GITSTATUS_REF picks the branch or tag, e.g. GITSTATUS_REF=master
+	git clone --depth=1 --branch "${GITSTATUS_REF:-modernize}" "https://github.com/aauren/gitstatus.git" \
+		"${gitstatus_dir}/gitstatus_build" || return
 	cp "${build_gitstatus_script_dir}/build_static_gitstatus.sh" "${gitstatus_dir}"
 	cp "${build_gitstatus_script_dir}/Dockerfile" "${gitstatus_dir}"
 	pushd "${gitstatus_dir}" &>/dev/null || return
