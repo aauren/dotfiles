@@ -293,9 +293,9 @@ socat() {
 	cp "${build_socat_script_dir}/Dockerfile" "${socat_dir}"
 	cp -a "${build_socat_script_dir}/patches" "${socat_dir}"
 	pushd "${socat_dir}" &>/dev/null || return
-	docker build -t socat_builder:latest .
-	docker run -ti --rm -v "$(pwd):/output" socat_builder:latest
-	cp socat "${LOCALBIN}/socat"
+	docker build -t socat_builder:latest . || return 1
+	docker run -ti --rm -v "$(pwd):/output" socat_builder:latest || return 1
+	cp socat "${LOCALBIN}/socat" || return 1
 	popd &>/dev/null || return
 	rm -rf "${socat_dir}"
 }
