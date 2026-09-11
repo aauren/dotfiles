@@ -251,12 +251,9 @@ kubectl_info_prompt() {
 
 	[[ -r "${config}" ]] || return
 
-	while IFS= read -r line; do
-		if [[ "${line}" == "current-context: "* ]]; then
-			kubectl_context="${line#current-context: }"
-			break
-		fi
-	done < "${config}"
+	# Large generated kubeconfigs are expensive to scan line-by-line in zsh.
+	line="$(command grep -m 1 '^current-context: ' -- "${config}")"
+	kubectl_context="${line#current-context: }"
 
 	[[ -n "${kubectl_context}" ]] || return
 
