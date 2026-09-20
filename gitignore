@@ -15,4 +15,5 @@ log/*.log
 /.go-version
 /.python-version
 /venv
+/.venv
 /.codegraph
