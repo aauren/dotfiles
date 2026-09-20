@@ -1,0 +1,133 @@
+#!/bin/bash
+# Interactively installs a new Node LTS release via nvm, aliases it as the default, carries over the global
+# packages from whichever version was active before, and uninstalls every other version nvm has laying around.
+#
+# Requires nvm to be checked out at ${NVM_DIR:-${HOME}/thirdparty-git/nvm} (see zshrc.local). peco is used for
+# selection when it's on PATH, otherwise falls back to a plain numbered prompt.
+#
+# This runs as its own process, so it can't change the PATH of the shell that invoked it. Use the "nvmup" alias
+# (see aliases.local) which runs "nvm use default" right after this exits, or do that yourself if you run this
+# directly, otherwise the calling shell will keep using whatever node version it started with.
+
+set -euo pipefail
+
+NVM_DIR="${NVM_DIR:-${HOME}/thirdparty-git/nvm}"
+
+# Fast-forwards the vendored nvm checkout to its newest tag before we source it, since nvm.sh itself is what
+# provides "nvm install"/"nvm ls-remote", so we want to be running the newest release of nvm before we start.
+update_nvm_repo() {
+	local latest_tag current_tag
+
+	if [[ ! -d "${NVM_DIR}/.git" ]]; then
+		return 0
+	fi
+
+	printf "Checking for a newer nvm release...\n"
+	git -C "${NVM_DIR}" fetch --tags --quiet origin
+
+	latest_tag="$(git -C "${NVM_DIR}" tag -l 'v*' --sort=-v:refname | head -n 1)"
+	if [[ -z "${latest_tag}" ]]; then
+		printf "Unable to determine the latest nvm tag, continuing with what's checked out\n" >&2
+		return 0
+	fi
+
+	current_tag="$(git -C "${NVM_DIR}" describe --tags --exact-match 2>/dev/null || true)"
+	if [[ "${current_tag}" == "${latest_tag}" ]]; then
+		printf "nvm is already on the latest tag: %s\n" "${latest_tag}"
+		return 0
+	fi
+
+	printf "Updating nvm from %s to %s...\n" "${current_tag:-an untagged commit}" "${latest_tag}"
+	git -C "${NVM_DIR}" checkout -B "${latest_tag}" "tags/${latest_tag}" --quiet
+}
+
+load_nvm() {
+	if [[ ! -s "${NVM_DIR}/nvm.sh" ]]; then
+		printf "nvm.sh not found at %s, aborting\n" "${NVM_DIR}/nvm.sh" >&2
+		exit 1
+	fi
+	# shellcheck disable=SC1091
+	source "${NVM_DIR}/nvm.sh" --no-use
+}
+
+# nvm ls-remote --lts lists every patch release of every LTS line, so we reduce that down to the latest patch per
+# codename (Argon, Boron, ...) to get one sane entry per LTS line to choose from.
+list_lts_versions() {
+	nvm ls-remote --lts --no-colors | awk '{
+		ver = $1
+		codename = $0
+		sub(/^.*\(/, "", codename)
+		sub(/\)$/, "", codename)
+		sub(/^(Latest )?LTS: /, "", codename)
+		data[codename] = ver
+	} END {
+		for (c in data) print data[c], c
+	}' | sort -V
+}
+
+# Prompts for a version either through peco or a plain numbered selector, echoing the chosen "vX.Y.Z" on success
+choose_version() {
+	local versions="${1}" selection reply i=0 line
+
+	if command -v peco &>/dev/null; then
+		selection="$(printf "%s\n" "${versions}" | peco --prompt "Choose an LTS version to install >")"
+	else
+		while IFS= read -r line; do
+			printf "[%3d] %s\n" "${i}" "${line}" >&2
+			i=$((i + 1))
+		done <<<"${versions}"
+		printf "Choose option (q to quit): " >&2
+		read -r reply
+		[[ "${reply}" == "q" ]] && return 1
+		selection="$(sed -n "$((reply + 1))p" <<<"${versions}")"
+	fi
+
+	[[ -z "${selection}" ]] && return 1
+	awk '{print $1}' <<<"${selection}"
+}
+
+main() {
+	local previous_version target_version lts_versions installed_dir version_dir version
+
+	update_nvm_repo
+	load_nvm
+
+	previous_version="$(nvm current)"
+	if [[ "${previous_version}" == "none" || "${previous_version}" == "system" ]]; then
+		printf "No node version is currently selected via nvm, aborting\n" >&2
+		exit 1
+	fi
+
+	lts_versions="$(list_lts_versions)"
+	if [[ -z "${lts_versions}" ]]; then
+		printf "Unable to retrieve LTS versions from nvm, aborting\n" >&2
+		exit 1
+	fi
+
+	if ! target_version="$(choose_version "${lts_versions}")"; then
+		printf "No version selected, aborting\n" >&2
+		exit 1
+	fi
+
+	printf "Installing %s (carrying over global packages from %s)...\n" "${target_version}" "${previous_version}"
+	nvm install "${target_version}" --reinstall-packages-from="${previous_version}"
+
+	printf "Setting %s as the default alias...\n" "${target_version}"
+	nvm alias default "${target_version}"
+
+	installed_dir="${NVM_DIR}/versions/node"
+	if [[ -d "${installed_dir}" ]]; then
+		for version_dir in "${installed_dir}"/*; do
+			version="$(basename "${version_dir}")"
+			if [[ "${version}" != "${target_version}" && "${version}" != "${previous_version}" ]]; then
+				printf "Uninstalling unused version: %s\n" "${version}"
+				nvm uninstall "${version}"
+			fi
+		done
+	fi
+
+	printf "Done, default node is now %s\n" "${target_version}"
+	printf "Run \"nvm use default\" in your current shell (or use the nvmup alias) to pick it up here too\n"
+}
+
+main "${@}"
