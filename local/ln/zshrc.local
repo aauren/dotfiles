@@ -462,26 +462,6 @@ if [[ -e "${HOME}/desktop_bin" ]]; then
 	PATH="${HOME}/desktop_bin:${PATH}"
 fi
 
-# Brew {{{
-# If this is a Mac we'll add some more stuff
-if [[ "${OSTYPE}" == *"darwin"* ]]; then
-	if [[ -d "/usr/local/opt/coreutils/libexec/gnubin" ]]; then
-		PATH="/usr/local/opt/coreutils/libexec/gnubin:${PATH}"
-	fi
-	if [[ -d "/opt/homebrew/bin" ]]; then
-		PATH="/opt/homebrew/bin:${PATH}"
-	fi
-	if command -v brew &>/dev/null; then
-		if brew_prefix="$(brew --prefix golang)"; then
-			if [[ -d "${brew_prefix}" ]]; then
-				export GOROOT="${brew_prefix}/libexec"
-				PATH="${brew_prefix}/bin:${PATH}"
-			fi
-		fi
-	fi
-fi
-# }}}
-
 # Node {{{
 # Add node bin directory
 [[ -d "${HOME}/node_modules" && -d "${HOME}/node_modules/.bin" ]] && PATH="${HOME}/node_modules/.bin:${PATH}"
@@ -536,6 +516,33 @@ fi
 
 if [[ -e "${HOME}/.local/bin" ]]; then
 	PATH="${HOME}/.local/bin:${PATH}"
+fi
+
+# Brew {{{
+# If this is a Mac we'll add some more stuff. This is added last (and therefore ends up first in PATH) so that
+# Homebrew binaries, which are optimized for OSX/ARM, always win over anything else we've put on the PATH above.
+if [[ "${OSTYPE}" == *"darwin"* ]]; then
+	if [[ -d "/usr/local/opt/coreutils/libexec/gnubin" ]]; then
+		PATH="/usr/local/opt/coreutils/libexec/gnubin:${PATH}"
+	fi
+	if [[ -d "/opt/homebrew/bin" ]]; then
+		PATH="/opt/homebrew/bin:${PATH}"
+	fi
+	if command -v brew &>/dev/null; then
+		if brew_prefix="$(brew --prefix golang)"; then
+			if [[ -d "${brew_prefix}" ]]; then
+				export GOROOT="${brew_prefix}/libexec"
+				PATH="${brew_prefix}/bin:${PATH}"
+			fi
+		fi
+	fi
+fi
+# }}}
+
+# The Brew block above needs to sit ahead of binMan/.local/bin, but that also puts Homebrew's node (if installed)
+# ahead of the nvm-managed one we set up earlier. Re-assert NVM_BIN at the front so nvm always wins over Homebrew.
+if [[ -n "${NVM_BIN:-}" ]]; then
+	PATH="${NVM_BIN}:${PATH}"
 fi
 
 # Remove duplicate PATH entries while preserving the first occurrence.
