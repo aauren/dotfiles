@@ -94,7 +94,16 @@ main() {
 
 	previous_version="$(nvm current)"
 	if [[ "${previous_version}" == "none" || "${previous_version}" == "system" ]]; then
-		printf "No node version is currently selected via nvm, aborting\n" >&2
+		# zshrc.local wires up node via NVM_BIN/PATH directly, so nvm's "current" tracking is never populated,
+		# and "node -v" would report Homebrew's node instead. Derive from NVM_BIN, falling back to the default alias.
+		if [[ -n "${NVM_BIN:-}" ]]; then
+			previous_version="$(basename "$(dirname "${NVM_BIN}")")"
+		elif [[ -s "${NVM_DIR}/alias/default" ]]; then
+			previous_version="$(<"${NVM_DIR}/alias/default")"
+		fi
+	fi
+	if [[ -z "${previous_version}" || ! -d "${NVM_DIR}/versions/node/${previous_version}" ]]; then
+		printf "No installed nvm node version could be determined, aborting\n" >&2
 		exit 1
 	fi
 
@@ -130,4 +139,4 @@ main() {
 	printf "Run \"nvm use default\" in your current shell (or use the nvmup alias) to pick it up here too\n"
 }
 
-main "${@}"
+main ${1+"$@"}
