@@ -178,14 +178,44 @@ bind -T copy-mode-vi C-k send-keys -X end-of-line
 bind v select-pane -L \; copy-mode \; select-pane -L \; copy-mode \; select-pane -L
 bind V select-pane -L \; send-keys 'q' \; select-pane -L \; send-keys 'q' \; select-pane -L
 
-##### Setup Mouse Commands ####
-#setw -g mode-mouse on
-## Allows to select pane by clicking into it
-#set -g mouse-select-pane on
-## Allows to resize pane by dragging pane border
-#set -g mouse-resize-pane on
-## Allows to select window by clicking on it
-#set -g mouse-select-window on
+#### Setup Mouse Commands ####
+# We only want the wheel to scroll the pane buffer and border dragging to resize panes, so we turn mouse mode on and
+# then strip every other default mouse binding. -q keeps older tmux versions quiet about keys they don't know.
+set -g mouse on
+# Bound explicitly so that a reload restores them, since reloading never brings back an unbound default
+bind -T root MouseDown1Border select-pane -M
+bind -T root MouseDrag1Border resize-pane -M
+unbind -q -T root MouseDown1Pane
+unbind -q -T root MouseDown2Pane
+unbind -q -T root MouseDown3Pane
+unbind -q -T root M-MouseDown3Pane
+unbind -q -T root C-MouseDown1Pane
+unbind -q -T root MouseDrag1Pane
+unbind -q -T root DoubleClick1Pane
+unbind -q -T root TripleClick1Pane
+unbind -q -T root MouseDown1Status
+unbind -q -T root C-MouseDown1Status
+unbind -q -T root MouseDown3Status
+unbind -q -T root M-MouseDown3Status
+unbind -q -T root MouseDown3StatusLeft
+unbind -q -T root M-MouseDown3StatusLeft
+unbind -q -T root MouseDown1Control8
+unbind -q -T root MouseDown1Control9
+unbind -q -T root MouseDown1ScrollbarUp
+unbind -q -T root MouseDown1ScrollbarDown
+unbind -q -T root MouseDrag1ScrollbarSlider
+unbind -q -T root WheelUpStatus
+unbind -q -T root WheelDownStatus
+unbind -q -T copy-mode-vi MouseDown1Pane
+unbind -q -T copy-mode-vi MouseDrag1Pane
+unbind -q -T copy-mode-vi MouseDragEnd1Pane
+unbind -q -T copy-mode-vi DoubleClick1Pane
+unbind -q -T copy-mode-vi TripleClick1Pane
+unbind -q -T copy-mode MouseDown1Pane
+unbind -q -T copy-mode MouseDrag1Pane
+unbind -q -T copy-mode MouseDragEnd1Pane
+unbind -q -T copy-mode DoubleClick1Pane
+unbind -q -T copy-mode TripleClick1Pane
 
 # For tmux 3.3 it changed the default of allowing passthrough of terminal escape sequences
 set -g allow-passthrough all
