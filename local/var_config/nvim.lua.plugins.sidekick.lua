@@ -13,6 +13,25 @@ return {
 				split = {
 					width = 0.5,
 				},
+				-- The review tab (see config/user/review.lua) wants its own opencode in a full-width bottom split
+				config = function(terminal)
+					if terminal.tool.name == "opencode_review" then
+						terminal.opts.layout = "bottom"
+						terminal.opts.split = { width = 0, height = 0.2, win = -1 }
+					end
+				end,
+			},
+			tools = {
+				-- Same as the builtin opencode, but under a different name so that it gets its own session
+				opencode_review = {
+					cmd = { "opencode" },
+					env = { OPENCODE_THEME = "system" },
+					-- We don't want this tool claiming the regular opencode processes
+					is_proc = function()
+						return false
+					end,
+					native_scroll = true,
+				},
 			},
 		},
 	},
@@ -29,15 +48,17 @@ return {
 			desc = "Goto/Apply Next Edit Suggestion",
 		},
 		{
-      "<c-q>",
-      function() require("sidekick.cli").toggle() end,
-      desc = "Sidekick Toggle",
-      mode = { "n", "t", "i", "x" },
-    },
+			"<c-q>",
+			function()
+				require("sidekick.cli").toggle(require("config.user.review").sidekick_filter())
+			end,
+			desc = "Sidekick Toggle",
+			mode = { "n", "t", "i", "x" },
+		},
 		{
 			"<leader>aa",
 			function()
-				require("sidekick.cli").toggle()
+				require("sidekick.cli").toggle(require("config.user.review").sidekick_filter())
 			end,
 			desc = "Sidekick Toggle CLI",
 		},

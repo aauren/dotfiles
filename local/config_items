@@ -3,6 +3,7 @@ nvim.lua.config.lazy.lua:${HOME}/.config/nvim/lua/config/lazy.lua
 nvim.lua.config.user.functions.lua:${HOME}/.config/nvim/lua/config/user/functions.lua
 nvim.lua.config.user.general.lua:${HOME}/.config/nvim/lua/config/user/general.lua
 nvim.lua.config.user.keymap.lua:${HOME}/.config/nvim/lua/config/user/keymap.lua
+nvim.lua.config.user.review.lua:${HOME}/.config/nvim/lua/config/user/review.lua
 nvim.lua.plugins.aerial.lua:${HOME}/.config/nvim/lua/plugins/aerial.lua
 nvim.lua.plugins.barbar.lua:${HOME}/.config/nvim/lua/plugins/barbar.lua
 nvim.lua.plugins.blink.indent.lua:${HOME}/.config/nvim/lua/plugins/blink.indent.lua

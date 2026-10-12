@@ -391,6 +391,12 @@ vim.keymap.set('n', '<leader>x', '"_x', {
 })
 -- }}}
 
+vim.keymap.set('n', '<leader>gr', function() require('config.user.review').open() end, {
+	noremap = true,
+	silent = true,
+	desc = "Open a branch review tab"
+})
+
 vim.keymap.set('n', '<leader>b', ':ls<CR>:b<Space>', {
 	noremap = true,
 	silent = false,

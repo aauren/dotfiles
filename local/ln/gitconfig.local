@@ -209,6 +209,8 @@
 	edit = !$EDITOR $(git status --short | awk '$1 ~ /^M|A|U/ {print $2}' )
 	# Opens up your editor with all of the files that were modified as part of a specified commit
 	edcm = "!f() { git diff-tree -p -r $1 >/tmp/gitdiff.patch; $EDITOR $(git diff-tree --no-commit-id --name-only -r $1) /tmp/gitdiff.patch; rm /tmp/gitdiff.patch; }; f"
+	# Review this branch in nvim: changed files, a delta diff, and opencode. Base is the upstream, origin/HEAD, or main/master unless given
+	rv = "!f() { nvim -c \"Review ${1}\"; }; f"
 	# Opens up your editor with files that contain conflicts
 	edc = !$EDITOR -c 'silent! /=======' $(git diff --name-only | uniq)
 	sh = show HEAD
