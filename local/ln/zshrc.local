@@ -103,9 +103,19 @@ git_prompt_update() {
 
 	# Ask the daemon about $PWD and bail (leaving the segment empty) if we're not in a repo. A failed query means the
 	# daemon is gone (the plugin stops it when it dies), so we restart it once and retry, which makes a crash cost one
-	# prompt instead of the rest of the session. The cap keeps a binary that dies on every query from forking forever
-	if ! gitstatus_query 'PROMPT'; then
-		(( _git_prompt_restarts >= 5 )) && return 0
+	# prompt instead of the rest of the session. We only reset the cap when an already running daemon answers, so it
+	# counts crashes in a row and a binary that dies on every query still can't fork forever
+	if gitstatus_query 'PROMPT'; then
+		typeset -gi _git_prompt_restarts=0 _git_prompt_gave_up=0
+	else
+		if (( _git_prompt_restarts >= 5 )); then
+			if (( ! _git_prompt_gave_up )); then
+				typeset -gi _git_prompt_gave_up=1
+				print -u2 "gitstatusd crashed ${_git_prompt_restarts} times in a row, git info is off for this shell" \
+					"(run 'unset _git_prompt_restarts _git_prompt_gave_up' to try again)"
+			fi
+			return 0
+		fi
 		typeset -gi _git_prompt_restarts=$(( _git_prompt_restarts + 1 ))
 		git_prompt_start_daemon && gitstatus_query 'PROMPT' || return 0
 	fi
