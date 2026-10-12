@@ -171,6 +171,7 @@
 	ssu = "!f() { git stash push --keep-index --include-untracked "${@}"; }; f"
 	# Stash save in patch mode
 	ssp = "!f() { git stash push --patch --keep-index "${@}"; }; f"
+	sss = "!f() { git stash push --staged "${@}"; }; f"
 
 	# WORKTREE
 	wt = worktree
