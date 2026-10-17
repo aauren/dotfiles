@@ -28,6 +28,9 @@ export GPG_TTY="$(tty)"
 # Disable command hashing to keep from running "hash -r" all the time
 setopt nohashcmds
 
+# Allow using comment flags inside command lines
+setopt interactivecomments
+
 # }}}
 
 # ZSH Prompt Setup {{{
