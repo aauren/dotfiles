@@ -6,8 +6,12 @@
 	ca = commit --amend -v
 
 	# DIFF
-	df = diff --color-words
-	dc = diff --cached
+	# Page through delta when it's installed, delta does its own word highlighting so --color-words is only the fallback.
+	# Shell aliases run from the repo root, so we cd back to GIT_PREFIX to keep relative paths working
+	df = "!f() { cd \"${GIT_PREFIX:-.}\" || return; \
+		if command -v delta >/dev/null 2>&1; then git -c core.pager=delta diff \"$@\"; else git diff --color-words \"$@\"; fi; }; f"
+	dc = "!f() { cd \"${GIT_PREFIX:-.}\" || return; \
+		if command -v delta >/dev/null 2>&1; then git -c core.pager=delta diff --cached \"$@\"; else git diff --cached \"$@\"; fi; }; f"
 	dt = difftool
 	dtc = difftool --cached
 	# colorize whitespace differences
