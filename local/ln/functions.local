@@ -22,6 +22,20 @@ vim() {
 	fi
 }
 
+# Comma-separated list of every exported variable, minus the ones sudo should set for the target user. sudo-rs
+# ignores -E, so we pass this to --preserve-env instead, which works on both sudo-rs and classic sudo >= 1.8.21
+sudo_preserve_env_list() {
+	local -a vars=(${(k)parameters[(R)*export*]})
+	vars=(${vars:#(USER|LOGNAME|_)})
+	print -r -- "${(j:,:)vars}"
+}
+
+# Executes sudo in a way that preserves the current shell and environment
+s() {
+	export SHELL=/bin/zsh
+	sudo -s "${@}"
+}
+
 # Find and open files matching one or more partial names in vim
 vf() {
 	local sc pattern file basename_file

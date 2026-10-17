@@ -56,8 +56,9 @@ alias lessg='less +G'
 # Copies the tmux buffer to the X clipboard
 alias copy-tbuff='tmux save-buffer - | xsel -ib'
 
-# Preserves the environment during a sudo operation
-alias sudo='sudo -E '
+# Preserves the environment during a sudo operation (see sudo_preserve_env_list in ~/.functions.local)
+# The trailing space keeps alias expansion going for the command after sudo
+alias sudo='sudo --preserve-env="$(sudo_preserve_env_list)" '
 
 # Run emerge in a way that is as nice as possible to other processes
 # The following makes it run in a way that conserves IO and uses the SCHED_IDLE scheduler
@@ -65,9 +66,6 @@ alias emerge='ionice -n3 chrt --idle 0 emerge'
 
 
 # More complex aliases
-
-# Executes sudo in a way that preserves the current shell and environment
-alias s='export SHELL=/bin/zsh && sudo -sE'
 
 # Lists all of the directories within the current directory (excepting the . directory)
 alias lsd='find . -maxdepth 1 -type d -exec ls -d {} \; | grep -v "^.$" | cut -c 3-'
