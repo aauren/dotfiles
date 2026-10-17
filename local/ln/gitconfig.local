@@ -239,5 +239,24 @@
 	defaultRemote=origin
 [rebase]
 	autosquash = true
+[delta]
+	# Gruvbox Material (dark, hard) so delta matches Ghostty and nvim instead of its default saturated red/green
+	true-color = always
+	# Custom bat theme from local/var_config, needs `bat cache --build` after linking. Falls back to delta's default if missing
+	syntax-theme = gruvbox-material-dark
+	minus-style = syntax "#3c1f1e"
+	minus-non-emph-style = syntax "#3c1f1e"
+	minus-emph-style = syntax "#6a3532"
+	minus-empty-line-marker-style = normal "#3c1f1e"
+	plus-style = syntax "#1f3324"
+	plus-non-emph-style = syntax "#1f3324"
+	plus-emph-style = syntax "#37603f"
+	plus-empty-line-marker-style = normal "#1f3324"
+	line-numbers-minus-style = "#ea6962"
+	line-numbers-plus-style = "#89b482"
+	line-numbers-zero-style = "#7c6f64"
+	file-style = "#d8a657" bold
+	hunk-header-style = file line-number syntax
+	hunk-header-decoration-style = "#7daea3" box
 
 # vim: set noet ts=2 sw=2:
