@@ -297,7 +297,7 @@ aws_info_prompt() {
 		printf ')'
 	fi
 }
-export PROMPT='$(dir_info_prompt)$(kubectl_info_prompt)$(aws_info_prompt)$(rel_info_prompt)$(time_info_prompt) ${GIT_PROMPT_STATUS}
+PROMPT='$(dir_info_prompt)$(kubectl_info_prompt)$(aws_info_prompt)$(rel_info_prompt)$(time_info_prompt) ${GIT_PROMPT_STATUS}
 [$[HISTCMD]]%(?.%{$fg[green]%}[0].%{$fg[red]%}[%?])%{$reset_color%}${vi_mode}%# '
 # }}}
 

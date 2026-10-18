@@ -33,7 +33,13 @@ sudo_preserve_env_list() {
 # Executes sudo in a way that preserves the current shell and environment
 s() {
 	export SHELL=/bin/zsh
-	sudo -s "${@}"
+	# Classic sudo resets HOME for -s even when it's in --preserve-env, which makes root's zsh skip our dotfiles, so
+	# we set it through env instead, which behaves the same on sudo-rs
+	if (( $# )); then
+		sudo env HOME="${HOME}" "${SHELL}" -c "${(j: :)${(q-)@}}"
+	else
+		sudo env HOME="${HOME}" "${SHELL}"
+	fi
 }
 
 # Find and open files matching one or more partial names in vim
