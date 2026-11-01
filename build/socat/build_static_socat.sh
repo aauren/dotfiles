@@ -3,7 +3,7 @@
 # Taken from the gist created by feiskyer: https://gist.github.com/feiskyer/1911c365014d9577dd765d5a7eb5aa89
 
 export SOCAT_VERSION=1.8.1.3
-export OPENSSL_VERSION=4.0.2
+export OPENSSL_VERSION=4.1.0
 
 # socat's ./configure only wires up readline support if it can actually find a usable readline at
 # configure time (see AC_MSG_CHECKING(for usable readline) in configure.ac), and that check never
