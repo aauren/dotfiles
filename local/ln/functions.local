@@ -517,7 +517,7 @@ awsp() {
 
 	# Extra validation of parameters
 	if [[ -z "${profile}" ]]; then
-		profile=$(aws configure list-profiles | grep -Ev '^default$' | peco)
+		profile=$(aws configure list-profiles | grep -Ev '^(default|skuba-.*)$' | peco)
 	fi
 
 	# Find a host to do some work
