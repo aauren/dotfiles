@@ -118,7 +118,7 @@ main ()
 	if [[ -n "${mycmd}" ]]; then
 		command ssh -qtt "${additional_ssh_opts[@]}" "${HOST}" "${mycmd}" || RETVAL=${?}
 	elif [[ -n "${zsh}" ]]; then
-		command ssh -qtt "${additional_ssh_opts[@]}" "${HOST}" "[[ -x /bin/zsh ]] && exec bash -l -c 'exec /bin/zsh'" || RETVAL=${?}
+		command ssh -qtt "${additional_ssh_opts[@]}" "${HOST}" "if [ -x /bin/zsh ]; then exec bash -l -c 'exec /bin/zsh'; else exec bash -l; fi" || RETVAL=${?}
 	else
 		command ssh -q "${additional_ssh_opts[@]}" "${HOST}" || RETVAL=${?}
 	fi
