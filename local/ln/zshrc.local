@@ -558,6 +558,16 @@ if [[ -n "${NVM_BIN:-}" ]]; then
 	PATH="${NVM_BIN}:${PATH}"
 fi
 
+# The Brew block also puts Homebrew's Python ahead of pyenv. Re-assert the pyenv shims so the globally selected
+# pyenv Python is used by Mason and other Python tooling.
+if command -v pyenv &>/dev/null; then
+	_pyenv_shims="$(pyenv root)/shims"
+	if [[ -d "${_pyenv_shims}" ]]; then
+		PATH="${_pyenv_shims}:${PATH}"
+	fi
+	unset _pyenv_shims
+fi
+
 # Remove duplicate PATH entries while preserving the first occurrence.
 typeset -U path PATH
 
