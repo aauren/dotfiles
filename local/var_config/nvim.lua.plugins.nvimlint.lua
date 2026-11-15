@@ -16,7 +16,7 @@ return {
 				markdown = { "markdownlint" },
 				opa = { "opacheck" },
 				python = { "flake8" },
-				terraform = { "tflint", "tfsec" },
+				terraform = { "tflint", "trivy" },
 				yaml = { "yamllint"},
 			}
 
