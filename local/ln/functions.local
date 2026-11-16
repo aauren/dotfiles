@@ -508,6 +508,18 @@ labmr() {
 	#rm -f "${tmp_file}"
 }
 
+# Check out an upstream GitHub PR and open it for review in tuicr
+gh-pr-review() {
+	local pr_number="${1}"
+	if [[ -z "${pr_number}" ]]; then
+		echo "Usage: gh-pr-review <pr_number>"
+		return 2
+	fi
+
+	gh pr checkout "${pr_number}" || return 1
+	tuicr pr "${pr_number}"
+}
+
 # Easily change AWS profiles
 awsp() {
 	# All transient variables described here
