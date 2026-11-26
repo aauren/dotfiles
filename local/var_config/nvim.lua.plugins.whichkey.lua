@@ -23,11 +23,11 @@ return {
 			-- category when you press <leader>X and pause.
 			--
 			-- Note: several of these prefixes also have a single-key mapping
-			-- (e.g. <leader>a toggles Aerial AND is the Sidekick prefix). That
+			-- (e.g. <leader>a toggles Aerial AND is the opencode prefix). That
 			-- still works -- which-key shows both the leaf action and the
 			-- sub-menu when the popup opens.
 			wk.add({
-				{ "<leader>a", group = "AI / Aerial" },         -- sidekick.* + aerial toggle
+				{ "<leader>a", group = "AI / Aerial" },         -- opencode.* + aerial toggle
 				{ "<leader>c", group = "code (Trouble)" },      -- <leader>cs, <leader>cl
 				{ "<leader>d", group = "debug / delete" },      -- dap.* + delete-without-yank
 				{ "<leader>f", group = "find / format" },       -- snacks pickers + conform format

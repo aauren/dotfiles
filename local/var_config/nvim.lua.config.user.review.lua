@@ -1,7 +1,19 @@
--- Branch review tab: changed files on the left, a delta diff on the right, and opencode (via sidekick) along the bottom
+-- Branch review tab: changed files on the left, a delta diff on the right, and opencode along the bottom
 local M = {}
 
-local SIDEKICK_TOOL = "opencode_review"
+-- The env keeps snacks from treating this as the same terminal as the regular opencode in plugins/opencode.lua
+local OPENCODE_CMD = "opencode"
+local function opencode_opts(root)
+	return {
+		cwd = root,
+		count = 1,
+		env = { OPENCODE_THEME = "system", COLORTERM = "truecolor" },
+		-- Same as plugins/opencode.lua, an empty winhighlight keeps snacks from giving it the lighter float background
+		win = { position = "bottom", height = 0.2, enter = false, wo = { winhighlight = "" } },
+	}
+end
+-- Repos that have had a review opencode started, so TabClosed knows which ones to clean up
+local opencode_roots = {}
 
 local function notify(msg, level)
 	vim.notify(msg, level or vim.log.levels.WARN, { title = "Review" })
@@ -348,7 +360,7 @@ function M.open(ref)
 	-- Either nvim's startup buffer or the one tabnew made, it'd otherwise linger in barbar
 	local scratch = vim.api.nvim_get_current_buf()
 	vim.cmd.tcd(vim.fn.fnameescape(root))
-	vim.t.review = { base = base, merge_base = merge_base }
+	vim.t.review = { base = base, merge_base = merge_base, root = root }
 
 	for _, file in ipairs(files) do
 		vim.cmd.badd(vim.fn.fnameescape(file))
@@ -360,17 +372,24 @@ function M.open(ref)
 	vim.cmd("rightbelow vnew")
 	start_delta(merge_base)
 
-	-- Sidekick opens its window asynchronously, focus = false keeps it from stealing the cursor when it does
-	require("sidekick.cli").show({ name = SIDEKICK_TOOL, focus = false })
+	opencode_roots[root] = true
+	local term, created = Snacks.terminal.get(OPENCODE_CMD, opencode_opts(root))
+	-- A second review tab for the same repo pulls the existing opencode over instead of starting another
+	if not created and not term:on_current_tab() then
+		if term:win_valid() then
+			term:hide()
+		end
+		term:show()
+	end
 	vim.api.nvim_set_current_win(left)
 
 	notify(("Reviewing %d file(s) against %s"):format(#files, base), vim.log.levels.INFO)
 end
 
--- Used by the sidekick toggle keys so that inside a review tab they go to the review session instead of prompting
-function M.sidekick_filter()
+-- Used by the opencode toggle keys so that inside a review tab they go to the review terminal
+function M.opencode_terminal()
 	if vim.t.review then
-		return { name = SIDEKICK_TOOL }
+		return { cmd = OPENCODE_CMD, opts = opencode_opts(vim.t.review.root) }
 	end
 end
 
@@ -389,17 +408,25 @@ end, {
 	desc = "Open a branch review tab (files, delta diff, opencode)",
 })
 
--- Once the last review tab is gone, detach its opencode so the regular sidekick toggle stops offering it
+-- Once no review tab is left for a repo, close its opencode so it doesn't linger as a hidden terminal
 vim.api.nvim_create_autocmd("TabClosed", {
 	group = vim.api.nvim_create_augroup("user_review", { clear = true }),
 	callback = function()
+		local open = {}
 		for _, tab in ipairs(vim.api.nvim_list_tabpages()) do
-			if vim.t[tab].review then
-				return
+			local review = vim.t[tab].review
+			if review then
+				open[review.root] = true
 			end
 		end
-		if package.loaded["sidekick.cli"] then
-			require("sidekick.cli").close({ name = SIDEKICK_TOOL })
+		for root in pairs(opencode_roots) do
+			if not open[root] then
+				opencode_roots[root] = nil
+				local term = Snacks.terminal.get(OPENCODE_CMD, vim.tbl_extend("force", opencode_opts(root), { create = false }))
+				if term then
+					term:close()
+				end
+			end
 		end
 	end,
 })
